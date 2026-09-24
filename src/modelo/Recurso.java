@@ -13,7 +13,7 @@ public class Recurso {
 		this.id = id;
 		this.titulo = titulo;
 		this.ano = ano;
-		this.estado = estado;
+		this.estado = estado; //cambio de nombre?, es un poco lioso poner tipo recurso.isEstado en vez de, ns, recurso.isVacante o Disponible
 	}
 
 	public String getId() {
