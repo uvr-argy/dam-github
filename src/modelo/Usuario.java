@@ -2,21 +2,21 @@ package modelo;
 
 public class Usuario {
 	
-	private int id;
+	private String id;
 	private String nombre;
 	private String email;
 	
-	public Usuario(int id, String nombre, String email) {
+	public Usuario(String id, String nombre, String email) {
 		this.id = id;
 		this.nombre = nombre;
 		this.email = email;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
