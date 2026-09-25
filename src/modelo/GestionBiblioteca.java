@@ -220,4 +220,151 @@ public class GestionBiblioteca {
     	}
     	return true;
     }
+    
+	// ==================== CONSULTAS ====================»
+
+    // Recursos disponibles
+    public ArrayList<Recurso> recursosDisponibles() {
+
+
+        ArrayList<Recurso> disponibles = new ArrayList<>();
+
+        for (Recurso recurso : recursos) {
+
+            if (recurso.isEstado()) {
+
+                disponibles.add(recurso);
+
+            }
+        }
+
+        return disponibles;
+    }
+    
+    // Recursos prestados
+    public ArrayList<Recurso> recursosPrestados() {
+
+        ArrayList<Recurso> prestados = new ArrayList<>();
+
+        for (Recurso recurso : recursos) {
+
+            if (!recurso.isEstado()) {
+
+                prestados.add(recurso);
+
+            }
+        }
+
+        return prestados;
+    }
+    
+    //Busqueda por titulo
+    public ArrayList<Recurso> buscarPorTitulo(String titulo){
+    	
+    	ArrayList<Recurso> resultados = new ArrayList<>();
+    	
+    	for (Recurso recurso : recursos) {
+    		//Busca los recursos que contengan las letras que hemos puesto ej.: buscamos señor --> El Señor de los Anillos
+    		if(recurso.getTitulo().toLowerCase().contains(titulo.toLowerCase())) {
+    			
+    			resultados.add(recurso);
+    		}
+    	}
+    	return resultados;
+    }
+    
+    //Prestamos de un usuario
+    public ArrayList<Prestamo> prestamosUsuario(String idUsuario){
+    	
+    	ArrayList<Prestamo> resultados = new ArrayList<>();
+    	
+    	for (Prestamo prestamo : prestamos) {
+    		if(prestamo.getUsuario().getId().equals(idUsuario)) {
+    			
+    			resultados.add(prestamo);
+    		}
+    	}
+    	return resultados;
+    }
+
+    //Prestamos activos
+    public ArrayList<Prestamo> prestamosActivos(){
+    	
+    	ArrayList<Prestamo> resultados = new ArrayList<>();
+    	
+    	for (Prestamo prestamo : prestamos) {
+    		
+    		//Solo añadimos los que estan activos
+    		if(prestamo.isEstadoPrestamo()) {
+    			resultados.add(prestamo);
+    		}
+    	}
+    	return resultados;
+    }
+    
+    //Recursos Filtrados
+    public ArrayList<Recurso> recursosPorTipo(String tipo){
+    	
+    	ArrayList<Recurso> resultados = new ArrayList<>();
+    	for (Recurso recurso : recursos) {
+    		
+    		//El getSimpleName nos devuelve el nombre del recurso, ademas ignoramos si esta en minusculas o mayusculas
+    		if(recursos.getClass().getSimpleName().equalsIgnoreCase(tipo)){
+    			resultados.add(recurso);
+    		}
+    	}
+    	return resultados;
+    }
+    
+    //Recursos mas prestados
+    public ArrayList<Recurso> recursosMasPrestados(int cantidad){
+    	
+    	ArrayList<Recurso> resultados = new ArrayList<>();
+    	
+    	for (Recurso recurso : recursos) {
+    		
+    		int contador = 0;
+    		
+    		for(Prestamo prestamo : prestamos) {
+    			//Compruebo si ese prestamo corresponde al recurso
+    			if(prestamo.getRecurso().getId().equals(recurso.getId())) {
+    				//si coincide suma
+    				contador++;
+    			}
+    		}
+    		//comprobamos
+    		if(contador >= cantidad) {
+    			resultados.add(recurso);
+    		}
+    		}
+    	return resultados;
+    	}
+    
+    //Usuarios que nunca han realizado un prestamo
+    public ArrayList<Usuario> usuarioSinPrestamos(){
+    	
+    	ArrayList<Usuario> resultados = new ArrayList<>();
+    	
+    	for(Usuario usuario : usuarios) {
+    		
+    		boolean tienePrestamo = false;
+    		
+    		for(Prestamo prestamo : prestamos) {
+    			//Buscamos al usuario
+    			if(prestamo.getUsuario().getId().equals(usuario.getId())){
+    				//si tiene al menos un prestamo dejamos de buscar
+    				tienePrestamo = true;
+    				break;
+    			}
+    		}
+    		//si no tiene prestamos añadimo a los resultados
+    		if(!tienePrestamo) {
+    			resultados.add(usuario);
+    		}
+    	}
+    	return resultados;
+    }
 }
+
+	
+	
