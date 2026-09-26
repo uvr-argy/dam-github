@@ -210,8 +210,8 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelInicio = new JPanel();
         panelInicio.setBackground(new Color(249, 247, 242));
         PanelUsuario panelUsuarios = new PanelUsuario();
-        JPanel panelRecursos = new JPanel();
-        JPanel panelPrestamos = new JPanel();
+        PanelRecursos panelRecursos = new PanelRecursos();
+        PanelPrestamos panelPrestamos = new PanelPrestamos();
 
         panelContenido.add(
             panelInicio,

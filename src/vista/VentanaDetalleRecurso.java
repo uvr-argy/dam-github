@@ -14,14 +14,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class PanelDetalleUsuario extends JFrame {
+public class VentanaDetalleRecurso extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
     private JPanel panelSubnavbar;
     private JPanel panelPrestamos;
 
-    private JButton botonAnadirPrestamo;
+    private JButton botonEditar;
+    private JButton botonEliminar;
 
     private Color colorFondo = new Color(249, 247, 242);
     private Color colorSubnavbar = new Color(227, 235, 222);
@@ -30,14 +31,14 @@ public class PanelDetalleUsuario extends JFrame {
     private Color colorAmarillo = new Color(236, 206, 145);
     private Color colorRojo = new Color(243, 153, 131);
 
-    public PanelDetalleUsuario() {
+    public VentanaDetalleRecurso() {
 
         // =========================
         // CONFIGURACIÓN DE LA VENTANA
         // =========================
 
         setTitle(
-            "Detalle del usuario"
+            "Detalle del recurso"
         );
 
         setSize(
@@ -80,15 +81,12 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         panelSubnavbar.setBackground(
-            colorSubnavbar
+            new Color(225, 210, 227)
         );
 
         panelSubnavbar.setBorder(
             BorderFactory.createEmptyBorder(
-                10,
-                20,
-                10,
-                20
+                10, 20, 10, 20
             )
         );
 
@@ -98,7 +96,7 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         JLabel etiquetaTitulo = new JLabel(
-            "Detalle del usuario"
+            "Detalle del recurso"
         );
 
         etiquetaTitulo.setFont(
@@ -128,10 +126,7 @@ public class PanelDetalleUsuario extends JFrame {
 
         panelCentral.setBorder(
             BorderFactory.createEmptyBorder(
-                20,
-                20,
-                20,
-                20
+                20, 20, 20, 20
             )
         );
 
@@ -141,7 +136,7 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         // =========================
-        // INFORMACIÓN DEL USUARIO
+        // INFORMACIÓN DEL RECURSO
         // =========================
 
         JPanel panelInformacion = new JPanel(
@@ -158,16 +153,13 @@ public class PanelDetalleUsuario extends JFrame {
                     new Color(220, 220, 220)
                 ),
                 BorderFactory.createEmptyBorder(
-                    15,
-                    20,
-                    15,
-                    20
+                    15, 20, 15, 20
                 )
             )
         );
 
         JLabel etiquetaInformacion = new JLabel(
-            "Información del usuario"
+            "Información del recurso"
         );
 
         etiquetaInformacion.setFont(
@@ -183,38 +175,51 @@ public class PanelDetalleUsuario extends JFrame {
             BorderLayout.NORTH
         );
 
-        JPanel panelDatosUsuario = new JPanel();
+        // =========================
+        // DATOS DEL RECURSO
+        // =========================
 
-        panelDatosUsuario.setLayout(
+        JPanel panelDatosRecurso = new JPanel();
+
+        panelDatosRecurso.setLayout(
             new BoxLayout(
-                panelDatosUsuario,
+                panelDatosRecurso,
                 BoxLayout.Y_AXIS
             )
         );
 
-        panelDatosUsuario.setBackground(
+        panelDatosRecurso.setBackground(
             Color.WHITE
         );
 
-        panelDatosUsuario.setBorder(
+        panelDatosRecurso.setBorder(
             BorderFactory.createEmptyBorder(
-                10,
-                0,
-                0,
-                0
+                10, 0, 0, 0
             )
         );
 
         JLabel etiquetaId = new JLabel(
-            "ID: 001"
+            "ID: R001"
         );
 
-        JLabel etiquetaNombre = new JLabel(
-            "Nombre: Juan Pérez"
+        JLabel etiquetaTituloRecurso = new JLabel(
+            "Título: El Hobbit"
         );
 
-        JLabel etiquetaEmail = new JLabel(
-            "Email: juan@email.com"
+        JLabel etiquetaTipo = new JLabel(
+            "Tipo: Libro"
+        );
+
+        JLabel etiquetaAno = new JLabel(
+            "Año: 1937"
+        );
+
+        JLabel etiquetaEstado = new JLabel(
+            "Estado: Disponible"
+        );
+
+        JLabel etiquetaEspecifico = new JLabel(
+            "Autor: J.R.R. Tolkien · 310 páginas"
         );
 
         Font fuenteDatos = new Font(
@@ -227,29 +232,112 @@ public class PanelDetalleUsuario extends JFrame {
             fuenteDatos
         );
 
-        etiquetaNombre.setFont(
+        etiquetaTituloRecurso.setFont(
             fuenteDatos
         );
 
-        etiquetaEmail.setFont(
+        etiquetaTipo.setFont(
             fuenteDatos
         );
 
-        panelDatosUsuario.add(
+        etiquetaAno.setFont(
+            fuenteDatos
+        );
+
+        etiquetaEstado.setFont(
+            fuenteDatos
+        );
+
+        etiquetaEspecifico.setFont(
+            fuenteDatos
+        );
+
+        panelDatosRecurso.add(
             etiquetaId
         );
 
-        panelDatosUsuario.add(
-            etiquetaNombre
+        panelDatosRecurso.add(
+            etiquetaTituloRecurso
         );
 
-        panelDatosUsuario.add(
-            etiquetaEmail
+        panelDatosRecurso.add(
+            etiquetaTipo
+        );
+
+        panelDatosRecurso.add(
+            etiquetaAno
+        );
+
+        panelDatosRecurso.add(
+            etiquetaEstado
+        );
+
+        panelDatosRecurso.add(
+            etiquetaEspecifico
         );
 
         panelInformacion.add(
-            panelDatosUsuario,
+            panelDatosRecurso,
             BorderLayout.CENTER
+        );
+
+        // =========================
+        // BOTONES
+        // =========================
+
+        JPanel panelBotones = new JPanel(
+            new FlowLayout(
+                FlowLayout.RIGHT,
+                5,
+                0
+            )
+        );
+
+        panelBotones.setBackground(
+            Color.WHITE
+        );
+
+        botonEditar = new JButton(
+            "Editar"
+        );
+
+        botonEditar.setBackground(
+            colorAmarillo
+        );
+
+        botonEditar.setPreferredSize(
+            new Dimension(
+                100,
+                35
+            )
+        );
+
+        botonEliminar = new JButton(
+            "Eliminar"
+        );
+
+        botonEliminar.setBackground(
+            colorRojo
+        );
+
+        botonEliminar.setPreferredSize(
+            new Dimension(
+                100,
+                35
+            )
+        );
+
+        panelBotones.add(
+            botonEditar
+        );
+
+        panelBotones.add(
+            botonEliminar
+        );
+
+        panelInformacion.add(
+            panelBotones,
+            BorderLayout.SOUTH
         );
 
         panelCentral.add(
@@ -271,10 +359,7 @@ public class PanelDetalleUsuario extends JFrame {
 
         panelSeccionPrestamos.setBorder(
             BorderFactory.createEmptyBorder(
-                50,
-                0,
-                0,
-                0
+                30, 0, 0, 0
             )
         );
 
@@ -291,7 +376,7 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         JLabel etiquetaPrestamos = new JLabel(
-            "Préstamos"
+            "Historial de préstamos"
         );
 
         etiquetaPrestamos.setFont(
@@ -305,30 +390,6 @@ public class PanelDetalleUsuario extends JFrame {
         panelCabeceraPrestamos.add(
             etiquetaPrestamos,
             BorderLayout.WEST
-        );
-
-        botonAnadirPrestamo = new JButton(
-            "Añadir préstamo"
-        );
-
-        botonAnadirPrestamo.setForeground(
-            Color.BLACK
-        );
-
-        botonAnadirPrestamo.setBackground(
-            colorVerde
-        );
-
-        botonAnadirPrestamo.setPreferredSize(
-            new Dimension(
-                150,
-                40
-            )
-        );
-
-        panelCabeceraPrestamos.add(
-            botonAnadirPrestamo,
-            BorderLayout.EAST
         );
 
         panelSeccionPrestamos.add(
@@ -353,18 +414,17 @@ public class PanelDetalleUsuario extends JFrame {
             colorFondo
         );
 
-        // Datos temporales para visualizar
         añadirPrestamoTemporal(
-            "L001",
-            "El Hobbit",
+            "001",
+            "Juan Pérez",
             "20/09/2026",
             "Activo",
             "-"
         );
 
         añadirPrestamoTemporal(
-            "P002",
-            "Interstellar",
+            "002",
+            "Ana García",
             "10/09/2026",
             "Finalizado",
             "20/09/2026"
@@ -376,33 +436,36 @@ public class PanelDetalleUsuario extends JFrame {
             );
 
         scrollPrestamos.setBorder(
-        	    null
-        	);
+            null
+        );
 
-        	// ESPACIO ENTRE LA CABECERA Y LA LISTA
-        	JPanel panelListaPrestamos = new JPanel(
-        	    new BorderLayout()
-        	);
+        // =========================
+        // SEPARACIÓN DE LA CABECERA
+        // =========================
 
-        	panelListaPrestamos.setBackground(
-        	    colorFondo
-        	);
+        JPanel panelListaPrestamos = new JPanel(
+            new BorderLayout()
+        );
 
-        	panelListaPrestamos.setBorder(
-        	    BorderFactory.createEmptyBorder(
-        	        15, 0, 0, 0
-        	    )
-        	);
+        panelListaPrestamos.setBackground(
+            colorFondo
+        );
 
-        	panelListaPrestamos.add(
-        	    scrollPrestamos,
-        	    BorderLayout.CENTER
-        	);
+        panelListaPrestamos.setBorder(
+            BorderFactory.createEmptyBorder(
+                15, 0, 0, 0
+            )
+        );
 
-        	panelSeccionPrestamos.add(
-        	    panelListaPrestamos,
-        	    BorderLayout.CENTER
-        	);
+        panelListaPrestamos.add(
+            scrollPrestamos,
+            BorderLayout.CENTER
+        );
+
+        panelSeccionPrestamos.add(
+            panelListaPrestamos,
+            BorderLayout.CENTER
+        );
 
         panelCentral.add(
             panelSeccionPrestamos,
@@ -415,8 +478,8 @@ public class PanelDetalleUsuario extends JFrame {
     // =========================================================
 
     private void añadirPrestamoTemporal(
-        String idRecurso,
-        String titulo,
+        String idUsuario,
+        String nombreUsuario,
         String fechaPrestamo,
         String estado,
         String fechaDevolucion
@@ -436,10 +499,7 @@ public class PanelDetalleUsuario extends JFrame {
                     new Color(220, 220, 220)
                 ),
                 BorderFactory.createEmptyBorder(
-                    12,
-                    15,
-                    12,
-                    10
+                    12, 15, 12, 10
                 )
             )
         );
@@ -447,12 +507,12 @@ public class PanelDetalleUsuario extends JFrame {
         panelPrestamo.setMaximumSize(
             new Dimension(
                 Integer.MAX_VALUE,
-                100
+                90
             )
         );
 
         // =========================
-        // DATOS DEL PRÉSTAMO
+        // DATOS
         // =========================
 
         JPanel panelDatos = new JPanel();
@@ -468,11 +528,11 @@ public class PanelDetalleUsuario extends JFrame {
             false
         );
 
-        JLabel etiquetaRecurso = new JLabel(
-            titulo
+        JLabel etiquetaUsuario = new JLabel(
+            nombreUsuario
         );
 
-        etiquetaRecurso.setFont(
+        etiquetaUsuario.setFont(
             new Font(
                 "Segoe UI",
                 Font.BOLD,
@@ -481,7 +541,7 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         JLabel etiquetaId = new JLabel(
-            "ID recurso: " + idRecurso
+            "ID usuario: " + idUsuario
         );
 
         JLabel etiquetaFecha = new JLabel(
@@ -519,7 +579,7 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         panelDatos.add(
-            etiquetaRecurso
+            etiquetaUsuario
         );
 
         panelDatos.add(
@@ -544,7 +604,7 @@ public class PanelDetalleUsuario extends JFrame {
         );
 
         // =========================
-        // BOTONES
+        // BOTON
         // =========================
 
         JPanel panelBotones = new JPanel(
@@ -559,24 +619,12 @@ public class PanelDetalleUsuario extends JFrame {
             false
         );
 
-        JButton botonEditar = new JButton(
-            "Editar"
-        );
-
-        botonEditar.setBackground(
-            colorAmarillo
-        );
-
         JButton botonDevolver = new JButton(
             "Devolver"
         );
 
         botonDevolver.setBackground(
             colorRojo
-        );
-
-        panelBotones.add(
-            botonEditar
         );
 
         panelBotones.add(

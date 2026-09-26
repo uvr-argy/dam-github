@@ -17,19 +17,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-public class PanelUsuario extends JPanel {
+public class PanelPrestamos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     private JPanel panelSubnavbar;
-    private JPanel panelListaUsuarios;
+    private JPanel panelListaPrestamos;
 
     private JTextField campoBuscar;
 
     private JButton botonBuscar;
     private JButton botonAnadir;
 
-    public PanelUsuario() {
+    public PanelPrestamos() {
 
         setLayout(new BorderLayout());
 
@@ -39,14 +39,16 @@ public class PanelUsuario extends JPanel {
         // SUBNAVBAR
         // =========================
 
-        panelSubnavbar = new JPanel(new BorderLayout());
+        panelSubnavbar = new JPanel(
+            new BorderLayout()
+        );
 
         panelSubnavbar.setPreferredSize(
             new Dimension(0, 60)
         );
 
         panelSubnavbar.setBackground(
-            new Color(227, 235, 222)
+            new Color(239, 232, 209)
         );
 
         panelSubnavbar.setBorder(
@@ -61,7 +63,7 @@ public class PanelUsuario extends JPanel {
         );
 
         JLabel etiquetaTitulo = new JLabel(
-            "Usuarios"
+            "Préstamos"
         );
 
         etiquetaTitulo.setFont(
@@ -98,7 +100,7 @@ public class PanelUsuario extends JPanel {
         );
 
         campoBuscar.setToolTipText(
-            "Buscar usuario por ID, nombre o email"
+            "Buscar préstamo por usuario o recurso"
         );
 
         botonBuscar = new JButton(
@@ -171,7 +173,7 @@ public class PanelUsuario extends JPanel {
         );
 
         botonAnadir = new JButton(
-            "Añadir usuario"
+            "Añadir préstamo"
         );
 
         botonAnadir.setBackground(
@@ -192,86 +194,106 @@ public class PanelUsuario extends JPanel {
         );
 
         // =========================
-        // LISTA DE USUARIOS
+        // LISTA DE PRÉSTAMOS
         // =========================
 
-        panelListaUsuarios = new JPanel();
+        panelListaPrestamos = new JPanel();
 
-        panelListaUsuarios.setLayout(
+        panelListaPrestamos.setLayout(
             new BoxLayout(
-                panelListaUsuarios,
+                panelListaPrestamos,
                 BoxLayout.Y_AXIS
             )
         );
 
-        panelListaUsuarios.setBackground(
+        panelListaPrestamos.setBackground(
             Color.WHITE
         );
 
-        añadirUsuarioTemporal(
-            "001",
+        // =========================
+        // DATOS TEMPORALES
+        // =========================
+
+        añadirPrestamoTemporal(
+            "P001",
             "Juan Pérez",
-            "juan@email.com"
+            "R001",
+            "El Hobbit",
+            "20/09/2026",
+            "Activo",
+            "-"
         );
 
-        añadirUsuarioTemporal(
-            "002",
+        añadirPrestamoTemporal(
+            "P002",
             "Ana García",
-            "ana@email.com"
+            "R002",
+            "Interstellar",
+            "10/09/2026",
+            "Finalizado",
+            "20/09/2026"
         );
 
-        añadirUsuarioTemporal(
-            "003",
+        añadirPrestamoTemporal(
+            "P003",
             "Carlos López",
-            "carlos@email.com"
+            "R003",
+            "Minecraft",
+            "22/09/2026",
+            "Activo",
+            "-"
         );
 
-        JScrollPane scrollUsuarios =
+        JScrollPane scrollPrestamos =
             new JScrollPane(
-                panelListaUsuarios
+                panelListaPrestamos
             );
 
-        scrollUsuarios.setBorder(null);
+        scrollPrestamos.setBorder(null);
 
         panelCentral.add(
-            scrollUsuarios,
+            scrollPrestamos,
             BorderLayout.CENTER
         );
     }
 
     // =========================================================
-    // CREAR USUARIO TEMPORAL
+    // PRÉSTAMO TEMPORAL
     // =========================================================
 
-    private void añadirUsuarioTemporal(
-        String id,
-        String nombre,
-        String email
+    private void añadirPrestamoTemporal(
+        String idPrestamo,
+        String nombreUsuario,
+        String idRecurso,
+        String tituloRecurso,
+        String fechaPrestamo,
+        String estado,
+        String fechaDevolucion
     ) {
 
-        JPanel panelUsuario = new JPanel(
+        JPanel panelPrestamo = new JPanel(
             new BorderLayout()
         );
 
-        panelUsuario.setBackground(
+        panelPrestamo.setBackground(
             Color.WHITE
         );
 
-        panelUsuario.setBorder(
+        panelPrestamo.setBorder(
             BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(
                     new Color(220, 220, 220)
                 ),
                 BorderFactory.createEmptyBorder(
-                    10, 15, 10, 10
+                    12, 15, 12, 10
                 )
             )
         );
 
-        panelUsuario.setMaximumSize(
+        panelPrestamo.setMaximumSize(
             new Dimension(
                 Integer.MAX_VALUE,
-                70
+                100
             )
         );
 
@@ -290,11 +312,11 @@ public class PanelUsuario extends JPanel {
 
         panelDatos.setOpaque(false);
 
-        JLabel etiquetaNombre = new JLabel(
-            id + "   " + nombre
+        JLabel etiquetaRecurso = new JLabel(
+            tituloRecurso
         );
 
-        etiquetaNombre.setFont(
+        etiquetaRecurso.setFont(
             new Font(
                 "Segoe UI",
                 Font.BOLD,
@@ -302,27 +324,67 @@ public class PanelUsuario extends JPanel {
             )
         );
 
-        JLabel etiquetaEmail = new JLabel(
-            email
+        JLabel etiquetaUsuario = new JLabel(
+            "Usuario: " + nombreUsuario
         );
 
-        etiquetaEmail.setFont(
-            new Font(
-                "Segoe UI",
-                Font.PLAIN,
-                13
-            )
+        JLabel etiquetaId = new JLabel(
+            "ID préstamo: " + idPrestamo
+            + " · ID recurso: " + idRecurso
+        );
+
+        JLabel etiquetaFecha = new JLabel(
+            "Fecha préstamo: " + fechaPrestamo
+        );
+
+        JLabel etiquetaEstado = new JLabel(
+            "Estado: " + estado
+            + " · Fecha devolución: " + fechaDevolucion
+        );
+
+        Font fuenteSecundaria = new Font(
+            "Segoe UI",
+            Font.PLAIN,
+            13
+        );
+
+        etiquetaUsuario.setFont(
+            fuenteSecundaria
+        );
+
+        etiquetaId.setFont(
+            fuenteSecundaria
+        );
+
+        etiquetaFecha.setFont(
+            fuenteSecundaria
+        );
+
+        etiquetaEstado.setFont(
+            fuenteSecundaria
         );
 
         panelDatos.add(
-            etiquetaNombre
+            etiquetaRecurso
         );
 
         panelDatos.add(
-            etiquetaEmail
+            etiquetaUsuario
         );
 
-        panelUsuario.add(
+        panelDatos.add(
+            etiquetaId
+        );
+
+        panelDatos.add(
+            etiquetaFecha
+        );
+
+        panelDatos.add(
+            etiquetaEstado
+        );
+
+        panelPrestamo.add(
             panelDatos,
             BorderLayout.CENTER
         );
@@ -349,11 +411,11 @@ public class PanelUsuario extends JPanel {
             new Color(236, 206, 145)
         );
 
-        JButton botonEliminar = new JButton(
-            "Eliminar"
+        JButton botonDevolver = new JButton(
+            "Devolver"
         );
 
-        botonEliminar.setBackground(
+        botonDevolver.setBackground(
             new Color(243, 153, 131)
         );
 
@@ -362,10 +424,10 @@ public class PanelUsuario extends JPanel {
         );
 
         panelBotones.add(
-            botonEliminar
+            botonDevolver
         );
 
-        panelUsuario.add(
+        panelPrestamo.add(
             panelBotones,
             BorderLayout.EAST
         );
@@ -374,7 +436,7 @@ public class PanelUsuario extends JPanel {
         // ABRIR DETALLE
         // =========================
 
-        panelUsuario.setCursor(
+        panelPrestamo.setCursor(
             new Cursor(
                 Cursor.HAND_CURSOR
             )
@@ -386,13 +448,31 @@ public class PanelUsuario extends JPanel {
             )
         );
 
-        etiquetaNombre.setCursor(
+        etiquetaRecurso.setCursor(
             new Cursor(
                 Cursor.HAND_CURSOR
             )
         );
 
-        etiquetaEmail.setCursor(
+        etiquetaUsuario.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        etiquetaId.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        etiquetaFecha.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        etiquetaEstado.setCursor(
             new Cursor(
                 Cursor.HAND_CURSOR
             )
@@ -406,14 +486,12 @@ public class PanelUsuario extends JPanel {
                     MouseEvent e
                 ) {
 
-                    VentanaDetalleUsuario ventanaDetalle =
-                        new VentanaDetalleUsuario();
-
-                    ventanaDetalle.setVisible(true);
+                    // Aquí abriremos posteriormente
+                    // el detalle del préstamo.
                 }
             };
 
-        panelUsuario.addMouseListener(
+        panelPrestamo.addMouseListener(
             abrirDetalle
         );
 
@@ -421,16 +499,28 @@ public class PanelUsuario extends JPanel {
             abrirDetalle
         );
 
-        etiquetaNombre.addMouseListener(
+        etiquetaRecurso.addMouseListener(
             abrirDetalle
         );
 
-        etiquetaEmail.addMouseListener(
+        etiquetaUsuario.addMouseListener(
             abrirDetalle
         );
 
-        panelListaUsuarios.add(
-            panelUsuario
+        etiquetaId.addMouseListener(
+            abrirDetalle
+        );
+
+        etiquetaFecha.addMouseListener(
+            abrirDetalle
+        );
+
+        etiquetaEstado.addMouseListener(
+            abrirDetalle
+        );
+
+        panelListaPrestamos.add(
+            panelPrestamo
         );
     }
 }

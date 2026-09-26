@@ -17,19 +17,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-public class PanelUsuario extends JPanel {
+public class PanelRecursos extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     private JPanel panelSubnavbar;
-    private JPanel panelListaUsuarios;
+    private JPanel panelListaRecursos;
 
     private JTextField campoBuscar;
 
     private JButton botonBuscar;
     private JButton botonAnadir;
 
-    public PanelUsuario() {
+    public PanelRecursos() {
 
         setLayout(new BorderLayout());
 
@@ -46,7 +46,7 @@ public class PanelUsuario extends JPanel {
         );
 
         panelSubnavbar.setBackground(
-            new Color(227, 235, 222)
+            new Color(225, 210, 227)
         );
 
         panelSubnavbar.setBorder(
@@ -61,7 +61,7 @@ public class PanelUsuario extends JPanel {
         );
 
         JLabel etiquetaTitulo = new JLabel(
-            "Usuarios"
+            "Recursos"
         );
 
         etiquetaTitulo.setFont(
@@ -98,7 +98,7 @@ public class PanelUsuario extends JPanel {
         );
 
         campoBuscar.setToolTipText(
-            "Buscar usuario por ID, nombre o email"
+            "Buscar recurso por ID o título"
         );
 
         botonBuscar = new JButton(
@@ -171,7 +171,7 @@ public class PanelUsuario extends JPanel {
         );
 
         botonAnadir = new JButton(
-            "Añadir usuario"
+            "Añadir recurso"
         );
 
         botonAnadir.setBackground(
@@ -192,72 +192,84 @@ public class PanelUsuario extends JPanel {
         );
 
         // =========================
-        // LISTA DE USUARIOS
+        // LISTA DE RECURSOS
         // =========================
 
-        panelListaUsuarios = new JPanel();
+        panelListaRecursos = new JPanel();
 
-        panelListaUsuarios.setLayout(
+        panelListaRecursos.setLayout(
             new BoxLayout(
-                panelListaUsuarios,
+                panelListaRecursos,
                 BoxLayout.Y_AXIS
             )
         );
 
-        panelListaUsuarios.setBackground(
+        panelListaRecursos.setBackground(
             Color.WHITE
         );
 
-        añadirUsuarioTemporal(
-            "001",
-            "Juan Pérez",
-            "juan@email.com"
+        // =========================
+        // DATOS TEMPORALES
+        // =========================
+
+        añadirRecursoTemporal(
+            "R001",
+            "El Hobbit",
+            "Libro",
+            "1937",
+            "Disponible",
+            "Autor: J.R.R. Tolkien · 310 páginas"
         );
 
-        añadirUsuarioTemporal(
-            "002",
-            "Ana García",
-            "ana@email.com"
+        añadirRecursoTemporal(
+            "R002",
+            "Interstellar",
+            "Película",
+            "2014",
+            "Prestado",
+            "Director: Christopher Nolan · 169 minutos"
         );
 
-        añadirUsuarioTemporal(
-            "003",
-            "Carlos López",
-            "carlos@email.com"
+        añadirRecursoTemporal(
+            "R003",
+            "Minecraft",
+            "Videojuego",
+            "2011",
+            "Disponible",
+            "Plataforma: PC · PEGI: 7"
         );
 
-        JScrollPane scrollUsuarios =
+        JScrollPane scrollRecursos =
             new JScrollPane(
-                panelListaUsuarios
+                panelListaRecursos
             );
 
-        scrollUsuarios.setBorder(null);
+        scrollRecursos.setBorder(null);
 
         panelCentral.add(
-            scrollUsuarios,
+            scrollRecursos,
             BorderLayout.CENTER
         );
     }
 
-    // =========================================================
-    // CREAR USUARIO TEMPORAL
-    // =========================================================
-
-    private void añadirUsuarioTemporal(
+    private void añadirRecursoTemporal(
         String id,
-        String nombre,
-        String email
+        String titulo,
+        String tipo,
+        String ano,
+        String estado,
+        String informacionEspecifica
     ) {
 
-        JPanel panelUsuario = new JPanel(
+        JPanel panelRecurso = new JPanel(
             new BorderLayout()
         );
 
-        panelUsuario.setBackground(
+        panelRecurso.setBackground(
             Color.WHITE
         );
 
-        panelUsuario.setBorder(
+        panelRecurso.setBorder(
             BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(
                     new Color(220, 220, 220)
@@ -268,10 +280,10 @@ public class PanelUsuario extends JPanel {
             )
         );
 
-        panelUsuario.setMaximumSize(
+        panelRecurso.setMaximumSize(
             new Dimension(
                 Integer.MAX_VALUE,
-                70
+                85
             )
         );
 
@@ -290,11 +302,11 @@ public class PanelUsuario extends JPanel {
 
         panelDatos.setOpaque(false);
 
-        JLabel etiquetaNombre = new JLabel(
-            id + "   " + nombre
+        JLabel etiquetaTituloRecurso = new JLabel(
+            id + "   " + titulo
         );
 
-        etiquetaNombre.setFont(
+        etiquetaTituloRecurso.setFont(
             new Font(
                 "Segoe UI",
                 Font.BOLD,
@@ -302,11 +314,23 @@ public class PanelUsuario extends JPanel {
             )
         );
 
-        JLabel etiquetaEmail = new JLabel(
-            email
+        JLabel etiquetaDatos = new JLabel(
+            tipo + " · " + ano + " · " + estado
         );
 
-        etiquetaEmail.setFont(
+        etiquetaDatos.setFont(
+            new Font(
+                "Segoe UI",
+                Font.PLAIN,
+                13
+            )
+        );
+
+        JLabel etiquetaInformacion = new JLabel(
+            informacionEspecifica
+        );
+
+        etiquetaInformacion.setFont(
             new Font(
                 "Segoe UI",
                 Font.PLAIN,
@@ -315,14 +339,18 @@ public class PanelUsuario extends JPanel {
         );
 
         panelDatos.add(
-            etiquetaNombre
+            etiquetaTituloRecurso
         );
 
         panelDatos.add(
-            etiquetaEmail
+            etiquetaDatos
         );
 
-        panelUsuario.add(
+        panelDatos.add(
+            etiquetaInformacion
+        );
+
+        panelRecurso.add(
             panelDatos,
             BorderLayout.CENTER
         );
@@ -365,7 +393,7 @@ public class PanelUsuario extends JPanel {
             botonEliminar
         );
 
-        panelUsuario.add(
+        panelRecurso.add(
             panelBotones,
             BorderLayout.EAST
         );
@@ -374,7 +402,7 @@ public class PanelUsuario extends JPanel {
         // ABRIR DETALLE
         // =========================
 
-        panelUsuario.setCursor(
+        panelRecurso.setCursor(
             new Cursor(
                 Cursor.HAND_CURSOR
             )
@@ -386,13 +414,19 @@ public class PanelUsuario extends JPanel {
             )
         );
 
-        etiquetaNombre.setCursor(
+        etiquetaTituloRecurso.setCursor(
             new Cursor(
                 Cursor.HAND_CURSOR
             )
         );
 
-        etiquetaEmail.setCursor(
+        etiquetaDatos.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        etiquetaInformacion.setCursor(
             new Cursor(
                 Cursor.HAND_CURSOR
             )
@@ -406,14 +440,14 @@ public class PanelUsuario extends JPanel {
                     MouseEvent e
                 ) {
 
-                    VentanaDetalleUsuario ventanaDetalle =
-                        new VentanaDetalleUsuario();
+                    VentanaDetalleRecurso ventanaDetalle =
+                        new VentanaDetalleRecurso();
 
                     ventanaDetalle.setVisible(true);
                 }
             };
 
-        panelUsuario.addMouseListener(
+        panelRecurso.addMouseListener(
             abrirDetalle
         );
 
@@ -421,16 +455,20 @@ public class PanelUsuario extends JPanel {
             abrirDetalle
         );
 
-        etiquetaNombre.addMouseListener(
+        etiquetaTituloRecurso.addMouseListener(
             abrirDetalle
         );
 
-        etiquetaEmail.addMouseListener(
+        etiquetaDatos.addMouseListener(
             abrirDetalle
         );
 
-        panelListaUsuarios.add(
-            panelUsuario
+        etiquetaInformacion.addMouseListener(
+            abrirDetalle
+        );
+
+        panelListaRecursos.add(
+            panelRecurso
         );
     }
 }
