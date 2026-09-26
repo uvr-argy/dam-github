@@ -1,0 +1,143 @@
+package controlador;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import modelo.Prestamo;
+import modelo.Recurso;
+import modelo.Usuario;
+
+public class GestionPrestamos {
+
+    private ArrayList<Usuario> usuarios;
+    private ArrayList<Recurso> recursos;
+    private ArrayList<Prestamo> prestamos;
+
+    public GestionPrestamos(
+            ArrayList<Usuario> usuarios,
+            ArrayList<Recurso> recursos,
+            ArrayList<Prestamo> prestamos) {
+
+        this.usuarios = usuarios;
+        this.recursos = recursos;
+        this.prestamos = prestamos;
+    }
+
+    // ==================== PRESTAMOS ====================
+
+    // Prestar recurso
+    public boolean prestarRecurso(String idUsuario, String idRecurso) {
+
+        Usuario usuario = buscarUsuario(idUsuario);
+        Recurso recurso = buscarRecurso(idRecurso);
+
+        // Comprobar que el usuario y el recurso existen
+        if (usuario == null || recurso == null) {
+            return false;
+        }
+
+        // No permitir prestar un recurso que ya esté prestado
+        if (!recurso.isEstado()) {
+            return false;
+        }
+
+        Prestamo prestamo = new Prestamo(
+                usuario,           // Quién lo pide
+                recurso,           // Qué recurso piden
+                LocalDate.now(),   // Préstamo a fecha de hoy
+                true,              // Se activa el préstamo
+                null               // Todavía no se ha devuelto
+        );
+
+        prestamos.add(prestamo); // Se añade el préstamo
+
+        recurso.setEstado(false); // Al prestar un recurso debe quedar como no disponible
+
+        return true;
+    }
+
+    // Devolver recurso
+    public boolean devolverRecurso(String idRecurso) {
+
+        Recurso recurso = buscarRecurso(idRecurso);
+
+        // Comprobar si existe
+        if (recurso == null) {
+            return false;
+        }
+
+        for (Prestamo prestamo : prestamos) {
+
+            // El recurso de este préstamo es el que quieres devolver
+            // y además sigue activo
+            if (prestamo.getRecurso().getId().equals(idRecurso)
+                    && prestamo.isEstadoPrestamo()) {
+
+                prestamo.setEstadoPrestamo(false);
+                prestamo.setFechaDevolucion(LocalDate.now());
+
+                recurso.setEstado(true);
+
+            }
+        }
+
+        return true;
+    }
+
+    // Préstamos de un usuario
+    public ArrayList<Prestamo> prestamosUsuario(String idUsuario) {
+
+        ArrayList<Prestamo> resultados = new ArrayList<>();
+
+        for (Prestamo prestamo : prestamos) {
+
+            if (prestamo.getUsuario().getId().equals(idUsuario)) {
+
+                resultados.add(prestamo);
+            }
+        }
+
+        return resultados;
+    }
+
+    // Préstamos activos
+    public ArrayList<Prestamo> prestamosActivos() {
+
+        ArrayList<Prestamo> resultados = new ArrayList<>();
+
+        for (Prestamo prestamo : prestamos) {
+
+            // Solo añadimos los que están activos
+            if (prestamo.isEstadoPrestamo()) {
+
+                resultados.add(prestamo);
+            }
+        }
+
+        return resultados;
+    }
+
+    // ==================== BUSQUEDAS INTERNAS ====================
+
+    private Usuario buscarUsuario(String id) {
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId().equals(id)) {
+                return usuario;
+            }
+        }
+
+        return null;
+    }
+
+    private Recurso buscarRecurso(String id) {
+
+        for (Recurso recurso : recursos) {
+            if (recurso.getId().equals(id)) {
+                return recurso;
+            }
+        }
+
+        return null;
+    }
+}
