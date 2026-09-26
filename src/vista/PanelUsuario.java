@@ -2,9 +2,12 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -13,15 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 public class PanelUsuario extends JPanel {
 
     private static final long serialVersionUID = 1L;
-
-    // ========================================
-    // COMPONENTES PRINCIPALES
-    // ========================================
 
     private JPanel panelSubnavbar;
     private JPanel panelListaUsuarios;
@@ -31,18 +29,15 @@ public class PanelUsuario extends JPanel {
     private JButton botonBuscar;
     private JButton botonAnadir;
 
-    // ========================================
-    // CONSTRUCTOR
-    // ========================================
-
     public PanelUsuario() {
 
         setLayout(new BorderLayout());
+
         setBackground(Color.WHITE);
 
-        // ========================================
+        // =========================
         // SUBNAVBAR
-        // ========================================
+        // =========================
 
         panelSubnavbar = new JPanel(new BorderLayout());
 
@@ -65,11 +60,9 @@ public class PanelUsuario extends JPanel {
             BorderLayout.NORTH
         );
 
-        // ========================================
-        // TÍTULO
-        // ========================================
-
-        JLabel etiquetaTitulo = new JLabel("Usuarios");
+        JLabel etiquetaTitulo = new JLabel(
+            "Usuarios"
+        );
 
         etiquetaTitulo.setFont(
             new Font(
@@ -84,9 +77,9 @@ public class PanelUsuario extends JPanel {
             BorderLayout.WEST
         );
 
-        // ========================================
-        // ZONA DE BÚSQUEDA
-        // ========================================
+        // =========================
+        // BUSQUEDA
+        // =========================
 
         JPanel panelBusqueda = new JPanel(
             new FlowLayout(
@@ -108,31 +101,46 @@ public class PanelUsuario extends JPanel {
             "Buscar usuario por ID, nombre o email"
         );
 
-        botonBuscar = new JButton("Buscar");
-        botonBuscar.setForeground(new Color(249, 247, 242));
-        botonBuscar.setBackground(new Color(52, 80, 154));
+        botonBuscar = new JButton(
+            "Buscar"
+        );
+
+        botonBuscar.setForeground(
+            new Color(249, 247, 242)
+        );
+
+        botonBuscar.setBackground(
+            new Color(52, 80, 154)
+        );
 
         botonBuscar.setPreferredSize(
             new Dimension(90, 35)
         );
 
-        panelBusqueda.add(campoBuscar);
-        panelBusqueda.add(botonBuscar);
+        panelBusqueda.add(
+            campoBuscar
+        );
+
+        panelBusqueda.add(
+            botonBuscar
+        );
 
         panelSubnavbar.add(
             panelBusqueda,
             BorderLayout.EAST
         );
 
-        // ========================================
+        // =========================
         // PANEL CENTRAL
-        // ========================================
+        // =========================
 
         JPanel panelCentral = new JPanel(
             new BorderLayout()
         );
 
-        panelCentral.setBackground(new Color(249, 247, 242));
+        panelCentral.setBackground(
+            new Color(249, 247, 242)
+        );
 
         panelCentral.setBorder(
             BorderFactory.createEmptyBorder(
@@ -145,21 +153,30 @@ public class PanelUsuario extends JPanel {
             BorderLayout.CENTER
         );
 
-        // ========================================
-        // PANEL DE ACCIONES
-        // ========================================
+        // =========================
+        // BOTON AÑADIR
+        // =========================
 
-        FlowLayout fl_panelAcciones = new FlowLayout(FlowLayout.RIGHT);
+        FlowLayout fl_panelAcciones =
+            new FlowLayout(
+                FlowLayout.RIGHT
+            );
+
         JPanel panelAcciones = new JPanel(
             fl_panelAcciones
         );
 
-        panelAcciones.setBackground(Color.WHITE);
+        panelAcciones.setBackground(
+            Color.WHITE
+        );
 
         botonAnadir = new JButton(
             "Añadir usuario"
         );
-        botonAnadir.setBackground(new Color(123, 220, 99));
+
+        botonAnadir.setBackground(
+            new Color(123, 220, 99)
+        );
 
         botonAnadir.setPreferredSize(
             new Dimension(150, 40)
@@ -174,9 +191,9 @@ public class PanelUsuario extends JPanel {
             BorderLayout.NORTH
         );
 
-        // ========================================
+        // =========================
         // LISTA DE USUARIOS
-        // ========================================
+        // =========================
 
         panelListaUsuarios = new JPanel();
 
@@ -190,10 +207,6 @@ public class PanelUsuario extends JPanel {
         panelListaUsuarios.setBackground(
             Color.WHITE
         );
-
-        // ========================================
-        // USUARIOS TEMPORALES
-        // ========================================
 
         añadirUsuarioTemporal(
             "001",
@@ -213,10 +226,6 @@ public class PanelUsuario extends JPanel {
             "carlos@email.com"
         );
 
-        // ========================================
-        // SCROLL
-        // ========================================
-
         JScrollPane scrollUsuarios =
             new JScrollPane(
                 panelListaUsuarios
@@ -230,9 +239,9 @@ public class PanelUsuario extends JPanel {
         );
     }
 
-    // ========================================
-    // USUARIO TEMPORAL
-    // ========================================
+    // =========================================================
+    // CREAR USUARIO TEMPORAL
+    // =========================================================
 
     private void añadirUsuarioTemporal(
         String id,
@@ -266,9 +275,9 @@ public class PanelUsuario extends JPanel {
             )
         );
 
-        // ========================================
-        // DATOS DEL USUARIO
-        // ========================================
+        // =========================
+        // DATOS
+        // =========================
 
         JPanel panelDatos = new JPanel();
 
@@ -318,9 +327,9 @@ public class PanelUsuario extends JPanel {
             BorderLayout.CENTER
         );
 
-        // ========================================
+        // =========================
         // BOTONES
-        // ========================================
+        // =========================
 
         JPanel panelBotones = new JPanel(
             new FlowLayout(
@@ -335,12 +344,18 @@ public class PanelUsuario extends JPanel {
         JButton botonEditar = new JButton(
             "Editar"
         );
-        botonEditar.setBackground(new Color(236, 206, 145));
+
+        botonEditar.setBackground(
+            new Color(236, 206, 145)
+        );
 
         JButton botonEliminar = new JButton(
             "Eliminar"
         );
-        botonEliminar.setBackground(new Color(243, 153, 131));
+
+        botonEliminar.setBackground(
+            new Color(243, 153, 131)
+        );
 
         panelBotones.add(
             botonEditar
@@ -355,9 +370,64 @@ public class PanelUsuario extends JPanel {
             BorderLayout.EAST
         );
 
-        // ========================================
-        // AÑADIR A LA LISTA
-        // ========================================
+        // =========================
+        // ABRIR DETALLE
+        // =========================
+
+        panelUsuario.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        panelDatos.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        etiquetaNombre.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        etiquetaEmail.setCursor(
+            new Cursor(
+                Cursor.HAND_CURSOR
+            )
+        );
+
+        MouseAdapter abrirDetalle =
+            new MouseAdapter() {
+
+                @Override
+                public void mouseClicked(
+                    MouseEvent e
+                ) {
+
+                    PanelDetalleUsuario ventanaDetalle =
+                        new PanelDetalleUsuario();
+
+                    ventanaDetalle.setVisible(true);
+                }
+            };
+
+        panelUsuario.addMouseListener(
+            abrirDetalle
+        );
+
+        panelDatos.addMouseListener(
+            abrirDetalle
+        );
+
+        etiquetaNombre.addMouseListener(
+            abrirDetalle
+        );
+
+        etiquetaEmail.addMouseListener(
+            abrirDetalle
+        );
 
         panelListaUsuarios.add(
             panelUsuario
