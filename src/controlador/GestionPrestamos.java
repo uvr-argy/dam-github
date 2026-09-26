@@ -56,7 +56,7 @@ public class GestionPrestamos {
         return true;
     }
 
-    // Devolver recurso
+ // Devolver recurso
     public boolean devolverRecurso(String idRecurso) {
 
         Recurso recurso = buscarRecurso(idRecurso);
@@ -75,13 +75,14 @@ public class GestionPrestamos {
 
                 prestamo.setEstadoPrestamo(false);
                 prestamo.setFechaDevolucion(LocalDate.now());
-
                 recurso.setEstado(true);
 
+                return true;
             }
         }
 
-        return true;
+        // El recurso existe, pero no tiene ningún préstamo activo
+        return false;
     }
 
     // Préstamos de un usuario
