@@ -168,7 +168,7 @@ public class VentanaPrincipal extends JFrame {
         // AÑADIR BOTONES A LA BARRA LATERAL
         // ========================================
         barraLateral.add(
-                Box.createVerticalStrut(10)
+                Box.createVerticalStrut(30)
             );
         
         barraLateral.add(botonInicio);
@@ -208,7 +208,8 @@ public class VentanaPrincipal extends JFrame {
         // PANELES TEMPORALES
         // ========================================
         JPanel panelInicio = new JPanel();
-        JPanel panelUsuarios = new JPanel();
+        panelInicio.setBackground(new Color(249, 247, 242));
+        PanelUsuario panelUsuarios = new PanelUsuario();
         JPanel panelRecursos = new JPanel();
         JPanel panelPrestamos = new JPanel();
 
