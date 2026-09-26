@@ -1,4 +1,4 @@
-package controlador;
+package funcionalidades;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -140,5 +140,21 @@ public class GestionPrestamos {
         }
 
         return null;
+    }
+    
+    //listar los prestamos
+    public ArrayList<Prestamo> listarPrestamos() {
+        return prestamos;
+    }
+    
+    //prestamos devuletos
+    public ArrayList<Prestamo> prestamosDevueltos() {
+        ArrayList<Prestamo> resultados = new ArrayList<>();
+        for (Prestamo prestamo:prestamos) {
+            if (!prestamo.isEstadoPrestamo()) {
+                resultados.add(prestamo);
+            }
+        }
+        return resultados;
     }
 }

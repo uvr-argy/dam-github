@@ -1,4 +1,4 @@
-package controlador;
+package funcionalidades;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -195,6 +195,35 @@ public class GestionRecursos {
             }
         }
 
+        return resultados;
+    }
+    
+    //recursosPorAno
+    public ArrayList<Recurso> recursosPorAno(int ano) {
+        ArrayList<Recurso> resultados = new ArrayList<>();
+        for (Recurso recurso:recursos) {
+            if (recurso.getAno()!=null && recurso.getAno().getYear()==ano) {
+                resultados.add(recurso);
+            }
+        }
+        return resultados;
+    }
+    
+    //recursos no prestados
+    public ArrayList<Recurso> recursosNuncaPrestados() {
+        ArrayList<Recurso> resultados = new ArrayList<>();
+        for (Recurso recurso:recursos) {
+            boolean haSidoPrestado = false;
+            for (Prestamo prestamo:prestamos) {
+                if (prestamo.getRecurso().getId().equals(recurso.getId())) {
+                    haSidoPrestado = true;
+                    break;
+                }
+            }
+            if (!haSidoPrestado) {
+                resultados.add(recurso);
+            }
+        }
         return resultados;
     }
 }

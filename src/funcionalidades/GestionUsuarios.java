@@ -1,4 +1,4 @@
-package controlador;
+package funcionalidades;
 
 import java.util.ArrayList;
 
@@ -108,6 +108,34 @@ public class GestionUsuarios {
             }
         }
 
+        return resultados;
+    }
+    
+    //busqueda por mail
+    public Usuario buscarUsuarioPorEmail(String email) {
+        for (Usuario usuario:usuarios) {
+            if (usuario.getEmail().equalsIgnoreCase(email)) {
+                return usuario;
+            }
+        }
+        return null;
+    }
+    
+    //usuarios con un prestamo activo por lo menos
+    public ArrayList<Usuario> usuariosConPrestamosActivos() {
+        ArrayList<Usuario> resultados = new ArrayList<>();
+        for (Usuario usuario:usuarios) {
+            boolean tienePrestamoActivo = false;
+            for (Prestamo prestamo:prestamos) {
+                if (prestamo.getUsuario().getId().equals(usuario.getId()) && prestamo.isEstadoPrestamo()) {
+                    tienePrestamoActivo = true;
+                    break;
+                }
+            }
+            if (tienePrestamoActivo) {
+                resultados.add(usuario);
+            }
+        }
         return resultados;
     }
 }
