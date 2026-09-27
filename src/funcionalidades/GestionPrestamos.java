@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import modelo.Prestamo;
 import modelo.Recurso;
 import modelo.Usuario;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GestionPrestamos {
 
     private ArrayList<Usuario> usuarios;
     private ArrayList<Recurso> recursos;
     private ArrayList<Prestamo> prestamos;
+    private Map<String, ArrayList<Prestamo>> historial;
 
     public GestionPrestamos(
             ArrayList<Usuario> usuarios,
@@ -21,6 +24,7 @@ public class GestionPrestamos {
         this.usuarios = usuarios;
         this.recursos = recursos;
         this.prestamos = prestamos;
+        this.historial = new HashMap<>();
     }
 
     // ==================== PRESTAMOS ====================
@@ -50,6 +54,12 @@ public class GestionPrestamos {
         );
 
         prestamos.add(prestamo); // Se añade el préstamo
+        
+        if (!historial.containsKey(idRecurso)) {
+            historial.put(idRecurso, new ArrayList<>());
+        }
+
+        historial.get(idRecurso).add(prestamo);
 
         recurso.setEstado(false); // Al prestar un recurso debe quedar como no disponible
 

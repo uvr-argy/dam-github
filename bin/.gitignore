@@ -2,5 +2,6 @@
 /.project
 /.settings/
 /README.md
+/app/
+/funcionalidades/
 /modelo/
-/controlador/
