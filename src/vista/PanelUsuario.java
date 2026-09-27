@@ -181,6 +181,14 @@ public class PanelUsuario extends JPanel {
         botonAnadir.setPreferredSize(
             new Dimension(150, 40)
         );
+        
+        botonAnadir.addActionListener(e -> {
+
+        	FormularioUsuario dialogo =
+                new FormularioUsuario();
+
+            dialogo.setVisible(true);
+        });
 
         panelAcciones.add(
             botonAnadir
@@ -348,6 +356,20 @@ public class PanelUsuario extends JPanel {
         botonEditar.setBackground(
             new Color(236, 206, 145)
         );
+        
+        botonEditar.addActionListener(e -> {
+
+            FormularioUsuario dialogo =
+                new FormularioUsuario();
+
+            dialogo.cargarUsuario(
+                id,
+                nombre,
+                email
+            );
+
+            dialogo.setVisible(true);
+        });
 
         JButton botonEliminar = new JButton(
             "Eliminar"
@@ -356,6 +378,22 @@ public class PanelUsuario extends JPanel {
         botonEliminar.setBackground(
             new Color(243, 153, 131)
         );
+        
+        botonEliminar.addActionListener(e -> {
+
+            FormularioEliminar dialogo =
+                new FormularioEliminar(
+                    "Usuario",
+                    nombre + " (ID: " + id + ")"
+                );
+
+            dialogo.setVisible(true);
+
+            if (dialogo.isConfirmado()) {
+                // Más adelante:
+                // gestionUsuarios.eliminarUsuario(id);
+            }
+        });
 
         panelBotones.add(
             botonEditar

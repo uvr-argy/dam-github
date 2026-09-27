@@ -181,6 +181,14 @@ public class PanelRecursos extends JPanel {
         botonAnadir.setPreferredSize(
             new Dimension(150, 40)
         );
+        
+        botonAnadir.addActionListener(e -> {
+
+        	FormularioRecurso dialogo =
+                new FormularioRecurso();
+
+            dialogo.setVisible(true);
+        });
 
         panelAcciones.add(
             botonAnadir
@@ -212,32 +220,35 @@ public class PanelRecursos extends JPanel {
         // DATOS TEMPORALES
         // =========================
 
-        añadirRecursoTemporal(
-            "R001",
-            "El Hobbit",
-            "Libro",
-            "1937",
-            "Disponible",
-            "Autor: J.R.R. Tolkien · 310 páginas"
-        );
+        anadirRecursoTemporal(
+        	    "R001",
+        	    "El Hobbit",
+        	    "Libro",
+        	    "1937",
+        	    "Disponible",
+        	    "J.R.R. Tolkien",
+        	    "310"
+        	);
 
-        añadirRecursoTemporal(
-            "R002",
-            "Interstellar",
-            "Película",
-            "2014",
-            "Prestado",
-            "Director: Christopher Nolan · 169 minutos"
-        );
+        anadirRecursoTemporal(
+        	    "R002",
+        	    "Interstellar",
+        	    "Película",
+        	    "2014",
+        	    "Prestado",
+        	    "Christopher Nolan",
+        	    "169"
+        	);
 
-        añadirRecursoTemporal(
-            "R003",
-            "Minecraft",
-            "Videojuego",
-            "2011",
-            "Disponible",
-            "Plataforma: PC · PEGI: 7"
-        );
+        anadirRecursoTemporal(
+        	    "R003",
+        	    "Minecraft",
+        	    "Videojuego",
+        	    "2011",
+        	    "Disponible",
+        	    "PC",
+        	    "7"
+        	);
 
         JScrollPane scrollRecursos =
             new JScrollPane(
@@ -252,13 +263,14 @@ public class PanelRecursos extends JPanel {
         );
     }
 
-    private void añadirRecursoTemporal(
-        String id,
-        String titulo,
-        String tipo,
-        String ano,
-        String estado,
-        String informacionEspecifica
+    private void anadirRecursoTemporal(
+            String id,
+            String titulo,
+            String tipo,
+            String ano,
+            String estado,
+            String informacionEspecifica1,
+            String informacionEspecifica2
     ) {
 
         JPanel panelRecurso = new JPanel(
@@ -326,9 +338,12 @@ public class PanelRecursos extends JPanel {
             )
         );
 
-        JLabel etiquetaInformacion = new JLabel(
-            informacionEspecifica
-        );
+        JLabel etiquetaInformacion =
+        	    new JLabel(
+        	        informacionEspecifica1
+        	        + " · "
+        	        + informacionEspecifica2
+        	    );
 
         etiquetaInformacion.setFont(
             new Font(
@@ -376,6 +391,23 @@ public class PanelRecursos extends JPanel {
         botonEditar.setBackground(
             new Color(236, 206, 145)
         );
+        
+        botonEditar.addActionListener(e -> {
+
+            FormularioRecurso dialogo =
+                new FormularioRecurso();
+
+            dialogo.cargarRecurso(
+                id,
+                titulo,
+                ano,
+                tipo,
+                informacionEspecifica1,
+                informacionEspecifica2
+            );
+
+            dialogo.setVisible(true);
+        });
 
         JButton botonEliminar = new JButton(
             "Eliminar"
@@ -384,6 +416,22 @@ public class PanelRecursos extends JPanel {
         botonEliminar.setBackground(
             new Color(243, 153, 131)
         );
+        
+        botonEliminar.addActionListener(e -> {
+
+            FormularioEliminar dialogo =
+                new FormularioEliminar(
+                    "Recurso",
+                    titulo + " (ID: " + id + ")"
+                );
+
+            dialogo.setVisible(true);
+
+            if (dialogo.isConfirmado()) {
+                // Más adelante:
+                // gestionRecursos.eliminarRecursos(id);
+            }
+        });
 
         panelBotones.add(
             botonEditar
