@@ -18,415 +18,306 @@ import javax.swing.border.EmptyBorder;
 
 public class VentanaPrincipal extends JFrame {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    // ========================================
-    // COMPONENTES PRINCIPALES
-    // ========================================
+	// ========================================
+	// COMPONENTES PRINCIPALES
+	// ========================================
 
-    private JPanel panelTarjetas;
-    private CardLayout gestorTarjetas;
+	private JPanel panelTarjetas;
+	private CardLayout gestorTarjetas;
 
-    // Panel unificado de usuarios, recursos y préstamos
-    private PanelContenido panelContenido;
+	// Panel unificado de usuarios, recursos y préstamos
+	private PanelContenido panelContenido;
 
-    // ========================================
-    // BARRA SUPERIOR
-    // ========================================
+	// ========================================
+	// BARRA SUPERIOR
+	// ========================================
 
-    private JPanel barraSuperior;
-    private JLabel etiquetaLogo;
-    private JLabel etiquetaNombreAplicacion;
+	private JPanel barraSuperior;
+	private JLabel etiquetaLogo;
+	private JLabel etiquetaNombreAplicacion;
 
-    // ========================================
-    // BARRA LATERAL
-    // ========================================
+	// ========================================
+	// BARRA LATERAL
+	// ========================================
 
-    private JButton botonInicio;
-    private JButton botonUsuarios;
-    private JButton botonRecursos;
-    private JButton botonPrestamos;
+	private JButton botonInicio;
+	private JButton botonUsuarios;
+	private JButton botonRecursos;
+	private JButton botonPrestamos;
 
-    // ========================================
-    // COLOR DE LA APLICACIÓN
-    // ========================================
+	// ========================================
+	// COLOR DE LA APLICACIÓN
+	// ========================================
 
-    private Color colorBarraSuperior = new Color(40, 40, 40);
+	private Color colorBarraSuperior = new Color(40, 40, 40);
 
-    // ========================================
-    // MAIN
-    // ========================================
-    public static void main(String[] args) {
+	// ========================================
+	// MAIN
+	// ========================================
+	public static void main(String[] args) {
 
-        EventQueue.invokeLater(() -> {
+		EventQueue.invokeLater(() -> {
 
-            try {
+			try {
 
-                VentanaPrincipal ventana = new VentanaPrincipal();
-                ventana.setVisible(true);
+				VentanaPrincipal ventana = new VentanaPrincipal();
+				ventana.setVisible(true);
 
-            } catch (Exception e) {
+			} catch (Exception e) {
 
-                e.printStackTrace();
+				e.printStackTrace();
 
-            }
+			}
 
-        });
-    }
+		});
+	}
 
-    // ========================================
-    // CONSTRUCTOR
-    // ========================================
+	// ========================================
+	// CONSTRUCTOR
+	// ========================================
 
-    public VentanaPrincipal() {
+	public VentanaPrincipal() {
 
-        setTitle("Biblioteca Multimedia");
+		setTitle("Biblioteca Multimedia");
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setBounds(100, 100, 1100, 700);
+		setBounds(100, 100, 1100, 700);
 
-        // ========================================
-        // PANEL PRINCIPAL
-        // ========================================
+		// ========================================
+		// PANEL PRINCIPAL
+		// ========================================
 
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+		JPanel panelPrincipal = new JPanel(new BorderLayout());
 
-        panelPrincipal.setBorder(
-            new EmptyBorder(0, 0, 0, 0)
-        );
+		panelPrincipal.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-        setContentPane(panelPrincipal);
+		setContentPane(panelPrincipal);
 
-        // ========================================
-        // BARRA SUPERIOR / NAVBAR
-        // ========================================
+		// ========================================
+		// BARRA SUPERIOR / NAVBAR
+		// ========================================
 
-        barraSuperior = new JPanel(new BorderLayout());
+		barraSuperior = new JPanel(new BorderLayout());
 
-        barraSuperior.setPreferredSize(
-            new Dimension(0, 60)
-        );
+		barraSuperior.setPreferredSize(new Dimension(0, 60));
 
-        barraSuperior.setBackground(
-            new Color(52, 80, 154)
-        );
+		barraSuperior.setBackground(new Color(52, 80, 154));
 
-        panelPrincipal.add(
-            barraSuperior,
-            BorderLayout.NORTH
-        );
+		panelPrincipal.add(barraSuperior, BorderLayout.NORTH);
 
-        // ========================================
-        // LOGO
-        // ========================================
-
-        etiquetaLogo = new JLabel("LOGO");
-
-        etiquetaLogo.setHorizontalAlignment(
-            SwingConstants.CENTER
-        );
-
-        etiquetaLogo.setVerticalAlignment(
-            SwingConstants.CENTER
-        );
-
-        etiquetaLogo.setPreferredSize(
-            new Dimension(70, 60)
-        );
-
-        etiquetaLogo.setForeground(Color.WHITE);
-
-        barraSuperior.add(
-            etiquetaLogo,
-            BorderLayout.WEST
-        );
-
-        // ========================================
-        // NOMBRE DE LA APLICACIÓN
-        // ========================================
-
-        etiquetaNombreAplicacion =
-            new JLabel("   Biblioteca Multimedia");
-
-        etiquetaNombreAplicacion.setForeground(
-            Color.WHITE
-        );
-
-        etiquetaNombreAplicacion.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                20
-            )
-        );
-
-        barraSuperior.add(
-            etiquetaNombreAplicacion,
-            BorderLayout.CENTER
-        );
-
-        // ========================================
-        // BARRA LATERAL
-        // ========================================
-
-        JPanel barraLateral = new JPanel();
-
-        barraLateral.setBackground(
-            new Color(207, 215, 235)
-        );
-
-        barraLateral.setLayout(
-            new BoxLayout(
-                barraLateral,
-                BoxLayout.Y_AXIS
-            )
-        );
-
-        barraLateral.setPreferredSize(
-            new Dimension(180, 0)
-        );
-
-        panelPrincipal.add(
-            barraLateral,
-            BorderLayout.WEST
-        );
-
-        // ========================================
-        // BOTONES DE NAVEGACIÓN
-        // ========================================
-
-        botonInicio = new JButton("Inicio");
-
-        botonInicio.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                18
-            )
-        );
-
-        botonUsuarios = new JButton("Usuarios");
-
-        botonUsuarios.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                18
-            )
-        );
-
-        botonRecursos = new JButton("Recursos");
+		// ========================================
+		// LOGO
+		// ========================================
 
-        botonRecursos.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                18
-            )
-        );
-
-        botonPrestamos = new JButton("Préstamos");
-
-        botonPrestamos.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                18
-            )
-        );
+		etiquetaLogo = new JLabel("LOGO");
 
-        // ========================================
-        // DIMENSIONES DE LOS BOTONES
-        // ========================================
-
-        Dimension tamañoBoton =
-            new Dimension(140, 45);
-
-        botonInicio.setMinimumSize(tamañoBoton);
-        botonInicio.setPreferredSize(tamañoBoton);
-        botonInicio.setMaximumSize(tamañoBoton);
+		etiquetaLogo.setHorizontalAlignment(SwingConstants.CENTER);
 
-        botonUsuarios.setMinimumSize(tamañoBoton);
-        botonUsuarios.setPreferredSize(tamañoBoton);
-        botonUsuarios.setMaximumSize(tamañoBoton);
+		etiquetaLogo.setVerticalAlignment(SwingConstants.CENTER);
 
-        botonRecursos.setMinimumSize(tamañoBoton);
-        botonRecursos.setPreferredSize(tamañoBoton);
-        botonRecursos.setMaximumSize(tamañoBoton);
+		etiquetaLogo.setPreferredSize(new Dimension(70, 60));
 
-        botonPrestamos.setMinimumSize(tamañoBoton);
-        botonPrestamos.setPreferredSize(tamañoBoton);
-        botonPrestamos.setMaximumSize(tamañoBoton);
+		etiquetaLogo.setForeground(Color.WHITE);
 
-        // ========================================
-        // ALINEACIÓN DE LOS BOTONES
-        // ========================================
+		barraSuperior.add(etiquetaLogo, BorderLayout.WEST);
 
-        botonInicio.setAlignmentX(
-            CENTER_ALIGNMENT
-        );
+		// ========================================
+		// NOMBRE DE LA APLICACIÓN
+		// ========================================
 
-        botonUsuarios.setAlignmentX(
-            CENTER_ALIGNMENT
-        );
+		etiquetaNombreAplicacion = new JLabel("   Biblioteca Multimedia");
 
-        botonRecursos.setAlignmentX(
-            CENTER_ALIGNMENT
-        );
+		etiquetaNombreAplicacion.setForeground(Color.WHITE);
 
-        botonPrestamos.setAlignmentX(
-            CENTER_ALIGNMENT
-        );
+		etiquetaNombreAplicacion.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
-        // ========================================
-        // AÑADIR BOTONES A LA BARRA LATERAL
-        // ========================================
+		barraSuperior.add(etiquetaNombreAplicacion, BorderLayout.CENTER);
 
-        barraLateral.add(
-            Box.createVerticalStrut(30)
-        );
+		// ========================================
+		// BARRA LATERAL
+		// ========================================
 
-        barraLateral.add(botonInicio);
+		JPanel barraLateral = new JPanel();
 
-        barraLateral.add(
-            Box.createVerticalStrut(10)
-        );
+		barraLateral.setBackground(new Color(207, 215, 235));
 
-        barraLateral.add(botonUsuarios);
+		barraLateral.setLayout(new BoxLayout(barraLateral, BoxLayout.Y_AXIS));
 
-        barraLateral.add(
-            Box.createVerticalStrut(10)
-        );
+		barraLateral.setPreferredSize(new Dimension(180, 0));
 
-        barraLateral.add(botonRecursos);
+		panelPrincipal.add(barraLateral, BorderLayout.WEST);
 
-        barraLateral.add(
-            Box.createVerticalStrut(10)
-        );
+		// ========================================
+		// BOTONES DE NAVEGACIÓN
+		// ========================================
 
-        barraLateral.add(botonPrestamos);
+		botonInicio = new JButton("Inicio");
 
-        // ========================================
-        // PANEL DE TARJETAS
-        // ========================================
+		botonInicio.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
-        gestorTarjetas = new CardLayout();
+		botonUsuarios = new JButton("Usuarios");
 
-        panelTarjetas = new JPanel(
-            gestorTarjetas
-        );
+		botonUsuarios.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
-        panelPrincipal.add(
-            panelTarjetas,
-            BorderLayout.CENTER
-        );
+		botonRecursos = new JButton("Recursos");
 
-        // ========================================
-        // PANEL INICIAL
-        // ========================================
+		botonRecursos.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
-        JPanel panelInicio = new JPanel();
+		botonPrestamos = new JButton("Préstamos");
 
-        panelInicio.setBackground(
-            new Color(249, 247, 242)
-        );
+		botonPrestamos.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
-        JLabel etiquetaInicio =
-            new JLabel("Bienvenido a la Biblioteca Multimedia");
+		// ========================================
+		// DIMENSIONES DE LOS BOTONES
+		// ========================================
 
-        etiquetaInicio.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                24
-            )
-        );
+		Dimension tamañoBoton = new Dimension(140, 45);
 
-        panelInicio.add(etiquetaInicio);
+		botonInicio.setMinimumSize(tamañoBoton);
+		botonInicio.setPreferredSize(tamañoBoton);
+		botonInicio.setMaximumSize(tamañoBoton);
 
-        // ========================================
-        // PANEL DE CONTENIDO UNIFICADO
-        // ========================================
+		botonUsuarios.setMinimumSize(tamañoBoton);
+		botonUsuarios.setPreferredSize(tamañoBoton);
+		botonUsuarios.setMaximumSize(tamañoBoton);
 
-        panelContenido = new PanelContenido();
+		botonRecursos.setMinimumSize(tamañoBoton);
+		botonRecursos.setPreferredSize(tamañoBoton);
+		botonRecursos.setMaximumSize(tamañoBoton);
 
-        // ========================================
-        // AÑADIR LAS DOS TARJETAS
-        // ========================================
+		botonPrestamos.setMinimumSize(tamañoBoton);
+		botonPrestamos.setPreferredSize(tamañoBoton);
+		botonPrestamos.setMaximumSize(tamañoBoton);
 
-        panelTarjetas.add(
-            panelInicio,
-            "INICIO"
-        );
+		// ========================================
+		// ALINEACIÓN DE LOS BOTONES
+		// ========================================
 
-        panelTarjetas.add(
-            panelContenido,
-            "CONTENIDO"
-        );
+		botonInicio.setAlignmentX(CENTER_ALIGNMENT);
 
-        // ========================================
-        // NAVEGACIÓN
-        // ========================================
+		botonUsuarios.setAlignmentX(CENTER_ALIGNMENT);
 
-        botonInicio.addActionListener(e -> {
+		botonRecursos.setAlignmentX(CENTER_ALIGNMENT);
 
-            mostrarInicio();
+		botonPrestamos.setAlignmentX(CENTER_ALIGNMENT);
 
-        });
+		// ========================================
+		// AÑADIR BOTONES A LA BARRA LATERAL
+		// ========================================
 
-        botonUsuarios.addActionListener(e -> {
+		barraLateral.add(Box.createVerticalStrut(30));
 
-            panelContenido.mostrarUsuarios();
+		barraLateral.add(botonInicio);
 
-            mostrarContenido();
+		barraLateral.add(Box.createVerticalStrut(10));
 
-        });
+		barraLateral.add(botonUsuarios);
 
-        botonRecursos.addActionListener(e -> {
+		barraLateral.add(Box.createVerticalStrut(10));
 
-            panelContenido.mostrarRecursos();
+		barraLateral.add(botonRecursos);
 
-            mostrarContenido();
+		barraLateral.add(Box.createVerticalStrut(10));
 
-        });
+		barraLateral.add(botonPrestamos);
 
-        botonPrestamos.addActionListener(e -> {
+		// ========================================
+		// PANEL DE TARJETAS
+		// ========================================
 
-            panelContenido.mostrarPrestamos();
+		gestorTarjetas = new CardLayout();
 
-            mostrarContenido();
+		panelTarjetas = new JPanel(gestorTarjetas);
 
-        });
+		panelPrincipal.add(panelTarjetas, BorderLayout.CENTER);
 
-        // ========================================
-        // MOSTRAR INICIO AL ARRANCAR
-        // ========================================
+		// ========================================
+		// PANEL INICIAL
+		// ========================================
 
-        mostrarInicio();
-    }
+		JPanel panelInicio = new JPanel();
 
-    // ========================================
-    // MOSTRAR INICIO
-    // ========================================
+		panelInicio.setBackground(new Color(249, 247, 242));
 
-    private void mostrarInicio() {
+		JLabel etiquetaInicio = new JLabel("Bienvenido a la Biblioteca Multimedia");
 
-        gestorTarjetas.show(
-            panelTarjetas,
-            "INICIO"
-        );
-    }
+		etiquetaInicio.setFont(new Font("Segoe UI", Font.BOLD, 24));
 
-    // ========================================
-    // MOSTRAR CONTENIDO
-    // ========================================
+		panelInicio.add(etiquetaInicio);
 
-    private void mostrarContenido() {
+		// ========================================
+		// PANEL DE CONTENIDO UNIFICADO
+		// ========================================
 
-        gestorTarjetas.show(
-            panelTarjetas,
-            "CONTENIDO"
-        );
-    }
+		panelContenido = new PanelContenido();
+
+		// ========================================
+		// AÑADIR LAS DOS TARJETAS
+		// ========================================
+
+		panelTarjetas.add(panelInicio, "INICIO");
+
+		panelTarjetas.add(panelContenido, "CONTENIDO");
+
+		// ========================================
+		// NAVEGACIÓN
+		// ========================================
+
+		botonInicio.addActionListener(e -> {
+
+			mostrarInicio();
+
+		});
+
+		botonUsuarios.addActionListener(e -> {
+
+			panelContenido.mostrarUsuarios();
+
+			mostrarContenido();
+
+		});
+
+		botonRecursos.addActionListener(e -> {
+
+			panelContenido.mostrarRecursos();
+
+			mostrarContenido();
+
+		});
+
+		botonPrestamos.addActionListener(e -> {
+
+			panelContenido.mostrarPrestamos();
+
+			mostrarContenido();
+
+		});
+
+		// ========================================
+		// MOSTRAR INICIO AL ARRANCAR
+		// ========================================
+
+		mostrarInicio();
+	}
+
+	// ========================================
+	// MOSTRAR INICIO
+	// ========================================
+
+	private void mostrarInicio() {
+
+		gestorTarjetas.show(panelTarjetas, "INICIO");
+	}
+
+	// ========================================
+	// MOSTRAR CONTENIDO
+	// ========================================
+
+	private void mostrarContenido() {
+
+		gestorTarjetas.show(panelTarjetas, "CONTENIDO");
+	}
 }

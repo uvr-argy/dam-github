@@ -468,7 +468,7 @@ public class FormularioContenido extends JDialog {
 
 		comboEstado.setSelectedIndex(0);
 
-		campoId.setEnabled(true);
+		campoId.setEnabled(false);
 
 		botonGuardar.setText(
 

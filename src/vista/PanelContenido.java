@@ -19,1112 +19,679 @@ import javax.swing.JTextField;
 
 public class PanelContenido extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-
-    // =========================================================
-    // MODOS
-    // =========================================================
-
-    public static final int MODO_USUARIOS = 1;
-    public static final int MODO_RECURSOS = 2;
-    public static final int MODO_PRESTAMOS = 3;
-
-    private int modoActual = MODO_USUARIOS;
+	private static final long serialVersionUID = 1L;
 
-    // =========================================================
-    // ESTRUCTURA COMÚN
-    // =========================================================
+	// =========================================================
+	// MODOS
+	// =========================================================
 
-    private JPanel panelSubnavbar;
-    private JPanel panelCentral;
-    private JPanel panelAcciones;
-    private JPanel panelLista;
+	public static final int MODO_USUARIOS = 1;
+	public static final int MODO_RECURSOS = 2;
+	public static final int MODO_PRESTAMOS = 3;
 
-    private JLabel etiquetaTitulo;
-    private JTextField campoBuscar;
-    private JButton botonBuscar;
-    private JButton botonAnadir;
+	private int modoActual = MODO_USUARIOS;
 
-    // =========================================================
-    // COLORES
-    // =========================================================
+	// =========================================================
+	// ESTRUCTURA COMÚN
+	// =========================================================
 
-    private final Color colorFondo = new Color(249, 247, 242);
-    private final Color colorAzul = new Color(52, 80, 154);
-    private final Color colorVerde = new Color(123, 220, 99);
-    private final Color colorAmarillo = new Color(236, 206, 92);
-    private final Color colorRojo = new Color(230, 100, 100);
+	private JPanel panelSubnavbar;
+	private JPanel panelCentral;
+	private JPanel panelAcciones;
+	private JPanel panelLista;
 
-    public PanelContenido() {
+	private JLabel etiquetaTitulo;
+	private JTextField campoBuscar;
+	private JButton botonBuscar;
+	private JButton botonAnadir;
 
-        setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+	// =========================================================
+	// COLORES
+	// =========================================================
 
-        crearEstructura();
+	private final Color colorFondo = new Color(249, 247, 242);
+	private final Color colorAzul = new Color(52, 80, 154);
+	private final Color colorVerde = new Color(123, 220, 99);
+	private final Color colorAmarillo = new Color(236, 206, 92);
+	private final Color colorRojo = new Color(230, 100, 100);
 
-        mostrarUsuarios();
-    }
+	public PanelContenido() {
 
-    // =========================================================
-    // ESTRUCTURA GENERAL
-    // =========================================================
+		setLayout(new BorderLayout());
+		setBackground(Color.WHITE);
 
-    private void crearEstructura() {
+		crearEstructura();
 
-        // -------------------------
-        // SUBNAVBAR
-        // -------------------------
+		mostrarUsuarios();
+	}
 
-        panelSubnavbar = new JPanel(
-            new BorderLayout()
-        );
+	// =========================================================
+	// ESTRUCTURA GENERAL
+	// =========================================================
 
-        panelSubnavbar.setPreferredSize(
-            new Dimension(0, 60)
-        );
+	private void crearEstructura() {
 
-        panelSubnavbar.setBorder(
-            BorderFactory.createEmptyBorder(
-                10, 20, 10, 20
-            )
-        );
+		// -------------------------
+		// SUBNAVBAR
+		// -------------------------
 
-        add(
-            panelSubnavbar,
-            BorderLayout.NORTH
-        );
+		panelSubnavbar = new JPanel(new BorderLayout());
 
-        etiquetaTitulo = new JLabel();
+		panelSubnavbar.setPreferredSize(new Dimension(0, 60));
 
-        etiquetaTitulo.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                24
-            )
-        );
+		panelSubnavbar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        panelSubnavbar.add(
-            etiquetaTitulo,
-            BorderLayout.WEST
-        );
+		add(panelSubnavbar, BorderLayout.NORTH);
 
-        // -------------------------
-        // BUSCADOR
-        // -------------------------
+		etiquetaTitulo = new JLabel();
 
-        JPanel panelBusqueda = new JPanel(
-            new FlowLayout(
-                FlowLayout.RIGHT,
-                5,
-                0
-            )
-        );
+		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
 
-        panelBusqueda.setOpaque(false);
+		panelSubnavbar.add(etiquetaTitulo, BorderLayout.WEST);
 
-        campoBuscar = new JTextField();
+		// -------------------------
+		// BUSCADOR
+		// -------------------------
 
-        campoBuscar.setPreferredSize(
-            new Dimension(250, 35)
-        );
+		JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
-        botonBuscar = new JButton("Buscar");
+		panelBusqueda.setOpaque(false);
 
-        botonBuscar.setForeground(
-            new Color(249, 247, 242)
-        );
+		campoBuscar = new JTextField();
 
-        botonBuscar.setBackground(colorAzul);
+		campoBuscar.setPreferredSize(new Dimension(250, 35));
 
-        botonBuscar.setPreferredSize(
-            new Dimension(90, 35)
-        );
+		botonBuscar = new JButton("Buscar");
 
-        panelBusqueda.add(campoBuscar);
-        panelBusqueda.add(botonBuscar);
+		botonBuscar.setForeground(new Color(249, 247, 242));
 
-        panelSubnavbar.add(
-            panelBusqueda,
-            BorderLayout.EAST
-        );
+		botonBuscar.setBackground(colorAzul);
 
-        // -------------------------
-        // PANEL CENTRAL
-        // -------------------------
+		botonBuscar.setPreferredSize(new Dimension(90, 35));
 
-        panelCentral = new JPanel(
-            new BorderLayout()
-        );
+		panelBusqueda.add(campoBuscar);
+		panelBusqueda.add(botonBuscar);
 
-        panelCentral.setBackground(colorFondo);
+		panelSubnavbar.add(panelBusqueda, BorderLayout.EAST);
 
-        panelCentral.setBorder(
-            BorderFactory.createEmptyBorder(
-                20, 20, 20, 20
-            )
-        );
+		// -------------------------
+		// PANEL CENTRAL
+		// -------------------------
 
-        add(
-            panelCentral,
-            BorderLayout.CENTER
-        );
+		panelCentral = new JPanel(new BorderLayout());
 
-        // -------------------------
-        // BOTÓN AÑADIR
-        // -------------------------
+		panelCentral.setBackground(colorFondo);
 
-        panelAcciones = new JPanel(
-            new FlowLayout(
-                FlowLayout.RIGHT
-            )
-        );
+		panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        panelAcciones.setBackground(Color.WHITE);
+		add(panelCentral, BorderLayout.CENTER);
 
-        botonAnadir = new JButton();
+		// -------------------------
+		// BOTÓN AÑADIR
+		// -------------------------
 
-        botonAnadir.setBackground(colorVerde);
+		panelAcciones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        botonAnadir.setPreferredSize(
-            new Dimension(160, 40)
-        );
+		panelAcciones.setBackground(Color.WHITE);
 
-        panelAcciones.add(botonAnadir);
+		botonAnadir = new JButton();
 
-        panelCentral.add(
-            panelAcciones,
-            BorderLayout.NORTH
-        );
+		botonAnadir.setBackground(colorVerde);
 
-        // -------------------------
-        // LISTA
-        // -------------------------
+		botonAnadir.setPreferredSize(new Dimension(160, 40));
 
-        panelLista = new JPanel();
+		panelAcciones.add(botonAnadir);
 
-        panelLista.setLayout(
-            new BoxLayout(
-                panelLista,
-                BoxLayout.Y_AXIS
-            )
-        );
+		panelCentral.add(panelAcciones, BorderLayout.NORTH);
 
-        panelLista.setBackground(Color.WHITE);
+		// -------------------------
+		// LISTA
+		// -------------------------
 
-        JScrollPane scroll = new JScrollPane(
-            panelLista
-        );
+		panelLista = new JPanel();
 
-        scroll.setBorder(null);
+		panelLista.setLayout(new BoxLayout(panelLista, BoxLayout.Y_AXIS));
 
-        panelCentral.add(
-            scroll,
-            BorderLayout.CENTER
-        );
-    }
+		panelLista.setBackground(Color.WHITE);
 
-    // =========================================================
-    // CAMBIO DE MODO
-    // =========================================================
+		JScrollPane scroll = new JScrollPane(panelLista);
 
-    public void mostrarUsuarios() {
+		scroll.setBorder(null);
 
-        modoActual = MODO_USUARIOS;
+		panelCentral.add(scroll, BorderLayout.CENTER);
+	}
 
-        actualizarVista();
-    }
+	// =========================================================
+	// CAMBIO DE MODO
+	// =========================================================
 
-    public void mostrarRecursos() {
+	public void mostrarUsuarios() {
 
-        modoActual = MODO_RECURSOS;
+		modoActual = MODO_USUARIOS;
 
-        actualizarVista();
-    }
+		actualizarVista();
+	}
 
-    public void mostrarPrestamos() {
+	public void mostrarRecursos() {
 
-        modoActual = MODO_PRESTAMOS;
+		modoActual = MODO_RECURSOS;
 
-        actualizarVista();
-    }
+		actualizarVista();
+	}
 
-    private void actualizarVista() {
+	public void mostrarPrestamos() {
 
-        configurarSubnavbar();
-        configurarBotonAnadir();
-        cargarDatosTemporales();
+		modoActual = MODO_PRESTAMOS;
 
-        revalidate();
-        repaint();
-    }
+		actualizarVista();
+	}
 
-    // =========================================================
-    // SUBNAVBAR ADAPTABLE
-    // =========================================================
+	private void actualizarVista() {
 
-    private void configurarSubnavbar() {
+		configurarSubnavbar();
+		configurarBotonAnadir();
+		cargarDatosTemporales();
 
-        switch (modoActual) {
+		revalidate();
+		repaint();
+	}
 
-            case MODO_USUARIOS:
+	// =========================================================
+	// SUBNAVBAR ADAPTABLE
+	// =========================================================
 
-                panelSubnavbar.setBackground(
-                    new Color(227, 235, 222)
-                );
+	private void configurarSubnavbar() {
 
-                etiquetaTitulo.setText("Usuarios");
+		switch (modoActual) {
 
-                campoBuscar.setToolTipText(
-                    "Buscar usuario por ID, nombre o email"
-                );
+		case MODO_USUARIOS:
 
-                break;
+			panelSubnavbar.setBackground(new Color(227, 235, 222));
 
-            case MODO_RECURSOS:
+			etiquetaTitulo.setText("Usuarios");
 
-                panelSubnavbar.setBackground(
-                    new Color(220, 230, 244)
-                );
+			campoBuscar.setToolTipText("Buscar usuario por ID, nombre o email");
 
-                etiquetaTitulo.setText("Recursos");
+			break;
 
-                campoBuscar.setToolTipText(
-                    "Buscar recurso por ID, título o tipo"
-                );
+		case MODO_RECURSOS:
 
-                break;
+			panelSubnavbar.setBackground(new Color(220, 230, 244));
 
-            case MODO_PRESTAMOS:
+			etiquetaTitulo.setText("Recursos");
 
-                panelSubnavbar.setBackground(
-                    new Color(239, 232, 209)
-                );
+			campoBuscar.setToolTipText("Buscar recurso por ID, título o tipo");
 
-                etiquetaTitulo.setText("Préstamos");
+			break;
 
-                campoBuscar.setToolTipText(
-                    "Buscar préstamo por usuario o recurso"
-                );
+		case MODO_PRESTAMOS:
 
-                break;
-        }
-    }
+			panelSubnavbar.setBackground(new Color(239, 232, 209));
 
-    // =========================================================
-    // BOTÓN AÑADIR ADAPTABLE
-    // =========================================================
+			etiquetaTitulo.setText("Préstamos");
 
-    private void configurarBotonAnadir() {
+			campoBuscar.setToolTipText("Buscar préstamo por usuario o recurso");
 
-        for (var listener : botonAnadir.getActionListeners()) {
-            botonAnadir.removeActionListener(listener);
-        }
+			break;
+		}
+	}
 
-        switch (modoActual) {
+	// =========================================================
+	// BOTÓN AÑADIR ADAPTABLE
+	// =========================================================
 
-            case MODO_USUARIOS:
+	private void configurarBotonAnadir() {
 
-                botonAnadir.setText(
-                    "Añadir usuario"
-                );
+		for (var listener : botonAnadir.getActionListeners()) {
+			botonAnadir.removeActionListener(listener);
+		}
 
-                botonAnadir.addActionListener(
-                    e -> abrirFormulario()
-                );
+		switch (modoActual) {
 
-                break;
+		case MODO_USUARIOS:
 
-            case MODO_RECURSOS:
+			botonAnadir.setText("Añadir usuario");
 
-                botonAnadir.setText(
-                    "Añadir recurso"
-                );
+			botonAnadir.addActionListener(e -> abrirFormulario());
 
-                botonAnadir.addActionListener(
-                    e -> abrirFormulario()
-                );
+			break;
 
-                break;
+		case MODO_RECURSOS:
 
-            case MODO_PRESTAMOS:
+			botonAnadir.setText("Añadir recurso");
 
-                botonAnadir.setText(
-                    "Añadir préstamo"
-                );
+			botonAnadir.addActionListener(e -> abrirFormulario());
 
-                botonAnadir.addActionListener(
-                    e -> abrirFormulario()
-                );
+			break;
 
-                break;
-        }
-    }
+		case MODO_PRESTAMOS:
 
-    // =========================================================
-    // FORMULARIO UNIFICADO
-    // =========================================================
+			botonAnadir.setText("Añadir préstamo");
 
-    private void abrirFormulario() {
+			botonAnadir.addActionListener(e -> abrirFormulario());
 
-        /*
-         * Un único formulario para los tres modos.
-         *
-         * La clase FormularioContenido será la encargada
-         * de adaptar sus campos según el modo recibido.
-         */
+			break;
+		}
+	}
 
-        FormularioContenido formulario =
-            new FormularioContenido(modoActual);
+	// =========================================================
+	// FORMULARIO UNIFICADO
+	// =========================================================
 
-        formulario.setVisible(true);
-    }
+	private void abrirFormulario() {
 
-    // =========================================================
-    // DATOS TEMPORALES
-    // =========================================================
+		/*
+		 * Un único formulario para los tres modos.
+		 *
+		 * La clase FormularioContenido será la encargada de adaptar sus campos según el
+		 * modo recibido.
+		 */
 
-    private void cargarDatosTemporales() {
+		FormularioContenido formulario = new FormularioContenido(modoActual);
 
-        panelLista.removeAll();
+		formulario.setVisible(true);
+	}
 
-        switch (modoActual) {
+	// =========================================================
+	// DATOS TEMPORALES
+	// =========================================================
 
-            case MODO_USUARIOS:
+	private void cargarDatosTemporales() {
 
-                cargarUsuariosTemporales();
+		panelLista.removeAll();
 
-                break;
+		switch (modoActual) {
 
-            case MODO_RECURSOS:
+		case MODO_USUARIOS:
 
-                cargarRecursosTemporales();
+			cargarUsuariosTemporales();
 
-                break;
+			break;
 
-            case MODO_PRESTAMOS:
+		case MODO_RECURSOS:
 
-                cargarPrestamosTemporales();
+			cargarRecursosTemporales();
 
-                break;
-        }
+			break;
 
-        panelLista.revalidate();
-        panelLista.repaint();
-    }
+		case MODO_PRESTAMOS:
 
-    private void cargarUsuariosTemporales() {
+			cargarPrestamosTemporales();
 
-        añadirUsuarioTemporal(
-            "001",
-            "Juan Pérez",
-            "juan@email.com"
-        );
+			break;
+		}
 
-        añadirUsuarioTemporal(
-            "002",
-            "Ana García",
-            "ana@email.com"
-        );
+		panelLista.revalidate();
+		panelLista.repaint();
+	}
 
-        añadirUsuarioTemporal(
-            "003",
-            "Carlos López",
-            "carlos@email.com"
-        );
-    }
+	private void cargarUsuariosTemporales() {
 
-    private void cargarRecursosTemporales() {
+		añadirUsuarioTemporal("001", "Juan Pérez", "juan@email.com");
 
-        añadirRecursoTemporal(
-            "R001",
-            "El Hobbit",
-            "Libro",
-            "1937",
-            "Disponible",
-            "J.R.R. Tolkien",
-            "310 páginas"
-        );
+		añadirUsuarioTemporal("002", "Ana García", "ana@email.com");
 
-        añadirRecursoTemporal(
-            "R002",
-            "Interstellar",
-            "Película",
-            "2014",
-            "Prestado",
-            "Christopher Nolan",
-            "169 minutos"
-        );
+		añadirUsuarioTemporal("003", "Carlos López", "carlos@email.com");
+	}
 
-        añadirRecursoTemporal(
-            "R003",
-            "Minecraft",
-            "Videojuego",
-            "2011",
-            "Disponible",
-            "PC",
-            "PEGI 7"
-        );
-    }
+	private void cargarRecursosTemporales() {
 
-    private void cargarPrestamosTemporales() {
+		añadirRecursoTemporal("R001", "El Hobbit", "Libro", "1937", "Disponible", "J.R.R. Tolkien", "310 páginas");
 
-        añadirPrestamoTemporal(
-            "P001",
-            "Juan Pérez",
-            "R001",
-            "El Hobbit",
-            "20/09/2026",
-            "Activo",
-            "-"
-        );
+		añadirRecursoTemporal("R002", "Interstellar", "Película", "2014", "Prestado", "Christopher Nolan",
+				"169 minutos");
 
-        añadirPrestamoTemporal(
-            "P002",
-            "Ana García",
-            "R002",
-            "Interstellar",
-            "10/09/2026",
-            "Finalizado",
-            "20/09/2026"
-        );
+		añadirRecursoTemporal("R003", "Minecraft", "Videojuego", "2011", "Disponible", "PC", "PEGI 7");
+	}
 
-        añadirPrestamoTemporal(
-            "P003",
-            "Carlos López",
-            "R003",
-            "Minecraft",
-            "22/09/2026",
-            "Activo",
-            "-"
-        );
-    }
+	private void cargarPrestamosTemporales() {
 
-    // =========================================================
-    // ESTRUCTURA COMÚN DE FILAS
-    // =========================================================
+		añadirPrestamoTemporal("P001", "Juan Pérez", "R001", "El Hobbit", "20/09/2026", "Activo", "-");
 
-    private JPanel crearFila(int altura) {
+		añadirPrestamoTemporal("P002", "Ana García", "R002", "Interstellar", "10/09/2026", "Finalizado", "20/09/2026");
 
-        JPanel fila = new JPanel(
-            new BorderLayout()
-        );
+		añadirPrestamoTemporal("P003", "Carlos López", "R003", "Minecraft", "22/09/2026", "Activo", "-");
+	}
 
-        fila.setBackground(Color.WHITE);
+	// =========================================================
+	// ESTRUCTURA COMÚN DE FILAS
+	// =========================================================
 
-        fila.setBorder(
-            BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(
-                    new Color(220, 220, 220)
-                ),
-                BorderFactory.createEmptyBorder(
-                    12, 15, 12, 10
-                )
-            )
-        );
+	private JPanel crearFila(int altura) {
 
-        fila.setMaximumSize(
-            new Dimension(
-                Integer.MAX_VALUE,
-                altura
-            )
-        );
+		JPanel fila = new JPanel(new BorderLayout());
 
-        return fila;
-    }
+		fila.setBackground(Color.WHITE);
 
-    private JPanel crearPanelDatos() {
+		fila.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)),
+				BorderFactory.createEmptyBorder(12, 15, 12, 10)));
 
-        JPanel panelDatos = new JPanel();
+		fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, altura));
 
-        panelDatos.setLayout(
-            new BoxLayout(
-                panelDatos,
-                BoxLayout.Y_AXIS
-            )
-        );
+		return fila;
+	}
 
-        panelDatos.setOpaque(false);
+	private JPanel crearPanelDatos() {
 
-        return panelDatos;
-    }
+		JPanel panelDatos = new JPanel();
 
-    private JPanel crearPanelBotones() {
+		panelDatos.setLayout(new BoxLayout(panelDatos, BoxLayout.Y_AXIS));
 
-        JPanel panelBotones = new JPanel(
-            new FlowLayout(
-                FlowLayout.RIGHT,
-                5,
-                5
-            )
-        );
+		panelDatos.setOpaque(false);
 
-        panelBotones.setOpaque(false);
+		return panelDatos;
+	}
 
-        return panelBotones;
-    }
+	private JPanel crearPanelBotones() {
 
-    private JLabel crearEtiquetaPrincipal(
-        String texto
-    ) {
+		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 
-        JLabel etiqueta = new JLabel(texto);
+		panelBotones.setOpaque(false);
 
-        etiqueta.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                16
-            )
-        );
+		return panelBotones;
+	}
 
-        return etiqueta;
-    }
+	private JLabel crearEtiquetaPrincipal(String texto) {
 
-    private JLabel crearEtiquetaSecundaria(
-        String texto
-    ) {
+		JLabel etiqueta = new JLabel(texto);
 
-        JLabel etiqueta = new JLabel(texto);
+		etiqueta.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
-        etiqueta.setFont(
-            new Font(
-                "Segoe UI",
-                Font.PLAIN,
-                13
-            )
-        );
+		return etiqueta;
+	}
 
-        return etiqueta;
-    }
+	private JLabel crearEtiquetaSecundaria(String texto) {
 
-    // =========================================================
-    // FILA DE USUARIO
-    // =========================================================
+		JLabel etiqueta = new JLabel(texto);
 
-    private void añadirUsuarioTemporal(
-            String id,
-            String nombre,
-            String email
-    ) {
+		etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        JPanel fila = crearFila(75);
+		return etiqueta;
+	}
 
-        JPanel panelDatos = crearPanelDatos();
+	// =========================================================
+	// FILA DE USUARIO
+	// =========================================================
 
-        panelDatos.add(
-            crearEtiquetaPrincipal(
-                id + " · " + nombre
-            )
-        );
+	private void añadirUsuarioTemporal(String id, String nombre, String email) {
 
-        panelDatos.add(
-            crearEtiquetaSecundaria(
-                "Email: " + email
-            )
-        );
+		JPanel fila = crearFila(75);
 
-        fila.add(
-            panelDatos,
-            BorderLayout.CENTER
-        );
+		JPanel panelDatos = crearPanelDatos();
 
-        JPanel panelBotones = crearPanelBotones();
+		panelDatos.add(crearEtiquetaPrincipal(id + " · " + nombre));
 
-        JButton botonEditar =
-            crearBotonEditar();
+		panelDatos.add(crearEtiquetaSecundaria("Email: " + email));
 
-        JButton botonEliminar =
-            crearBotonEliminar();
+		fila.add(panelDatos, BorderLayout.CENTER);
 
-        panelBotones.add(botonEditar);
-        panelBotones.add(botonEliminar);
+		JPanel panelBotones = crearPanelBotones();
 
-        fila.add(
-            panelBotones,
-            BorderLayout.EAST
-        );
+		JButton botonEditar = crearBotonEditar();
 
-        // ========================================
-        // EDITAR
-        // ========================================
+		JButton botonEliminar = crearBotonEliminar();
 
-        botonEditar.addActionListener(
-            e -> abrirFormularioEdicion(
-                id,
-                nombre,
-                email
-            )
-        );
+		panelBotones.add(botonEditar);
+		panelBotones.add(botonEliminar);
 
-        // ========================================
-        // ELIMINAR
-        // ========================================
+		fila.add(panelBotones, BorderLayout.EAST);
 
-        botonEliminar.addActionListener(
-            e -> abrirConfirmacionEliminacion(
-                "Usuario",
-                nombre + " (ID: " + id + ")"
-            )
-        );
+		// ========================================
+		// EDITAR
+		// ========================================
 
-        // ========================================
-        // ABRIR DETALLE
-        // ========================================
+		botonEditar.addActionListener(e -> abrirFormularioEdicion(id, nombre, email));
 
-        añadirEventoDetalle(
-            fila,
-            crearDatosUsuario(
-                id,
-                nombre,
-                email
-            )
-        );
+		// ========================================
+		// ELIMINAR
+		// ========================================
 
-        panelLista.add(fila);
-    }
+		botonEliminar.addActionListener(e -> abrirConfirmacionEliminacion("Usuario", nombre + " (ID: " + id + ")"));
 
-    // =========================================================
-    // FILA DE RECURSO
-    // =========================================================
+		// ========================================
+		// ABRIR DETALLE
+		// ========================================
 
-    private void añadirRecursoTemporal(
-            String id,
-            String titulo,
-            String tipo,
-            String ano,
-            String estado,
-            String informacion1,
-            String informacion2
-    ) {
+		añadirEventoDetalle(fila, crearDatosUsuario(id, nombre, email));
 
-        // La fila solo necesita espacio para:
-        // - Nombre del recurso
-        // - Tipo
-        // - Botones
-        JPanel fila = crearFila(75);
+		panelLista.add(fila);
+	}
 
-        // ========================================
-        // INFORMACIÓN VISIBLE DEL RECURSO
-        // ========================================
+	// =========================================================
+	// FILA DE RECURSO
+	// =========================================================
 
-        JPanel panelDatos = crearPanelDatos();
+	private void añadirRecursoTemporal(String id, String titulo, String tipo, String ano, String estado,
+			String informacion1, String informacion2) {
 
-        panelDatos.add(crearEtiquetaPrincipal(id + " · " + titulo));
-        panelDatos.add(crearEtiquetaSecundaria("Tipo: " + tipo));
+		// La fila solo necesita espacio para:
+		// - Nombre del recurso
+		// - Tipo
+		// - Botones
+		JPanel fila = crearFila(75);
 
-        fila.add(
-            panelDatos,
-            BorderLayout.CENTER
-        );
+		// ========================================
+		// INFORMACIÓN VISIBLE DEL RECURSO
+		// ========================================
 
-        // ========================================
-        // BOTONES
-        // ========================================
+		JPanel panelDatos = crearPanelDatos();
 
-        JPanel panelBotones = crearPanelBotones();
+		panelDatos.add(crearEtiquetaPrincipal(id + " · " + titulo));
+		panelDatos.add(crearEtiquetaSecundaria("Tipo: " + tipo));
 
-        JButton botonEditar =
-            crearBotonEditar();
+		fila.add(panelDatos, BorderLayout.CENTER);
 
-        JButton botonEliminar =
-            crearBotonEliminar();
+		// ========================================
+		// BOTONES
+		// ========================================
 
-        panelBotones.add(botonEditar);
-        panelBotones.add(botonEliminar);
+		JPanel panelBotones = crearPanelBotones();
 
-        fila.add(
-            panelBotones,
-            BorderLayout.EAST
-        );
+		JButton botonEditar = crearBotonEditar();
 
-        // ========================================
-        // EDITAR
-        // ========================================
+		JButton botonEliminar = crearBotonEliminar();
 
-        botonEditar.addActionListener(
-            e -> abrirFormularioEdicion(
-                id,
-                titulo,
-                tipo,
-                ano,
-                estado,
-                informacion1,
-                informacion2
-            )
-        );
-
-        // ========================================
-        // ELIMINAR
-        // ========================================
-
-        botonEliminar.addActionListener(
-            e -> abrirConfirmacionEliminacion(
-                "Recurso",
-                titulo + " (ID: " + id + ")"
-            )
-        );
-
-        // ========================================
-        // ABRIR DETALLE
-        // ========================================
-
-        añadirEventoDetalle(
-            fila,
-            crearDatosRecurso(
-                id,
-                titulo,
-                tipo,
-                ano,
-                estado,
-                informacion1,
-                informacion2
-            )
-        );
+		panelBotones.add(botonEditar);
+		panelBotones.add(botonEliminar);
 
-        panelLista.add(fila);
-    }
+		fila.add(panelBotones, BorderLayout.EAST);
 
-    // =========================================================
-    // FILA DE PRÉSTAMO
-    // =========================================================
+		// ========================================
+		// EDITAR
+		// ========================================
 
-    private void añadirPrestamoTemporal(
-        String idPrestamo,
-        String nombreUsuario,
-        String idRecurso,
-        String tituloRecurso,
-        String fechaPrestamo,
-        String estado,
-        String fechaDevolucion
-    ) {
-    	
-        JPanel fila = crearFila(75);
+		botonEditar.addActionListener(
+				e -> abrirFormularioEdicion(id, titulo, tipo, ano, estado, informacion1, informacion2));
 
-        JPanel panelDatos = crearPanelDatos();
+		// ========================================
+		// ELIMINAR
+		// ========================================
 
-        panelDatos.add(crearEtiquetaPrincipal(
-            idPrestamo + " · " + tituloRecurso + " · " + nombreUsuario
-        ));
+		botonEliminar.addActionListener(e -> abrirConfirmacionEliminacion("Recurso", titulo + " (ID: " + id + ")"));
 
-        panelDatos.add(crearEtiquetaSecundaria(fechaPrestamo));
-
-        fila.add(panelDatos, BorderLayout.CENTER);
+		// ========================================
+		// ABRIR DETALLE
+		// ========================================
 
-        JPanel panelBotones = crearPanelBotones();
-
-        JButton botonEditar = crearBotonEditar();
-
-        JButton botonDevolver = new JButton("Devolver");
-        botonDevolver.setBackground(colorRojo);
-
-        panelBotones.add(botonEditar);
-        panelBotones.add(botonDevolver);
-
-        fila.add(
-            panelBotones,
-            BorderLayout.EAST
-        );
-        
-        botonEditar.addActionListener(
-        	    e -> abrirFormularioEdicionPrestamo(
-        	        idPrestamo,
-        	        nombreUsuario,
-        	        idRecurso,
-        	        tituloRecurso,
-        	        fechaPrestamo,
-        	        estado,
-        	        fechaDevolucion
-        	    )
-        	);
-        
-        botonDevolver.addActionListener(
-        	    e -> abrirConfirmacionDevolucion(
-        	        idPrestamo,
-        	        nombreUsuario,
-        	        tituloRecurso
-        	    )
-        	);
-
-        // ABRIR DETALLE DEL PRÉSTAMO
-        añadirEventoDetalle(
-            fila,
-            crearDatosPrestamo(
-                idPrestamo,
-                nombreUsuario,
-                idRecurso,
-                tituloRecurso,
-                fechaPrestamo,
-                estado,
-                fechaDevolucion
-            )
-        );
-
-        panelLista.add(fila);
-    }
-
-    // =========================================================
-    // BOTONES
-    // =========================================================
-
-    private JButton crearBotonEditar() {
-
-        JButton boton = new JButton("Editar");
-
-        boton.setBackground(colorAmarillo);
-
-        return boton;
-    }
-
-    private JButton crearBotonEliminar() {
-
-        JButton boton = new JButton("Eliminar");
-
-        boton.setBackground(colorRojo);
-
-        return boton;
-    }
-
-    // =========================================================
-    // EDICIÓN: UN SOLO FORMULARIO
-    // =========================================================
-
-    private void abrirFormularioEdicion(
-        String id,
-        String nombre,
-        String email
-    ) {
-
-        FormularioContenido formulario =
-            new FormularioContenido(
-                MODO_USUARIOS
-            );
-
-        formulario.cargarDatos(
-            id,
-            nombre,
-            email
-        );
-
-        formulario.setVisible(true);
-    }
-
-    private void abrirFormularioEdicion(
-        String id,
-        String titulo,
-        String tipo,
-        String ano,
-        String estado,
-        String informacion1,
-        String informacion2
-    ) {
-
-        FormularioContenido formulario =
-            new FormularioContenido(
-                MODO_RECURSOS
-            );
-
-        formulario.cargarDatos(
-            id,
-            titulo,
-            tipo,
-            ano,
-            estado,
-            informacion1,
-            informacion2
-        );
-
-        formulario.setVisible(true);
-    }
-    
-    private void abrirFormularioEdicionPrestamo(
-            String idPrestamo,
-            String nombreUsuario,
-            String idRecurso,
-            String tituloRecurso,
-            String fechaPrestamo,
-            String estado,
-            String fechaDevolucion
-    ) {
-        FormularioContenido formulario =
-            new FormularioContenido(MODO_PRESTAMOS);
-
-        formulario.cargarDatosPrestamo(
-            nombreUsuario,
-            idRecurso,
-            tituloRecurso,
-            fechaPrestamo,
-            estado,
-            fechaDevolucion
-        );
-
-        formulario.setVisible(true);
-    }
-
-    // =========================================================
-    // ELIMINACIÓN
-    // =========================================================
-
-    private void abrirConfirmacionEliminacion(
-        String tipo,
-        String descripcion
-    ) {
-
-        FormularioEliminar formulario =
-            new FormularioEliminar(
-                tipo,
-                descripcion
-            );
-
-        formulario.setVisible(true);
-    }
-    
-    
-    // =========================================================
-    // DEVOLUCIÓN DE PRESTAMOS
-    // =========================================================
-    private void abrirConfirmacionDevolucion(
-            String idPrestamo,
-            String nombreUsuario,
-            String tituloRecurso
-    ) {
-        FormularioEliminar formulario =
-            new FormularioEliminar(
-                "devolución",
-                idPrestamo
-                    + " · "
-                    + tituloRecurso
-                    + " · "
-                    + nombreUsuario,
-                true
-            );
-
-        formulario.setVisible(true);
-    }
-
-    // =========================================================
-    // DETALLE UNIFICADO
-    // =========================================================
-
-    private void añadirEventoDetalle(
-        JPanel fila,
-        String[] datos
-    ) {
-
-        fila.setCursor(
-            Cursor.getPredefinedCursor(
-                Cursor.HAND_CURSOR
-            )
-        );
-
-        fila.addMouseListener(
-            new MouseAdapter() {
-
-                @Override
-                public void mouseClicked(
-                    MouseEvent e
-                ) {
-
-                    if (e.getClickCount() == 1) {
-
-                    	VentanaDetalleContenido ventana =
-                    		    new VentanaDetalleContenido(
-                    		        modoActual,
-                    		        datos
-                    		    );
-
-                    		ventana.setAccionEditarPrestamo(
-                    		    datosPrestamo -> abrirFormularioEdicionPrestamo(
-                    		        datosPrestamo[0],
-                    		        datosPrestamo[1],
-                    		        datosPrestamo[2],
-                    		        datosPrestamo[3],
-                    		        datosPrestamo[4],
-                    		        datosPrestamo[5],
-                    		        datosPrestamo[6]
-                    		    )
-                    		);
-
-                    		ventana.setAccionDevolverPrestamo(
-                    		    datosPrestamo -> abrirConfirmacionDevolucion(
-                    		        datosPrestamo[0],
-                    		        datosPrestamo[1],
-                    		        datosPrestamo[3]
-                    		    )
-                    		);
-
-                    		ventana.setVisible(true);
-                    }
-                }
-            }
-        );
-    }
-
-    // =========================================================
-    // DATOS PARA EL DETALLE
-    // =========================================================
-
-    private String[] crearDatosUsuario(
-        String id,
-        String nombre,
-        String email
-    ) {
-
-        return new String[] {
-            id,
-            nombre,
-            email
-        };
-    }
-
-    private String[] crearDatosRecurso(
-        String id,
-        String titulo,
-        String tipo,
-        String ano,
-        String estado,
-        String informacion1,
-        String informacion2
-    ) {
-
-        return new String[] {
-            id,
-            titulo,
-            tipo,
-            ano,
-            estado,
-            informacion1,
-            informacion2
-        };
-    }
-
-    // =========================================================
-    private String[] crearDatosPrestamo(
-        String idPrestamo,
-        String nombreUsuario,
-        String idRecurso,
-        String tituloRecurso,
-        String fechaPrestamo,
-        String estado,
-        String fechaDevolucion
-    ) {
-
-        return new String[] {
-            idPrestamo,
-            nombreUsuario,
-            idRecurso,
-            tituloRecurso,
-            fechaPrestamo,
-            estado,
-            fechaDevolucion
-        };
-    }
-
-    // ACCESO AL MODO ACTUAL
-    // =========================================================
-
-    public int getModoActual() {
-
-        return modoActual;
-    }
+		añadirEventoDetalle(fila, crearDatosRecurso(id, titulo, tipo, ano, estado, informacion1, informacion2));
+
+		panelLista.add(fila);
+	}
+
+	// =========================================================
+	// FILA DE PRÉSTAMO
+	// =========================================================
+
+	private void añadirPrestamoTemporal(String idPrestamo, String nombreUsuario, String idRecurso, String tituloRecurso,
+			String fechaPrestamo, String estado, String fechaDevolucion) {
+
+		JPanel fila = crearFila(75);
+
+		JPanel panelDatos = crearPanelDatos();
+
+		panelDatos.add(crearEtiquetaPrincipal(idPrestamo + " · " + tituloRecurso + " · " + nombreUsuario));
+
+		panelDatos.add(crearEtiquetaSecundaria(fechaPrestamo));
+
+		fila.add(panelDatos, BorderLayout.CENTER);
+
+		JPanel panelBotones = crearPanelBotones();
+
+		JButton botonEditar = crearBotonEditar();
+
+		JButton botonDevolver = new JButton("Devolver");
+		botonDevolver.setBackground(colorRojo);
+
+		panelBotones.add(botonEditar);
+		panelBotones.add(botonDevolver);
+
+		fila.add(panelBotones, BorderLayout.EAST);
+
+		botonEditar.addActionListener(e -> abrirFormularioEdicionPrestamo(idPrestamo, nombreUsuario, idRecurso,
+				tituloRecurso, fechaPrestamo, estado, fechaDevolucion));
+
+		botonDevolver.addActionListener(e -> abrirConfirmacionDevolucion(idPrestamo, nombreUsuario, tituloRecurso));
+
+		// ABRIR DETALLE DEL PRÉSTAMO
+		añadirEventoDetalle(fila, crearDatosPrestamo(idPrestamo, nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo,
+				estado, fechaDevolucion));
+
+		panelLista.add(fila);
+	}
+
+	// =========================================================
+	// BOTONES
+	// =========================================================
+
+	private JButton crearBotonEditar() {
+
+		JButton boton = new JButton("Editar");
+
+		boton.setBackground(colorAmarillo);
+
+		return boton;
+	}
+
+	private JButton crearBotonEliminar() {
+
+		JButton boton = new JButton("Eliminar");
+
+		boton.setBackground(colorRojo);
+
+		return boton;
+	}
+
+	// =========================================================
+	// EDICIÓN: UN SOLO FORMULARIO
+	// =========================================================
+
+	private void abrirFormularioEdicion(String id, String nombre, String email) {
+
+		FormularioContenido formulario = new FormularioContenido(MODO_USUARIOS);
+
+		formulario.cargarDatos(id, nombre, email);
+
+		formulario.setVisible(true);
+	}
+
+	private void abrirFormularioEdicion(String id, String titulo, String tipo, String ano, String estado,
+			String informacion1, String informacion2) {
+
+		FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
+
+		formulario.cargarDatos(id, titulo, tipo, ano, estado, informacion1, informacion2);
+
+		formulario.setVisible(true);
+	}
+
+	private void abrirFormularioEdicionPrestamo(String idPrestamo, String nombreUsuario, String idRecurso,
+			String tituloRecurso, String fechaPrestamo, String estado, String fechaDevolucion) {
+		FormularioContenido formulario = new FormularioContenido(MODO_PRESTAMOS);
+
+		formulario.cargarDatosPrestamo(nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado, fechaDevolucion);
+
+		formulario.setVisible(true);
+	}
+
+	// =========================================================
+	// ELIMINACIÓN
+	// =========================================================
+
+	private void abrirConfirmacionEliminacion(String tipo, String descripcion) {
+
+		FormularioEliminar formulario = new FormularioEliminar(tipo, descripcion);
+
+		formulario.setVisible(true);
+	}
+
+	// =========================================================
+	// DEVOLUCIÓN DE PRESTAMOS
+	// =========================================================
+	private void abrirConfirmacionDevolucion(String idPrestamo, String nombreUsuario, String tituloRecurso) {
+		FormularioEliminar formulario = new FormularioEliminar("devolución",
+				idPrestamo + " · " + tituloRecurso + " · " + nombreUsuario, true);
+
+		formulario.setVisible(true);
+	}
+
+	// =========================================================
+	// DETALLE UNIFICADO
+	// =========================================================
+
+	private void añadirEventoDetalle(JPanel fila, String[] datos) {
+
+		fila.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		fila.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				if (e.getClickCount() == 1) {
+
+					VentanaDetalleContenido ventana = new VentanaDetalleContenido(modoActual, datos);
+
+					ventana.setAccionEditarPrestamo(datosPrestamo -> abrirFormularioEdicionPrestamo(datosPrestamo[0],
+							datosPrestamo[1], datosPrestamo[2], datosPrestamo[3], datosPrestamo[4], datosPrestamo[5],
+							datosPrestamo[6]));
+
+					ventana.setAccionDevolverPrestamo(datosPrestamo -> abrirConfirmacionDevolucion(datosPrestamo[0],
+							datosPrestamo[1], datosPrestamo[3]));
+
+					ventana.setVisible(true);
+				}
+			}
+		});
+	}
+
+	// =========================================================
+	// DATOS PARA EL DETALLE
+	// =========================================================
+
+	private String[] crearDatosUsuario(String id, String nombre, String email) {
+
+		return new String[] { id, nombre, email };
+	}
+
+	private String[] crearDatosRecurso(String id, String titulo, String tipo, String ano, String estado,
+			String informacion1, String informacion2) {
+
+		return new String[] { id, titulo, tipo, ano, estado, informacion1, informacion2 };
+	}
+
+	// =========================================================
+	private String[] crearDatosPrestamo(String idPrestamo, String nombreUsuario, String idRecurso, String tituloRecurso,
+			String fechaPrestamo, String estado, String fechaDevolucion) {
+
+		return new String[] { idPrestamo, nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado,
+				fechaDevolucion };
+	}
+
+	// ACCESO AL MODO ACTUAL
+	// =========================================================
+
+	public int getModoActual() {
+
+		return modoActual;
+	}
 }

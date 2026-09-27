@@ -14,250 +14,164 @@ import javax.swing.JPanel;
 
 public class FormularioEliminar extends JDialog {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final Color colorRojo = new Color(230, 100, 100);
+	private final Color colorRojo = new Color(230, 100, 100);
 
-    private String tipo;
-    private String descripcion;
+	private String tipo;
+	private String descripcion;
 
-    public FormularioEliminar(
-            String tipo,
-            String descripcion
-    ) {
-        this.tipo = tipo;
-        this.descripcion = descripcion;
+	public FormularioEliminar(String tipo, String descripcion) {
+		this.tipo = tipo;
+		this.descripcion = descripcion;
 
-        configurarVentana();
+		configurarVentana();
 
-        crearContenido(false);
-    }
+		crearContenido(false);
+	}
 
-    public FormularioEliminar(
-            String tipo,
-            String descripcion,
-            boolean esDevolucion
-    ) {
-        this.tipo = tipo;
-        this.descripcion = descripcion;
+	public FormularioEliminar(String tipo, String descripcion, boolean esDevolucion) {
+		this.tipo = tipo;
+		this.descripcion = descripcion;
 
-        configurarVentana();
+		configurarVentana();
 
-        crearContenido(esDevolucion);
-    }
+		crearContenido(esDevolucion);
+	}
 
-    private void configurarVentana() {
+	private void configurarVentana() {
 
-        setTitle("Confirmar eliminación");
+		setTitle("Confirmar eliminación");
 
-        setSize(420, 220);
+		setSize(420, 220);
 
-        setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 
-        setModal(true);
+		setModal(true);
 
-        setResizable(false);
+		setResizable(false);
 
-        setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
 
-        getContentPane().setBackground(Color.WHITE);
-    }
+		getContentPane().setBackground(Color.WHITE);
+	}
 
-    private void crearContenido(boolean esDevolucion) {
+	private void crearContenido(boolean esDevolucion) {
 
-        JPanel panelPrincipal = new JPanel(
-            new BorderLayout()
-        );
+		JPanel panelPrincipal = new JPanel(new BorderLayout());
 
-        panelPrincipal.setBackground(Color.WHITE);
+		panelPrincipal.setBackground(Color.WHITE);
 
-        panelPrincipal.setBorder(
-            BorderFactory.createEmptyBorder(
-                25,
-                25,
-                20,
-                25
-            )
-        );
+		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(25, 25, 20, 25));
 
-        // ========================================
-        // TÍTULO
-        // ========================================
+		// ========================================
+		// TÍTULO
+		// ========================================
 
-        String textoTitulo;
+		String textoTitulo;
 
-        if (esDevolucion) {
-            textoTitulo = "Confirmar devolución";
-        } else {
-            textoTitulo = "Confirmar eliminación";
-        }
+		if (esDevolucion) {
+			textoTitulo = "Confirmar devolución";
+		} else {
+			textoTitulo = "Confirmar eliminación";
+		}
 
-        JLabel etiquetaTitulo = new JLabel(
-            textoTitulo
-        );
+		JLabel etiquetaTitulo = new JLabel(textoTitulo);
 
-        etiquetaTitulo.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                20
-            )
-        );
+		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
-        panelPrincipal.add(
-            etiquetaTitulo,
-            BorderLayout.NORTH
-        );
+		panelPrincipal.add(etiquetaTitulo, BorderLayout.NORTH);
 
-        // ========================================
-        // MENSAJE
-        // ========================================
+		// ========================================
+		// MENSAJE
+		// ========================================
 
-        JPanel panelMensaje = new JPanel();
+		JPanel panelMensaje = new JPanel();
 
-        panelMensaje.setBackground(Color.WHITE);
+		panelMensaje.setBackground(Color.WHITE);
 
-        panelMensaje.setLayout(
-            new javax.swing.BoxLayout(
-                panelMensaje,
-                javax.swing.BoxLayout.Y_AXIS
-            )
-        );
+		panelMensaje.setLayout(new javax.swing.BoxLayout(panelMensaje, javax.swing.BoxLayout.Y_AXIS));
 
-        String textoPregunta;
+		String textoPregunta;
 
-        if (esDevolucion) {
-            textoPregunta =
-                "¿Seguro que quieres devolver este préstamo?";
-        } else {
-            textoPregunta =
-                "¿Seguro que quieres eliminar este "
-                + tipo.toLowerCase()
-                + "?";
-        }
+		if (esDevolucion) {
+			textoPregunta = "¿Seguro que quieres devolver este préstamo?";
+		} else {
+			textoPregunta = "¿Seguro que quieres eliminar este " + tipo.toLowerCase() + "?";
+		}
 
-        JLabel etiquetaPregunta = new JLabel(
-            textoPregunta
-        );
+		JLabel etiquetaPregunta = new JLabel(textoPregunta);
 
-        etiquetaPregunta.setFont(
-            new Font(
-                "Segoe UI",
-                Font.PLAIN,
-                14
-            )
-        );
+		etiquetaPregunta.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        JLabel etiquetaElemento = new JLabel(
-            descripcion
-        );
+		JLabel etiquetaElemento = new JLabel(descripcion);
 
-        etiquetaElemento.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                14
-            )
-        );
+		etiquetaElemento.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        panelMensaje.add(
-            etiquetaPregunta
-        );
+		panelMensaje.add(etiquetaPregunta);
 
-        panelMensaje.add(
-            javax.swing.Box.createVerticalStrut(8)
-        );
+		panelMensaje.add(javax.swing.Box.createVerticalStrut(8));
 
-        panelMensaje.add(
-            etiquetaElemento
-        );
+		panelMensaje.add(etiquetaElemento);
 
-        panelPrincipal.add(
-            panelMensaje,
-            BorderLayout.CENTER
-        );
+		panelPrincipal.add(panelMensaje, BorderLayout.CENTER);
 
-        // ========================================
-        // BOTONES
-        // ========================================
+		// ========================================
+		// BOTONES
+		// ========================================
 
-        JPanel panelBotones = new JPanel(
-            new FlowLayout(
-                FlowLayout.RIGHT,
-                10,
-                0
-            )
-        );
+		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 
-        panelBotones.setBackground(Color.WHITE);
+		panelBotones.setBackground(Color.WHITE);
 
-        JButton botonCancelar = new JButton(
-            "Cancelar"
-        );
+		JButton botonCancelar = new JButton("Cancelar");
 
-        botonCancelar.setPreferredSize(
-            new Dimension(100, 35)
-        );
+		botonCancelar.setPreferredSize(new Dimension(100, 35));
 
-        String textoBoton;
+		String textoBoton;
 
-        if (esDevolucion) {
-            textoBoton = "Devolver";
-        } else {
-            textoBoton = "Eliminar";
-        }
+		if (esDevolucion) {
+			textoBoton = "Devolver";
+		} else {
+			textoBoton = "Eliminar";
+		}
 
-        JButton botonAccion = new JButton(
-            textoBoton
-        );
+		JButton botonAccion = new JButton(textoBoton);
 
-        botonAccion.setBackground(colorRojo);
+		botonAccion.setBackground(colorRojo);
 
-        botonAccion.setPreferredSize(
-            new Dimension(100, 35)
-        );
+		botonAccion.setPreferredSize(new Dimension(100, 35));
 
-        panelBotones.add(
-            botonCancelar
-        );
+		panelBotones.add(botonCancelar);
 
-        panelBotones.add(
-            botonAccion
-        );
+		panelBotones.add(botonAccion);
 
-        panelPrincipal.add(
-            panelBotones,
-            BorderLayout.SOUTH
-        );
+		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
-        // ========================================
-        // EVENTOS
-        // ========================================
+		// ========================================
+		// EVENTOS
+		// ========================================
 
-        botonCancelar.addActionListener(
-            e -> dispose()
-        );
+		botonCancelar.addActionListener(e -> dispose());
 
-        botonAccion.addActionListener(
-            e -> {
+		botonAccion.addActionListener(e -> {
 
-                if (esDevolucion) {
+			if (esDevolucion) {
 
-                    // Aquí conectaremos posteriormente
-                    // con el controlador para devolver
-                    // el préstamo.
+				// Aquí conectaremos posteriormente
+				// con el controlador para devolver
+				// el préstamo.
 
-                } else {
+			} else {
 
-                    // Aquí conectaremos posteriormente
-                    // con el controlador para eliminar.
+				// Aquí conectaremos posteriormente
+				// con el controlador para eliminar.
 
-                }
+			}
 
-                dispose();
-            }
-        );
+			dispose();
+		});
 
-        add(panelPrincipal);
-    }
+		add(panelPrincipal);
+	}
 }
