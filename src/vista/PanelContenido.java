@@ -813,19 +813,30 @@ public class PanelContenido extends JPanel {
 
         JPanel panelBotones = crearPanelBotones();
 
-        JButton botonDevolver =
-            new JButton("Devolver");
+        JButton botonEditar = crearBotonEditar();
 
-        botonDevolver.setBackground(
-            colorRojo
-        );
+        JButton botonDevolver = new JButton("Devolver");
+        botonDevolver.setBackground(colorRojo);
 
+        panelBotones.add(botonEditar);
         panelBotones.add(botonDevolver);
 
         fila.add(
             panelBotones,
             BorderLayout.EAST
         );
+        
+        botonEditar.addActionListener(
+        	    e -> abrirFormularioEdicionPrestamo(
+        	        idPrestamo,
+        	        nombreUsuario,
+        	        idRecurso,
+        	        tituloRecurso,
+        	        fechaPrestamo,
+        	        estado,
+        	        fechaDevolucion
+        	    )
+        	);
 
         añadirEventoDetalle(
             fila,
@@ -912,6 +923,30 @@ public class PanelContenido extends JPanel {
             estado,
             informacion1,
             informacion2
+        );
+
+        formulario.setVisible(true);
+    }
+    
+    private void abrirFormularioEdicionPrestamo(
+            String idPrestamo,
+            String nombreUsuario,
+            String idRecurso,
+            String tituloRecurso,
+            String fechaPrestamo,
+            String estado,
+            String fechaDevolucion
+    ) {
+        FormularioContenido formulario =
+            new FormularioContenido(MODO_PRESTAMOS);
+
+        formulario.cargarDatosPrestamo(
+            nombreUsuario,
+            idRecurso,
+            tituloRecurso,
+            fechaPrestamo,
+            estado,
+            fechaDevolucion
         );
 
         formulario.setVisible(true);
