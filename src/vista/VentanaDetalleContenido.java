@@ -2,10 +2,13 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 public class VentanaDetalleContenido extends JFrame {
 
@@ -26,30 +30,29 @@ public class VentanaDetalleContenido extends JFrame {
 
     private JPanel panelDatos;
     private JPanel panelSecundario;
+    private JPanel panelSeccion;
     private JLabel etiquetaTitulo;
     private JLabel etiquetaSeccionSecundaria;
+
+    private Consumer<String[]> accionEditarPrestamo;
+    private Consumer<String[]> accionDevolverPrestamo;
 
     public VentanaDetalleContenido(
         int modo,
         String[] datos
     ) {
-
         configurarVentana();
 
         switch (modo) {
-
             case PanelContenido.MODO_USUARIOS:
                 mostrarUsuario(datos);
                 break;
-
             case PanelContenido.MODO_RECURSOS:
                 mostrarRecurso(datos);
                 break;
-
             case PanelContenido.MODO_PRESTAMOS:
                 mostrarPrestamo(datos);
                 break;
-
             default:
                 mostrarContenidoGenerico();
                 break;
@@ -59,13 +62,9 @@ public class VentanaDetalleContenido extends JFrame {
     // =========================================================
     // CONFIGURACIÓN GENERAL
     // =========================================================
-
     private void configurarVentana() {
-
         setSize(800, 600);
-
         setLocationRelativeTo(null);
-
         setDefaultCloseOperation(
             JFrame.DISPOSE_ON_CLOSE
         );
@@ -73,40 +72,32 @@ public class VentanaDetalleContenido extends JFrame {
         JPanel panelPrincipal = new JPanel(
             new BorderLayout()
         );
-
         panelPrincipal.setBackground(colorFondo);
-
         setContentPane(panelPrincipal);
 
         // -----------------------------------------------------
         // SUBNAVBAR
         // -----------------------------------------------------
-
         JPanel panelSubnavbar = new JPanel(
             new BorderLayout()
         );
-
         panelSubnavbar.setPreferredSize(
             new Dimension(0, 60)
         );
-
         panelSubnavbar.setBackground(
             colorSubnavbar
         );
-
         panelSubnavbar.setBorder(
             BorderFactory.createEmptyBorder(
                 10, 20, 10, 20
             )
         );
-
         panelPrincipal.add(
             panelSubnavbar,
             BorderLayout.NORTH
         );
 
         etiquetaTitulo = new JLabel();
-
         etiquetaTitulo.setFont(
             new Font(
                 "Segoe UI",
@@ -114,7 +105,6 @@ public class VentanaDetalleContenido extends JFrame {
                 24
             )
         );
-
         panelSubnavbar.add(
             etiquetaTitulo,
             BorderLayout.WEST
@@ -123,19 +113,15 @@ public class VentanaDetalleContenido extends JFrame {
         // -----------------------------------------------------
         // PANEL CENTRAL
         // -----------------------------------------------------
-
         JPanel panelCentral = new JPanel(
             new BorderLayout()
         );
-
         panelCentral.setBackground(colorFondo);
-
         panelCentral.setBorder(
             BorderFactory.createEmptyBorder(
                 20, 20, 20, 20
             )
         );
-
         panelPrincipal.add(
             panelCentral,
             BorderLayout.CENTER
@@ -144,13 +130,10 @@ public class VentanaDetalleContenido extends JFrame {
         // -----------------------------------------------------
         // INFORMACIÓN PRINCIPAL
         // -----------------------------------------------------
-
         JPanel panelInformacion = new JPanel(
             new BorderLayout()
         );
-
         panelInformacion.setBackground(Color.WHITE);
-
         panelInformacion.setBorder(
             BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(
@@ -161,29 +144,24 @@ public class VentanaDetalleContenido extends JFrame {
                 )
             )
         );
-
         panelCentral.add(
             panelInformacion,
             BorderLayout.NORTH
         );
 
         panelDatos = new JPanel();
-
         panelDatos.setLayout(
             new BoxLayout(
                 panelDatos,
                 BoxLayout.Y_AXIS
             )
         );
-
         panelDatos.setBackground(Color.WHITE);
-
         panelDatos.setBorder(
             BorderFactory.createEmptyBorder(
                 10, 0, 0, 0
             )
         );
-
         panelInformacion.add(
             panelDatos,
             BorderLayout.CENTER
@@ -192,13 +170,10 @@ public class VentanaDetalleContenido extends JFrame {
         // -----------------------------------------------------
         // SECCIÓN SECUNDARIA
         // -----------------------------------------------------
-
-        JPanel panelSeccion = new JPanel(
+        panelSeccion = new JPanel(
             new BorderLayout()
         );
-
         panelSeccion.setBackground(colorFondo);
-
         panelSeccion.setBorder(
             BorderFactory.createEmptyBorder(
                 30, 0, 0, 0
@@ -206,7 +181,6 @@ public class VentanaDetalleContenido extends JFrame {
         );
 
         etiquetaSeccionSecundaria = new JLabel();
-
         etiquetaSeccionSecundaria.setFont(
             new Font(
                 "Segoe UI",
@@ -214,29 +188,24 @@ public class VentanaDetalleContenido extends JFrame {
                 20
             )
         );
-
         panelSeccion.add(
             etiquetaSeccionSecundaria,
             BorderLayout.NORTH
         );
 
         panelSecundario = new JPanel();
-
         panelSecundario.setLayout(
             new BoxLayout(
                 panelSecundario,
                 BoxLayout.Y_AXIS
             )
         );
-
         panelSecundario.setBackground(colorFondo);
 
         JScrollPane scroll = new JScrollPane(
             panelSecundario
         );
-
         scroll.setBorder(null);
-
         scroll.setBackground(colorFondo);
 
         panelSeccion.add(
@@ -253,20 +222,12 @@ public class VentanaDetalleContenido extends JFrame {
     // =========================================================
     // USUARIO
     // =========================================================
-
     private void mostrarUsuario(
         String[] datos
     ) {
-
         setTitle("Detalle del usuario");
-
-        etiquetaTitulo.setText(
-            "Detalle del usuario"
-        );
-
-        etiquetaSeccionSecundaria.setText(
-            "Préstamos"
-        );
+        etiquetaTitulo.setText("Detalle del usuario");
+        etiquetaSeccionSecundaria.setText("Préstamos");
 
         limpiarPaneles();
 
@@ -274,56 +235,45 @@ public class VentanaDetalleContenido extends JFrame {
         String nombre = obtenerDato(datos, 1);
         String email = obtenerDato(datos, 2);
 
-        añadirDato(
-            "ID: " + id
-        );
+        añadirDato("ID: " + id);
+        añadirDato("Nombre: " + nombre);
+        añadirDato("Email: " + email);
 
-        añadirDato(
-            "Nombre: " + nombre
-        );
+        JTabbedPane pestanasPrestamos = new JTabbedPane();
+        JPanel panelActivos = crearPanelListaPrestamos();
+        JPanel panelDevueltos = crearPanelListaPrestamos();
 
-        añadirDato(
-            "Email: " + email
-        );
-
-        // Datos temporales.
-        // Posteriormente esta lista se rellenará
-        // con los préstamos obtenidos del controlador.
-
+        // Datos temporales. Posteriormente vendrán del controlador.
         añadirPrestamoTemporal(
-            "R001",
-            "El Hobbit",
-            "20/09/2026",
-            "Activo",
-            "-"
+            panelActivos,
+            "P001", nombre, "R001", "El Hobbit",
+            "20/09/2026", "Activo", "-", true
+        );
+        añadirPrestamoTemporal(
+            panelDevueltos,
+            "P002", nombre, "R002", "Interstellar",
+            "10/09/2026", "Finalizado", "20/09/2026", false
         );
 
-        añadirPrestamoTemporal(
-            "R002",
-            "Interstellar",
-            "10/09/2026",
-            "Finalizado",
-            "20/09/2026"
-        );
+        pestanasPrestamos.addTab("Activos", crearScroll(panelActivos));
+        pestanasPrestamos.addTab("Devueltos", crearScroll(panelDevueltos));
+
+        panelSecundario.setLayout(new BorderLayout());
+        panelSecundario.add(pestanasPrestamos, BorderLayout.CENTER);
+
+        panelSecundario.revalidate();
+        panelSecundario.repaint();
     }
 
     // =========================================================
     // RECURSO
     // =========================================================
-
     private void mostrarRecurso(
         String[] datos
     ) {
-
         setTitle("Detalle del recurso");
-
-        etiquetaTitulo.setText(
-            "Detalle del recurso"
-        );
-
-        etiquetaSeccionSecundaria.setText(
-            "Historial de préstamos"
-        );
+        etiquetaTitulo.setText("Detalle del recurso");
+        etiquetaSeccionSecundaria.setText("Historial de préstamos");
 
         limpiarPaneles();
 
@@ -335,62 +285,32 @@ public class VentanaDetalleContenido extends JFrame {
         String informacion1 = obtenerDato(datos, 5);
         String informacion2 = obtenerDato(datos, 6);
 
-        añadirDato(
-            "ID: " + id
-        );
+        añadirDato("ID: " + id);
+        añadirDato("Título: " + titulo);
+        añadirDato("Tipo: " + tipo);
+        añadirDato("Año: " + ano);
+        añadirDato("Estado: " + estado);
+        añadirDato(informacion1 + " · " + informacion2);
 
-        añadirDato(
-            "Título: " + titulo
-        );
-
-        añadirDato(
-            "Tipo: " + tipo
-        );
-
-        añadirDato(
-            "Año: " + ano
-        );
-
-        añadirDato(
-            "Estado: " + estado
-        );
-
-        añadirDato(
-            informacion1
-            + " · "
-            + informacion2
-        );
-
-        // Datos temporales.
-        // Posteriormente esta lista se rellenará
-        // con los préstamos obtenidos del controlador.
-
+        // Datos temporales. El controlador proporcionará todo el historial.
         añadirPrestamoTemporal(
-            "R001",
-            "Juan Pérez",
-            "20/09/2026",
-            "Activo",
-            "-"
+            panelSecundario,
+            "P001", "Juan Pérez", id, titulo,
+            "20/09/2026", "Activo", "-", true
+        );
+        añadirPrestamoTemporal(
+            panelSecundario,
+            "P002", "Ana García", id, titulo,
+            "10/09/2026", "Finalizado", "20/09/2026", false
         );
     }
 
     // =========================================================
     // PRÉSTAMO
     // =========================================================
-
-    private void mostrarPrestamo(
-        String[] datos
-    ) {
-
+    private void mostrarPrestamo(String[] datos) {
         setTitle("Detalle del préstamo");
-
-        etiquetaTitulo.setText(
-            "Detalle del préstamo"
-        );
-
-        etiquetaSeccionSecundaria.setText(
-            "Información"
-        );
+        etiquetaTitulo.setText("Detalle del préstamo");
 
         limpiarPaneles();
 
@@ -402,52 +322,25 @@ public class VentanaDetalleContenido extends JFrame {
         String estado = obtenerDato(datos, 5);
         String fechaDevolucion = obtenerDato(datos, 6);
 
-        añadirDato(
-            "ID préstamo: " + idPrestamo
-        );
+        añadirDato("ID préstamo: " + idPrestamo);
+        añadirDato("Usuario: " + nombreUsuario);
+        añadirDato("ID recurso: " + idRecurso);
+        añadirDato("Recurso: " + tituloRecurso);
+        añadirDato("Fecha préstamo: " + fechaPrestamo);
+        añadirDato("Estado: " + estado);
+        añadirDato("Fecha devolución: " + fechaDevolucion);
 
-        añadirDato(
-            "Usuario: " + nombreUsuario
-        );
-
-        añadirDato(
-            "ID recurso: " + idRecurso
-        );
-
-        añadirDato(
-            "Recurso: " + tituloRecurso
-        );
-
-        añadirDato(
-            "Fecha préstamo: " + fechaPrestamo
-        );
-
-        añadirDato(
-            "Estado: " + estado
-        );
-
-        añadirDato(
-            "Fecha devolución: "
-            + fechaDevolucion
-        );
-
-        // En un préstamo no necesitamos
-        // mostrar otro historial dentro del detalle.
-        panelSecundario.setVisible(false);
+        panelSeccion.setVisible(false);
     }
 
     // =========================================================
     // CONTENIDO GENÉRICO
     // =========================================================
-
     private void mostrarContenidoGenerico() {
-
         setTitle("Detalle");
-
         etiquetaTitulo.setText(
             "Detalle"
         );
-
         etiquetaSeccionSecundaria.setText(
             "Información"
         );
@@ -462,13 +355,10 @@ public class VentanaDetalleContenido extends JFrame {
     // =========================================================
     // DATOS PRINCIPALES
     // =========================================================
-
     private void añadirDato(
         String texto
     ) {
-
         JLabel etiqueta = new JLabel(texto);
-
         etiqueta.setFont(
             new Font(
                 "Segoe UI",
@@ -476,123 +366,110 @@ public class VentanaDetalleContenido extends JFrame {
                 15
             )
         );
-
         etiqueta.setBorder(
             BorderFactory.createEmptyBorder(
                 3, 0, 3, 0
             )
         );
-
         panelDatos.add(etiqueta);
     }
 
     // =========================================================
     // PRÉSTAMOS TEMPORALES
     // =========================================================
+    private JPanel crearPanelListaPrestamos() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(colorFondo);
+        return panel;
+    }
+
+    private JScrollPane crearScroll(JPanel panel) {
+        JScrollPane scroll = new JScrollPane(panel);
+        scroll.setBorder(null);
+        scroll.setBackground(colorFondo);
+        return scroll;
+    }
 
     private void añadirPrestamoTemporal(
+        JPanel panelDestino,
+        String idPrestamo,
+        String nombreUsuario,
         String idRecurso,
         String titulo,
         String fechaPrestamo,
         String estado,
-        String fechaDevolucion
+        String fechaDevolucion,
+        boolean esActivo
     ) {
+        String[] datosPrestamo = {
+            idPrestamo,
+            nombreUsuario,
+            idRecurso,
+            titulo,
+            fechaPrestamo,
+            estado,
+            fechaDevolucion
+        };
 
-        JPanel panelPrestamo = new JPanel(
-            new BorderLayout()
-        );
-
+        JPanel panelPrestamo = new JPanel(new BorderLayout());
         panelPrestamo.setBackground(Color.WHITE);
-
         panelPrestamo.setBorder(
             BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(
-                    new Color(220, 220, 220)
-                ),
-                BorderFactory.createEmptyBorder(
-                    12, 15, 12, 10
-                )
+                BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                BorderFactory.createEmptyBorder(12, 15, 12, 10)
             )
         );
-
         panelPrestamo.setMaximumSize(
-            new Dimension(
-                Integer.MAX_VALUE,
-                100
-            )
+            new Dimension(Integer.MAX_VALUE, 100)
         );
 
         JPanel panelDatosPrestamo = new JPanel();
-
         panelDatosPrestamo.setLayout(
-            new BoxLayout(
-                panelDatosPrestamo,
-                BoxLayout.Y_AXIS
-            )
+            new BoxLayout(panelDatosPrestamo, BoxLayout.Y_AXIS)
         );
-
         panelDatosPrestamo.setOpaque(false);
 
-        JLabel etiquetaTitulo = new JLabel(
-            titulo
-        );
-
+        JLabel etiquetaTitulo = new JLabel(titulo);
         etiquetaTitulo.setFont(
-            new Font(
-                "Segoe UI",
-                Font.BOLD,
-                16
-            )
+            new Font("Segoe UI", Font.BOLD, 16)
         );
 
+        JLabel etiquetaUsuario = new JLabel(
+            "Usuario: " + nombreUsuario
+        );
         JLabel etiquetaId = new JLabel(
             "ID recurso: " + idRecurso
         );
-
         JLabel etiquetaFecha = new JLabel(
-            "Fecha préstamo: "
-            + fechaPrestamo
+            "Fecha préstamo: " + fechaPrestamo
         );
-
         JLabel etiquetaEstado = new JLabel(
             "Estado: " + estado
         );
-
         JLabel etiquetaDevolucion = new JLabel(
-            "Fecha devolución: "
-            + fechaDevolucion
+            "Fecha devolución: " + fechaDevolucion
         );
 
         Font fuenteSecundaria = new Font(
-            "Segoe UI",
-            Font.PLAIN,
-            13
+            "Segoe UI", Font.PLAIN, 13
         );
 
+        etiquetaUsuario.setFont(fuenteSecundaria);
         etiquetaId.setFont(fuenteSecundaria);
         etiquetaFecha.setFont(fuenteSecundaria);
         etiquetaEstado.setFont(fuenteSecundaria);
         etiquetaDevolucion.setFont(fuenteSecundaria);
 
-        panelDatosPrestamo.add(
-            etiquetaTitulo
-        );
+        panelDatosPrestamo.add(etiquetaTitulo);
+        panelDatosPrestamo.add(etiquetaUsuario);
+        panelDatosPrestamo.add(etiquetaId);
+        panelDatosPrestamo.add(etiquetaFecha);
+        panelDatosPrestamo.add(etiquetaEstado);
 
-        panelDatosPrestamo.add(
-            etiquetaId
-        );
-
-        panelDatosPrestamo.add(
-            etiquetaFecha
-        );
-
-        panelDatosPrestamo.add(
-            etiquetaEstado
-        );
-
-        panelDatosPrestamo.add(
-            etiquetaDevolucion
-        );
+        if (!esActivo && !fechaDevolucion.equals("-")) {
+            panelDatosPrestamo.add(etiquetaDevolucion);
+        }
 
         panelPrestamo.add(
             panelDatosPrestamo,
@@ -600,59 +477,82 @@ public class VentanaDetalleContenido extends JFrame {
         );
 
         JPanel panelBotones = new JPanel(
-            new FlowLayout(
-                FlowLayout.RIGHT,
-                5,
-                5
-            )
+            new FlowLayout(FlowLayout.RIGHT, 5, 5)
         );
-
         panelBotones.setOpaque(false);
 
-        JButton botonEditar = new JButton(
-            "Editar"
-        );
+        JButton botonEditar = new JButton("Editar");
+        botonEditar.setBackground(colorAmarillo);
+        botonEditar.addActionListener(e -> {
+            if (accionEditarPrestamo != null) {
+                accionEditarPrestamo.accept(datosPrestamo);
+            }
+        });
+        panelBotones.add(botonEditar);
 
-        botonEditar.setBackground(
-            colorAmarillo
-        );
-
-        JButton botonDevolver = new JButton(
-            "Devolver"
-        );
-
-        botonDevolver.setBackground(
-            colorRojo
-        );
-
-        panelBotones.add(
-            botonEditar
-        );
-
-        panelBotones.add(
-            botonDevolver
-        );
+        if (esActivo) {
+            JButton botonDevolver = new JButton("Devolver");
+            botonDevolver.setBackground(colorRojo);
+            botonDevolver.addActionListener(e -> {
+                if (accionDevolverPrestamo != null) {
+                    accionDevolverPrestamo.accept(datosPrestamo);
+                }
+            });
+            panelBotones.add(botonDevolver);
+        }
 
         panelPrestamo.add(
             panelBotones,
             BorderLayout.EAST
         );
 
-        panelSecundario.add(
-            panelPrestamo
+        // El préstamo completo también es clicable para abrir su detalle.
+        añadirEventoDetallePrestamo(panelPrestamo, datosPrestamo);
+        añadirEventoDetallePrestamo(panelDatosPrestamo, datosPrestamo);
+
+        panelDestino.add(panelPrestamo);
+    }
+
+    private void añadirEventoDetallePrestamo(
+        JPanel panel,
+        String[] datosPrestamo
+    ) {
+        panel.setCursor(
+            Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
         );
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    VentanaDetalleContenido ventana =
+                        new VentanaDetalleContenido(
+                            PanelContenido.MODO_PRESTAMOS,
+                            datosPrestamo
+                        );
+                    ventana.setAccionEditarPrestamo(
+                        accionEditarPrestamo
+                    );
+                    ventana.setAccionDevolverPrestamo(
+                        accionDevolverPrestamo
+                    );
+                    ventana.setVisible(true);
+                }
+            }
+        });
     }
 
     // =========================================================
     // LIMPIEZA
     // =========================================================
-
     private void limpiarPaneles() {
-
         panelDatos.removeAll();
-
         panelSecundario.removeAll();
-
+        panelSecundario.setLayout(
+            new BoxLayout(
+                panelSecundario,
+                BoxLayout.Y_AXIS
+            )
+        );
         panelSecundario.setVisible(true);
     }
 
@@ -660,17 +560,26 @@ public class VentanaDetalleContenido extends JFrame {
         String[] datos,
         int posicion
     ) {
-
         if (
             datos == null
             || posicion < 0
             || posicion >= datos.length
             || datos[posicion] == null
         ) {
-
             return "";
         }
-
         return datos[posicion];
+    }
+
+    public void setAccionEditarPrestamo(
+            Consumer<String[]> accionEditarPrestamo
+    ) {
+        this.accionEditarPrestamo = accionEditarPrestamo;
+    }
+
+    public void setAccionDevolverPrestamo(
+            Consumer<String[]> accionDevolverPrestamo
+    ) {
+        this.accionDevolverPrestamo = accionDevolverPrestamo;
     }
 }

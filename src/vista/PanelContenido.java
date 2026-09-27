@@ -846,6 +846,7 @@ public class PanelContenido extends JPanel {
         	    )
         	);
 
+        // ABRIR DETALLE DEL PRÉSTAMO
         añadirEventoDetalle(
             fila,
             crearDatosPrestamo(
@@ -1026,13 +1027,33 @@ public class PanelContenido extends JPanel {
 
                     if (e.getClickCount() == 1) {
 
-                        VentanaDetalleContenido ventana =
-                            new VentanaDetalleContenido(
-                                modoActual,
-                                datos
-                            );
+                    	VentanaDetalleContenido ventana =
+                    		    new VentanaDetalleContenido(
+                    		        modoActual,
+                    		        datos
+                    		    );
 
-                        ventana.setVisible(true);
+                    		ventana.setAccionEditarPrestamo(
+                    		    datosPrestamo -> abrirFormularioEdicionPrestamo(
+                    		        datosPrestamo[0],
+                    		        datosPrestamo[1],
+                    		        datosPrestamo[2],
+                    		        datosPrestamo[3],
+                    		        datosPrestamo[4],
+                    		        datosPrestamo[5],
+                    		        datosPrestamo[6]
+                    		    )
+                    		);
+
+                    		ventana.setAccionDevolverPrestamo(
+                    		    datosPrestamo -> abrirConfirmacionDevolucion(
+                    		        datosPrestamo[0],
+                    		        datosPrestamo[1],
+                    		        datosPrestamo[3]
+                    		    )
+                    		);
+
+                    		ventana.setVisible(true);
                     }
                 }
             }
@@ -1077,6 +1098,7 @@ public class PanelContenido extends JPanel {
         };
     }
 
+    // =========================================================
     private String[] crearDatosPrestamo(
         String idPrestamo,
         String nombreUsuario,
@@ -1098,7 +1120,6 @@ public class PanelContenido extends JPanel {
         };
     }
 
-    // =========================================================
     // ACCESO AL MODO ACTUAL
     // =========================================================
 

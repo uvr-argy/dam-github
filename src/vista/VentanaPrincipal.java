@@ -56,7 +56,6 @@ public class VentanaPrincipal extends JFrame {
     // ========================================
     // MAIN
     // ========================================
-
     public static void main(String[] args) {
 
         EventQueue.invokeLater(() -> {
