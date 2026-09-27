@@ -1,8 +1,12 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -10,60 +14,250 @@ import javax.swing.JPanel;
 
 public class FormularioEliminar extends JDialog {
 
-	private static final long serialVersionUID = 1L;
-	private boolean confirmado;
+    private static final long serialVersionUID = 1L;
 
-    public FormularioEliminar(String tipo, String identificador) {
+    private final Color colorRojo = new Color(230, 100, 100);
 
-        setTitle("Confirmar eliminación");
-        setSize(450, 220);
-        setLocationRelativeTo(null);
-        setModal(true);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    private String tipo;
+    private String descripcion;
 
-        JPanel panelPrincipal = new JPanel(new BorderLayout(15, 15));
-        panelPrincipal.setBorder(
-            javax.swing.BorderFactory.createEmptyBorder(25, 25, 25, 25)
-        );
+    public FormularioEliminar(
+            String tipo,
+            String descripcion
+    ) {
+        this.tipo = tipo;
+        this.descripcion = descripcion;
 
-        JLabel etiqueta = new JLabel(
-            "<html><center>¿Seguro que quieres eliminar este "
-            + tipo.toLowerCase()
-            + "?<br><br>"
-            + identificador
-            + "</center></html>"
-        );
+        configurarVentana();
 
-        etiqueta.setFont(new Font("Arial", Font.PLAIN, 16));
-
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
-
-        JButton botonCancelar = new JButton("Cancelar");
-        JButton botonEliminar = new JButton("Eliminar");
-
-        botonEliminar.setBackground(new java.awt.Color(220, 80, 80));
-        botonEliminar.setForeground(java.awt.Color.WHITE);
-
-        botonCancelar.addActionListener(e -> {
-            confirmado = false;
-            dispose();
-        });
-
-        botonEliminar.addActionListener(e -> {
-            confirmado = true;
-            dispose();
-        });
-
-        panelBotones.add(botonCancelar);
-        panelBotones.add(botonEliminar);
-
-        panelPrincipal.add(etiqueta, BorderLayout.CENTER);
-        panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
-
-        add(panelPrincipal);
+        crearContenido(false);
     }
 
-    public boolean isConfirmado() {
-        return confirmado;
+    public FormularioEliminar(
+            String tipo,
+            String descripcion,
+            boolean esDevolucion
+    ) {
+        this.tipo = tipo;
+        this.descripcion = descripcion;
+
+        configurarVentana();
+
+        crearContenido(esDevolucion);
+    }
+
+    private void configurarVentana() {
+
+        setTitle("Confirmar eliminación");
+
+        setSize(420, 220);
+
+        setLocationRelativeTo(null);
+
+        setModal(true);
+
+        setResizable(false);
+
+        setLayout(new BorderLayout());
+
+        getContentPane().setBackground(Color.WHITE);
+    }
+
+    private void crearContenido(boolean esDevolucion) {
+
+        JPanel panelPrincipal = new JPanel(
+            new BorderLayout()
+        );
+
+        panelPrincipal.setBackground(Color.WHITE);
+
+        panelPrincipal.setBorder(
+            BorderFactory.createEmptyBorder(
+                25,
+                25,
+                20,
+                25
+            )
+        );
+
+        // ========================================
+        // TÍTULO
+        // ========================================
+
+        String textoTitulo;
+
+        if (esDevolucion) {
+            textoTitulo = "Confirmar devolución";
+        } else {
+            textoTitulo = "Confirmar eliminación";
+        }
+
+        JLabel etiquetaTitulo = new JLabel(
+            textoTitulo
+        );
+
+        etiquetaTitulo.setFont(
+            new Font(
+                "Segoe UI",
+                Font.BOLD,
+                20
+            )
+        );
+
+        panelPrincipal.add(
+            etiquetaTitulo,
+            BorderLayout.NORTH
+        );
+
+        // ========================================
+        // MENSAJE
+        // ========================================
+
+        JPanel panelMensaje = new JPanel();
+
+        panelMensaje.setBackground(Color.WHITE);
+
+        panelMensaje.setLayout(
+            new javax.swing.BoxLayout(
+                panelMensaje,
+                javax.swing.BoxLayout.Y_AXIS
+            )
+        );
+
+        String textoPregunta;
+
+        if (esDevolucion) {
+            textoPregunta =
+                "¿Seguro que quieres devolver este préstamo?";
+        } else {
+            textoPregunta =
+                "¿Seguro que quieres eliminar este "
+                + tipo.toLowerCase()
+                + "?";
+        }
+
+        JLabel etiquetaPregunta = new JLabel(
+            textoPregunta
+        );
+
+        etiquetaPregunta.setFont(
+            new Font(
+                "Segoe UI",
+                Font.PLAIN,
+                14
+            )
+        );
+
+        JLabel etiquetaElemento = new JLabel(
+            descripcion
+        );
+
+        etiquetaElemento.setFont(
+            new Font(
+                "Segoe UI",
+                Font.BOLD,
+                14
+            )
+        );
+
+        panelMensaje.add(
+            etiquetaPregunta
+        );
+
+        panelMensaje.add(
+            javax.swing.Box.createVerticalStrut(8)
+        );
+
+        panelMensaje.add(
+            etiquetaElemento
+        );
+
+        panelPrincipal.add(
+            panelMensaje,
+            BorderLayout.CENTER
+        );
+
+        // ========================================
+        // BOTONES
+        // ========================================
+
+        JPanel panelBotones = new JPanel(
+            new FlowLayout(
+                FlowLayout.RIGHT,
+                10,
+                0
+            )
+        );
+
+        panelBotones.setBackground(Color.WHITE);
+
+        JButton botonCancelar = new JButton(
+            "Cancelar"
+        );
+
+        botonCancelar.setPreferredSize(
+            new Dimension(100, 35)
+        );
+
+        String textoBoton;
+
+        if (esDevolucion) {
+            textoBoton = "Devolver";
+        } else {
+            textoBoton = "Eliminar";
+        }
+
+        JButton botonAccion = new JButton(
+            textoBoton
+        );
+
+        botonAccion.setBackground(colorRojo);
+
+        botonAccion.setPreferredSize(
+            new Dimension(100, 35)
+        );
+
+        panelBotones.add(
+            botonCancelar
+        );
+
+        panelBotones.add(
+            botonAccion
+        );
+
+        panelPrincipal.add(
+            panelBotones,
+            BorderLayout.SOUTH
+        );
+
+        // ========================================
+        // EVENTOS
+        // ========================================
+
+        botonCancelar.addActionListener(
+            e -> dispose()
+        );
+
+        botonAccion.addActionListener(
+            e -> {
+
+                if (esDevolucion) {
+
+                    // Aquí conectaremos posteriormente
+                    // con el controlador para devolver
+                    // el préstamo.
+
+                } else {
+
+                    // Aquí conectaremos posteriormente
+                    // con el controlador para eliminar.
+
+                }
+
+                dispose();
+            }
+        );
+
+        add(panelPrincipal);
     }
 }

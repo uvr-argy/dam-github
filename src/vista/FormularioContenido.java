@@ -276,9 +276,7 @@ public class FormularioContenido extends JDialog {
     }
 
     // =========================================================
-
     // MODO USUARIO
-
     // =========================================================
 
     private void configurarModoUsuario() {

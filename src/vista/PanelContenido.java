@@ -837,6 +837,14 @@ public class PanelContenido extends JPanel {
         	        fechaDevolucion
         	    )
         	);
+        
+        botonDevolver.addActionListener(
+        	    e -> abrirConfirmacionDevolucion(
+        	        idPrestamo,
+        	        nombreUsuario,
+        	        tituloRecurso
+        	    )
+        	);
 
         añadirEventoDetalle(
             fila,
@@ -965,6 +973,29 @@ public class PanelContenido extends JPanel {
             new FormularioEliminar(
                 tipo,
                 descripcion
+            );
+
+        formulario.setVisible(true);
+    }
+    
+    
+    // =========================================================
+    // DEVOLUCIÓN DE PRESTAMOS
+    // =========================================================
+    private void abrirConfirmacionDevolucion(
+            String idPrestamo,
+            String nombreUsuario,
+            String tituloRecurso
+    ) {
+        FormularioEliminar formulario =
+            new FormularioEliminar(
+                "devolución",
+                idPrestamo
+                    + " · "
+                    + tituloRecurso
+                    + " · "
+                    + nombreUsuario,
+                true
             );
 
         formulario.setVisible(true);
