@@ -15,6 +15,7 @@ public class GestionPrestamos {
     private ArrayList<Recurso> recursos;
     private ArrayList<Prestamo> prestamos;
     private Map<String, ArrayList<Prestamo>> historial;
+    private Map<String, ArrayList<Prestamo>> historialUsuarios;
 
     public GestionPrestamos(
             ArrayList<Usuario> usuarios,
@@ -25,6 +26,7 @@ public class GestionPrestamos {
         this.recursos = recursos;
         this.prestamos = prestamos;
         this.historial = new HashMap<>();
+        this.historialUsuarios = new HashMap<>();
     }
 
     // ==================== PRESTAMOS ====================
@@ -58,6 +60,13 @@ public class GestionPrestamos {
         if (!historial.containsKey(idRecurso)) {
             historial.put(idRecurso, new ArrayList<>());
         }
+        
+        // Añadimos también el préstamo al historial del usuario
+        if (!historialUsuarios.containsKey(idUsuario)) {
+            historialUsuarios.put(idUsuario, new ArrayList<>());
+        }
+
+        historialUsuarios.get(idUsuario).add(prestamo);
 
         historial.get(idRecurso).add(prestamo);
 
@@ -166,5 +175,25 @@ public class GestionPrestamos {
             }
         }
         return resultados;
+    }
+    
+    // Devuelve el historial completo de préstamos organizado por recurso
+    public Map<String, ArrayList<Prestamo>> getHistorialRecursos() {
+        return historial;
+    }
+
+    // Devuelve el historial completo de préstamos organizado por usuario
+    public Map<String, ArrayList<Prestamo>> getHistorialUsuarios() {
+        return historialUsuarios;
+    }
+    
+    // Devuelve el historial de préstamos de un recurso concreto
+    public ArrayList<Prestamo> getHistorialRecurso(String idRecurso) {
+        return historial.getOrDefault(idRecurso, new ArrayList<>());
+    }
+
+    // Devuelve el historial de préstamos de un usuario concreto
+    public ArrayList<Prestamo> getHistorialUsuario(String idUsuario) {
+        return historialUsuarios.getOrDefault(idUsuario, new ArrayList<>());
     }
 }
