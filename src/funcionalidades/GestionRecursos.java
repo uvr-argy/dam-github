@@ -9,11 +9,9 @@ import modelo.Recurso;
 public class GestionRecursos {
 
     private ArrayList<Recurso> recursos;
-    private ArrayList<Prestamo> prestamos;
 
     public GestionRecursos(ArrayList<Recurso> recursos, ArrayList<Prestamo> prestamos) {
         this.recursos = recursos;
-        this.prestamos = prestamos;
     }
 
     // ==================== RECURSOS ====================
@@ -168,62 +166,5 @@ public class GestionRecursos {
         }
 
         return resultados;
-    }
-
-    // Recursos más prestados
-    public ArrayList<Recurso> recursosMasPrestados(int cantidad) {
-
-        ArrayList<Recurso> resultados = new ArrayList<>();
-
-        for (Recurso recurso : recursos) {
-
-            int contador = 0;
-
-            for (Prestamo prestamo : prestamos) {
-
-                // Compruebo si ese préstamo corresponde al recurso
-                if (prestamo.getRecurso().getId().equals(recurso.getId())) {
-
-                    // Si coincide suma
-                    contador++;
-                }
-            }
-
-            // Comprobamos
-            if (contador >= cantidad) {
-                resultados.add(recurso);
-            }
-        }
-
-        return resultados;
-    }
-    
-    //recursosPorAno
-    public ArrayList<Recurso> recursosPorAno(int ano) {
-        ArrayList<Recurso> resultados = new ArrayList<>();
-        for (Recurso recurso:recursos) {
-            if (recurso.getAno()!=null && recurso.getAno().getYear()==ano) {
-                resultados.add(recurso);
-            }
-        }
-        return resultados;
-    }
-    
-    //recursos no prestados
-    public ArrayList<Recurso> recursosNuncaPrestados() {
-        ArrayList<Recurso> resultados = new ArrayList<>();
-        for (Recurso recurso:recursos) {
-            boolean haSidoPrestado = false;
-            for (Prestamo prestamo:prestamos) {
-                if (prestamo.getRecurso().getId().equals(recurso.getId())) {
-                    haSidoPrestado = true;
-                    break;
-                }
-            }
-            if (!haSidoPrestado) {
-                resultados.add(recurso);
-            }
-        }
-        return resultados;
-    }
+    } 
 }

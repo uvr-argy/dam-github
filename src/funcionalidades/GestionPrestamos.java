@@ -75,7 +75,7 @@ public class GestionPrestamos {
         return true;
     }
 
- // Devolver recurso
+    // Devolver recurso
     public boolean devolverRecurso(String idRecurso) {
 
         Recurso recurso = buscarRecurso(idRecurso);
@@ -137,8 +137,6 @@ public class GestionPrestamos {
         return resultados;
     }
 
-    // ==================== BUSQUEDAS INTERNAS ====================
-
     private Usuario buscarUsuario(String id) {
 
         for (Usuario usuario : usuarios) {
@@ -166,7 +164,7 @@ public class GestionPrestamos {
         return prestamos;
     }
     
-    //prestamos devuletos
+    //prestamos devueltos
     public ArrayList<Prestamo> prestamosDevueltos() {
         ArrayList<Prestamo> resultados = new ArrayList<>();
         for (Prestamo prestamo:prestamos) {
