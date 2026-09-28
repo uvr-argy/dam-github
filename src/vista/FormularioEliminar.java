@@ -22,52 +22,43 @@ public class FormularioEliminar extends JDialog {
 	private String descripcion;
 
 	public FormularioEliminar(String tipo, String descripcion) {
+		
 		this.tipo = tipo;
 		this.descripcion = descripcion;
 
 		configurarVentana();
-
 		crearContenido(false);
 	}
 
 	public FormularioEliminar(String tipo, String descripcion, boolean esDevolucion) {
+		
 		this.tipo = tipo;
 		this.descripcion = descripcion;
-
+		
 		configurarVentana();
-
 		crearContenido(esDevolucion);
 	}
 
 	private void configurarVentana() {
 
 		setTitle("Confirmar eliminación");
-
 		setSize(420, 220);
-
 		setLocationRelativeTo(null);
-
 		setModal(true);
-
 		setResizable(false);
-
 		setLayout(new BorderLayout());
-
 		getContentPane().setBackground(Color.WHITE);
 	}
 
 	private void crearContenido(boolean esDevolucion) {
 
 		JPanel panelPrincipal = new JPanel(new BorderLayout());
-
 		panelPrincipal.setBackground(Color.WHITE);
-
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(25, 25, 20, 25));
 
 		// ========================================
 		// TÍTULO
 		// ========================================
-
 		String textoTitulo;
 
 		if (esDevolucion) {
@@ -77,19 +68,14 @@ public class FormularioEliminar extends JDialog {
 		}
 
 		JLabel etiquetaTitulo = new JLabel(textoTitulo);
-
 		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
-
 		panelPrincipal.add(etiquetaTitulo, BorderLayout.NORTH);
 
 		// ========================================
 		// MENSAJE
 		// ========================================
-
 		JPanel panelMensaje = new JPanel();
-
 		panelMensaje.setBackground(Color.WHITE);
-
 		panelMensaje.setLayout(new javax.swing.BoxLayout(panelMensaje, javax.swing.BoxLayout.Y_AXIS));
 
 		String textoPregunta;
@@ -101,31 +87,24 @@ public class FormularioEliminar extends JDialog {
 		}
 
 		JLabel etiquetaPregunta = new JLabel(textoPregunta);
-
 		etiquetaPregunta.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
 		JLabel etiquetaElemento = new JLabel(descripcion);
-
 		etiquetaElemento.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
 		panelMensaje.add(etiquetaPregunta);
-
 		panelMensaje.add(javax.swing.Box.createVerticalStrut(8));
-
 		panelMensaje.add(etiquetaElemento);
-
+		
 		panelPrincipal.add(panelMensaje, BorderLayout.CENTER);
 
 		// ========================================
 		// BOTONES
 		// ========================================
-
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
 		panelBotones.setBackground(Color.WHITE);
 
 		JButton botonCancelar = new JButton("Cancelar");
-
 		botonCancelar.setPreferredSize(new Dimension(100, 35));
 
 		String textoBoton;
@@ -137,23 +116,19 @@ public class FormularioEliminar extends JDialog {
 		}
 
 		JButton botonAccion = new JButton(textoBoton);
-
 		botonAccion.setBackground(colorRojo);
-
 		botonAccion.setPreferredSize(new Dimension(100, 35));
 
 		panelBotones.add(botonCancelar);
-
 		panelBotones.add(botonAccion);
-
+		
 		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
 		// ========================================
 		// EVENTOS
 		// ========================================
-
 		botonCancelar.addActionListener(e -> dispose());
-
+		
 		botonAccion.addActionListener(e -> {
 
 			if (esDevolucion) {
