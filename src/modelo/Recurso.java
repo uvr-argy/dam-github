@@ -9,6 +9,7 @@ public class Recurso {
 	private LocalDate ano;
 	private boolean estado;
 	
+	
 	public Recurso(String id, String titulo, LocalDate ano, boolean estado) {
 		this.id = id;
 		this.titulo = titulo;

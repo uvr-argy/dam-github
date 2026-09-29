@@ -1,4 +1,4 @@
-package controlador;
+package funcionalidades;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import modelo.Prestamo;
 import modelo.Recurso;
 import modelo.Usuario;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GestionPrestamos {
 
     private ArrayList<Usuario> usuarios;
     private ArrayList<Recurso> recursos;
     private ArrayList<Prestamo> prestamos;
+    private Map<String, ArrayList<Prestamo>> historial;
+    private Map<String, ArrayList<Prestamo>> historialUsuarios;
 
     public GestionPrestamos(
             ArrayList<Usuario> usuarios,
@@ -21,6 +25,8 @@ public class GestionPrestamos {
         this.usuarios = usuarios;
         this.recursos = recursos;
         this.prestamos = prestamos;
+        this.historial = new HashMap<>();
+        this.historialUsuarios = new HashMap<>();
     }
 
     // ==================== PRESTAMOS ====================
@@ -50,13 +56,26 @@ public class GestionPrestamos {
         );
 
         prestamos.add(prestamo); // Se añade el préstamo
+        
+        if (!historial.containsKey(idRecurso)) {
+            historial.put(idRecurso, new ArrayList<>());
+        }
+        
+        // Añadimos también el préstamo al historial del usuario
+        if (!historialUsuarios.containsKey(idUsuario)) {
+            historialUsuarios.put(idUsuario, new ArrayList<>());
+        }
+
+        historialUsuarios.get(idUsuario).add(prestamo);
+
+        historial.get(idRecurso).add(prestamo);
 
         recurso.setEstado(false); // Al prestar un recurso debe quedar como no disponible
 
         return true;
     }
 
- // Devolver recurso
+    // Devolver recurso
     public boolean devolverRecurso(String idRecurso) {
 
         Recurso recurso = buscarRecurso(idRecurso);
@@ -118,8 +137,6 @@ public class GestionPrestamos {
         return resultados;
     }
 
-    // ==================== BUSQUEDAS INTERNAS ====================
-
     private Usuario buscarUsuario(String id) {
 
         for (Usuario usuario : usuarios) {
@@ -140,5 +157,41 @@ public class GestionPrestamos {
         }
 
         return null;
+    }
+    
+    //listar los prestamos
+    public ArrayList<Prestamo> listarPrestamos() {
+        return prestamos;
+    }
+    
+    //prestamos devueltos
+    public ArrayList<Prestamo> prestamosDevueltos() {
+        ArrayList<Prestamo> resultados = new ArrayList<>();
+        for (Prestamo prestamo:prestamos) {
+            if (!prestamo.isEstadoPrestamo()) {
+                resultados.add(prestamo);
+            }
+        }
+        return resultados;
+    }
+    
+    // Devuelve el historial completo de préstamos organizado por recurso
+    public Map<String, ArrayList<Prestamo>> getHistorialRecursos() {
+        return historial;
+    }
+
+    // Devuelve el historial completo de préstamos organizado por usuario
+    public Map<String, ArrayList<Prestamo>> getHistorialUsuarios() {
+        return historialUsuarios;
+    }
+    
+    // Devuelve el historial de préstamos de un recurso concreto
+    public ArrayList<Prestamo> getHistorialRecurso(String idRecurso) {
+        return historial.getOrDefault(idRecurso, new ArrayList<>());
+    }
+
+    // Devuelve el historial de préstamos de un usuario concreto
+    public ArrayList<Prestamo> getHistorialUsuario(String idUsuario) {
+        return historialUsuarios.getOrDefault(idUsuario, new ArrayList<>());
     }
 }

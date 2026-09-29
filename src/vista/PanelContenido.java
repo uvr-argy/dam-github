@@ -17,6 +17,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import funcionalidades.GestionPrestamos;
+import funcionalidades.GestionRecursos;
+import funcionalidades.GestionUsuarios;
+import modelo.Libro;
+import modelo.Pelicula;
+import modelo.Prestamo;
+import modelo.Recurso;
+import modelo.Usuario;
+import modelo.Videojuego;
+
 public class PanelContenido extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -51,9 +61,21 @@ public class PanelContenido extends JPanel {
 	private final Color colorVerde = new Color(123, 220, 99);
 	private final Color colorAmarillo = new Color(236, 206, 92);
 	private final Color colorRojo = new Color(230, 100, 100);
+	
+	// =========================================================
+	//CONTROLADORES
+	// =========================================================
+	private GestionUsuarios gestionUsuarios;
+	private GestionRecursos gestionRecursos;
+	private GestionPrestamos gestionPrestamos;
+	
+	public PanelContenido(GestionUsuarios gestionUsuarios, GestionRecursos gestionRecursos,
+			GestionPrestamos gestionPrestamos) {
 
-	public PanelContenido() {
-
+		this.gestionUsuarios = gestionUsuarios;
+		this.gestionRecursos = gestionRecursos;
+		this.gestionPrestamos = gestionPrestamos;
+		
 		setLayout(new BorderLayout());
 		setBackground(Color.WHITE);
 
@@ -249,15 +271,15 @@ public class PanelContenido extends JPanel {
 		switch (modoActual) {
 
 		case MODO_USUARIOS:
-			cargarUsuariosTemporales();
+			cargarUsuarios();
 			break;
 
 		case MODO_RECURSOS:
-			cargarRecursosTemporales();
+			cargarRecursos();
 			break;
 
 		case MODO_PRESTAMOS:
-			cargarPrestamosTemporales();
+			cargarPrestamos();
 			break;
 		}
 
@@ -265,26 +287,67 @@ public class PanelContenido extends JPanel {
 		panelLista.repaint();
 	}
 
-	private void cargarUsuariosTemporales() {
+	private void cargarUsuarios() {
 
-		añadirUsuarioTemporal("001", "Juan Pérez", "juan@email.com");
-		añadirUsuarioTemporal("002", "Ana García", "ana@email.com");
-		añadirUsuarioTemporal("003", "Carlos López", "carlos@email.com");
+		for (Usuario usuario : gestionUsuarios.listarUsuarios()) {
+			añadirUsuario(usuario.getId(), usuario.getNombre(), usuario.getEmail());
+		}
 	}
 
-	private void cargarRecursosTemporales() {
+	private void cargarRecursos() {
 
-		añadirRecursoTemporal("R001", "El Hobbit", "Libro", "1937", "Disponible", "J.R.R. Tolkien", "310 páginas");
-		añadirRecursoTemporal("R002", "Interstellar", "Película", "2014", "Prestado", "Christopher Nolan",
-				"169 minutos");
-		añadirRecursoTemporal("R003", "Minecraft", "Videojuego", "2011", "Disponible", "PC", "PEGI 7");
+		for (Recurso recurso : gestionRecursos.listarRecursos()) {
+			
+			String id = recurso.getId();
+			String titulo = recurso.getTitulo();
+			String ano = recurso.getAno().toString();
+			
+			String dato1 = "";
+		    String dato2 = "";
+			
+			if(recurso instanceof Libro) {
+				
+				Libro libro = (Libro) recurso;
+				
+				dato1 = libro.getAutor();
+				dato2 = String.valueOf(libro.getPaginas());
+				
+			}else if(recurso instanceof Pelicula) {
+				
+				Pelicula pelicula = (Pelicula) recurso;
+				
+				dato1 = pelicula.getDirector();
+				dato2 = String.valueOf(pelicula.getDuracion());
+				
+			}else if(recurso instanceof Videojuego) {
+				
+				Videojuego videojuego = (Videojuego) recurso;
+				
+				dato1 = videojuego.getPlataforma();
+				dato2 = String.valueOf(videojuego.getPEGI());
+			}
+			
+			String estado = (recurso.isEstado() ? "Disponible" : "Prestado"); 
+			
+			añadirRecurso(recurso.getId(), recurso.getTitulo(), recurso.getAno().toString(), estado, dato1, dato2);
+		}
 	}
 
-	private void cargarPrestamosTemporales() {
+	private void cargarPrestamos() {
 
-		añadirPrestamoTemporal("P001", "Juan Pérez", "R001", "El Hobbit", "20/09/2026", "Activo", "-");
-		añadirPrestamoTemporal("P002", "Ana García", "R002", "Interstellar", "10/09/2026", "Finalizado", "20/09/2026");
-		añadirPrestamoTemporal("P003", "Carlos López", "R003", "Minecraft", "22/09/2026", "Activo", "-");
+		for(Prestamo prestamo : gestionPrestamos.listarPrestamos()) {
+			
+			System.out.println(prestamo.toString());
+			
+			String nombreUsuario = prestamo.getUsuario().getNombre();
+			String idRecurso = prestamo.getRecurso().getId();
+			String tituloRecurso = prestamo.getRecurso().getTitulo();
+			String fechaPrestamo =  prestamo.getFechaPrestamo().toString();
+			String estado = prestamo.isEstadoPrestamo()? "Activo" : "Finalizado";
+			String fechaDevolucion = prestamo.getFechaDevolucion() != null ? prestamo.getFechaDevolucion().toString() : "---";
+			
+			añadirPrestamo(nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado, fechaDevolucion);
+		}
 	}
 
 	// =========================================================
@@ -337,7 +400,7 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	// FILA DE USUARIO
 	// =========================================================
-	private void añadirUsuarioTemporal(String id, String nombre, String email) {
+	private void añadirUsuario(String id, String nombre, String email) {
 
 		JPanel fila = crearFila(75);
 
@@ -348,9 +411,7 @@ public class PanelContenido extends JPanel {
 		fila.add(panelDatos, BorderLayout.CENTER);
 
 		JPanel panelBotones = crearPanelBotones();
-
 		JButton botonEditar = crearBotonEditar();
-
 		JButton botonEliminar = crearBotonEliminar();
 
 		panelBotones.add(botonEditar);
@@ -379,8 +440,8 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	// FILA DE RECURSO
 	// =========================================================
-	private void añadirRecursoTemporal(String id, String titulo, String tipo, String ano, String estado,
-			String informacion1, String informacion2) {
+	private void añadirRecurso(String id, String titulo, String ano, String estado,
+			String dato1, String dato2) {
 
 		// La fila solo necesita espacio para:
 		// - Nombre del recurso
@@ -394,7 +455,6 @@ public class PanelContenido extends JPanel {
 		JPanel panelDatos = crearPanelDatos();
 
 		panelDatos.add(crearEtiquetaPrincipal(id + " · " + titulo));
-		panelDatos.add(crearEtiquetaSecundaria("Tipo: " + tipo));
 
 		fila.add(panelDatos, BorderLayout.CENTER);
 
@@ -402,9 +462,7 @@ public class PanelContenido extends JPanel {
 		// BOTONES
 		// ========================================
 		JPanel panelBotones = crearPanelBotones();
-
 		JButton botonEditar = crearBotonEditar();
-
 		JButton botonEliminar = crearBotonEliminar();
 
 		panelBotones.add(botonEditar);
@@ -416,7 +474,7 @@ public class PanelContenido extends JPanel {
 		// EDITAR
 		// ========================================
 		botonEditar.addActionListener(
-				e -> abrirFormularioEdicion(id, titulo, tipo, ano, estado, informacion1, informacion2));
+				e -> abrirFormularioEdicion(id, titulo, ano, estado, dato1, dato2));
 
 		// ========================================
 		// ELIMINAR
@@ -426,7 +484,7 @@ public class PanelContenido extends JPanel {
 		// ========================================
 		// ABRIR DETALLE
 		// ========================================
-		añadirEventoDetalle(fila, crearDatosRecurso(id, titulo, tipo, ano, estado, informacion1, informacion2));
+		añadirEventoDetalle(fila, crearDatosRecurso(id, titulo, ano, estado, dato1, dato2));
 
 		panelLista.add(fila);
 	}
@@ -434,15 +492,14 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	// FILA DE PRÉSTAMO
 	// =========================================================
-	private void añadirPrestamoTemporal(String idPrestamo, String nombreUsuario, String idRecurso, String tituloRecurso,
+	private void añadirPrestamo(String nombreUsuario, String idRecurso, String tituloRecurso,
 			String fechaPrestamo, String estado, String fechaDevolucion) {
 
 		JPanel fila = crearFila(75);
 
 		JPanel panelDatos = crearPanelDatos();
 
-		panelDatos.add(crearEtiquetaPrincipal(idPrestamo + " · " + tituloRecurso + " · " + nombreUsuario));
-
+		panelDatos.add(crearEtiquetaPrincipal(tituloRecurso + " · " + nombreUsuario));
 		panelDatos.add(crearEtiquetaSecundaria(fechaPrestamo));
 
 		fila.add(panelDatos, BorderLayout.CENTER);
@@ -459,13 +516,13 @@ public class PanelContenido extends JPanel {
 
 		fila.add(panelBotones, BorderLayout.EAST);
 
-		botonEditar.addActionListener(e -> abrirFormularioEdicionPrestamo(idPrestamo, nombreUsuario, idRecurso,
+		botonEditar.addActionListener(e -> abrirFormularioEdicionPrestamo(nombreUsuario, idRecurso,
 				tituloRecurso, fechaPrestamo, estado, fechaDevolucion));
 
-		botonDevolver.addActionListener(e -> abrirConfirmacionDevolucion(idPrestamo, nombreUsuario, tituloRecurso));
+		botonDevolver.addActionListener(e -> abrirConfirmacionDevolucion(nombreUsuario, tituloRecurso));
 
 		// ABRIR DETALLE DEL PRÉSTAMO
-		añadirEventoDetalle(fila, crearDatosPrestamo(idPrestamo, nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo,
+		añadirEventoDetalle(fila, crearDatosPrestamo(nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo,
 				estado, fechaDevolucion));
 
 		panelLista.add(fila);
@@ -500,15 +557,15 @@ public class PanelContenido extends JPanel {
 		formulario.setVisible(true);
 	}
 
-	private void abrirFormularioEdicion(String id, String titulo, String tipo, String ano, String estado,
-			String informacion1, String informacion2) {
+	private void abrirFormularioEdicion(String id, String titulo, String ano, String estado,
+			String dato1, String dato2) {
 
 		FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
-		formulario.cargarDatos(id, titulo, tipo, ano, estado, informacion1, informacion2);
+		formulario.cargarDatos(id, titulo, ano, estado, dato1, dato2);
 		formulario.setVisible(true);
 	}
 
-	private void abrirFormularioEdicionPrestamo(String idPrestamo, String nombreUsuario, String idRecurso,
+	private void abrirFormularioEdicionPrestamo(String nombreUsuario, String idRecurso,
 			String tituloRecurso, String fechaPrestamo, String estado, String fechaDevolucion) {
 		
 		FormularioContenido formulario = new FormularioContenido(MODO_PRESTAMOS);
@@ -528,10 +585,9 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	// DEVOLUCIÓN DE PRESTAMOS
 	// =========================================================
-	private void abrirConfirmacionDevolucion(String idPrestamo, String nombreUsuario, String tituloRecurso) {
+	private void abrirConfirmacionDevolucion(String nombreUsuario, String tituloRecurso) {
 		
-		FormularioEliminar formulario = new FormularioEliminar("devolución",
-				idPrestamo + " · " + tituloRecurso + " · " + nombreUsuario, true);
+		FormularioEliminar formulario = new FormularioEliminar("devolución", tituloRecurso + " · " + nombreUsuario, true);
 		formulario.setVisible(true);
 	}
 
@@ -552,11 +608,10 @@ public class PanelContenido extends JPanel {
 					VentanaDetalleContenido ventana = new VentanaDetalleContenido(modoActual, datos);
 
 					ventana.setAccionEditarPrestamo(datosPrestamo -> abrirFormularioEdicionPrestamo(datosPrestamo[0],
-							datosPrestamo[1], datosPrestamo[2], datosPrestamo[3], datosPrestamo[4], datosPrestamo[5],
-							datosPrestamo[6]));
+							datosPrestamo[1], datosPrestamo[2], datosPrestamo[3], datosPrestamo[4], datosPrestamo[5]));
 
 					ventana.setAccionDevolverPrestamo(datosPrestamo -> abrirConfirmacionDevolucion(datosPrestamo[0],
-							datosPrestamo[1], datosPrestamo[3]));
+							datosPrestamo[1]));
 
 					ventana.setVisible(true);
 				}
@@ -572,17 +627,17 @@ public class PanelContenido extends JPanel {
 		return new String[] { id, nombre, email };
 	}
 
-	private String[] crearDatosRecurso(String id, String titulo, String tipo, String ano, String estado,
-			String informacion1, String informacion2) {
+	private String[] crearDatosRecurso(String id, String titulo, String ano, String estado,
+			String dato1, String dato2) {
 
-		return new String[] { id, titulo, tipo, ano, estado, informacion1, informacion2 };
+		return new String[] { id, titulo, ano, estado, dato1, dato2 };
 	}
 
 	// =========================================================
-	private String[] crearDatosPrestamo(String idPrestamo, String nombreUsuario, String idRecurso, String tituloRecurso,
+	private String[] crearDatosPrestamo(String nombreUsuario, String idRecurso, String tituloRecurso,
 			String fechaPrestamo, String estado, String fechaDevolucion) {
 
-		return new String[] { idPrestamo, nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado,
+		return new String[] {nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado,
 				fechaDevolucion };
 	}
 

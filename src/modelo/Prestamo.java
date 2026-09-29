@@ -64,7 +64,4 @@ public class Prestamo {
 		return "Prestamo [usuario=" + usuario + ", recurso=" + recurso + ", fechaPrestamo=" + fechaPrestamo
 				+ ", estadoPrestamo=" + estadoPrestamo + ", fechaDevolucion=" + fechaDevolucion + "]";
 	}
-	
-	
-	
 }

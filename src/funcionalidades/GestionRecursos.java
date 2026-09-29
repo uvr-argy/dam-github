@@ -1,4 +1,4 @@
-package controlador;
+package funcionalidades;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,11 +9,9 @@ import modelo.Recurso;
 public class GestionRecursos {
 
     private ArrayList<Recurso> recursos;
-    private ArrayList<Prestamo> prestamos;
 
     public GestionRecursos(ArrayList<Recurso> recursos, ArrayList<Prestamo> prestamos) {
         this.recursos = recursos;
-        this.prestamos = prestamos;
     }
 
     // ==================== RECURSOS ====================
@@ -170,31 +168,5 @@ public class GestionRecursos {
         return resultados;
     }
 
-    // Recursos más prestados
-    public ArrayList<Recurso> recursosMasPrestados(int cantidad) {
-
-        ArrayList<Recurso> resultados = new ArrayList<>();
-
-        for (Recurso recurso : recursos) {
-
-            int contador = 0;
-
-            for (Prestamo prestamo : prestamos) {
-
-                // Compruebo si ese préstamo corresponde al recurso
-                if (prestamo.getRecurso().getId().equals(recurso.getId())) {
-
-                    // Si coincide suma
-                    contador++;
-                }
-            }
-
-            // Comprobamos
-            if (contador >= cantidad) {
-                resultados.add(recurso);
-            }
-        }
-
-        return resultados;
-    }
+    
 }

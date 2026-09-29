@@ -16,6 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import funcionalidades.GestionPrestamos;
+import funcionalidades.GestionRecursos;
+import funcionalidades.GestionUsuarios;
+
 public class VentanaPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -50,55 +54,39 @@ public class VentanaPrincipal extends JFrame {
 	private Color colorBarraSuperior = new Color(40, 40, 40);
 
 	// ========================================
-	// MAIN
+	// CONTROLADORES
 	// ========================================
-	public static void main(String[] args) {
-
-		EventQueue.invokeLater(() -> {
-
-			try {
-
-				VentanaPrincipal ventana = new VentanaPrincipal();
-				ventana.setVisible(true);
-
-			} catch (Exception e) {
-
-				e.printStackTrace();
-
-			}
-
-		});
-	}
+	private GestionUsuarios gestionUsuarios;
+	private GestionRecursos gestionRecursos;
+	private GestionPrestamos gestionPrestamos;
 
 	// ========================================
 	// CONSTRUCTOR
 	// ========================================
-	public VentanaPrincipal() {
+	public VentanaPrincipal(GestionUsuarios gestionUsuarios, GestionRecursos gestionRecursos,
+			GestionPrestamos gestionPrestamos) {
+		
+		this.gestionUsuarios = gestionUsuarios;
+		this.gestionRecursos = gestionRecursos;
+		this.gestionPrestamos = gestionPrestamos;
 
 		setTitle("Biblioteca Multimedia");
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		setBounds(100, 100, 1100, 700);
 
 		// ========================================
 		// PANEL PRINCIPAL
 		// ========================================
 		JPanel panelPrincipal = new JPanel(new BorderLayout());
-
 		panelPrincipal.setBorder(new EmptyBorder(0, 0, 0, 0));
-
 		setContentPane(panelPrincipal);
 
 		// ========================================
 		// BARRA SUPERIOR / NAVBAR
 		// ========================================
 		barraSuperior = new JPanel(new BorderLayout());
-
 		barraSuperior.setPreferredSize(new Dimension(0, 60));
-
 		barraSuperior.setBackground(new Color(52, 80, 154));
-
 		panelPrincipal.add(barraSuperior, BorderLayout.NORTH);
 
 		// ========================================
@@ -148,7 +136,7 @@ public class VentanaPrincipal extends JFrame {
 		botonInicio.setMinimumSize(tamañoBoton);
 		botonInicio.setPreferredSize(tamañoBoton);
 		botonInicio.setMaximumSize(tamañoBoton);
-		
+
 		botonUsuarios.setMinimumSize(tamañoBoton);
 		botonUsuarios.setPreferredSize(tamañoBoton);
 		botonUsuarios.setMaximumSize(tamañoBoton);
@@ -202,7 +190,7 @@ public class VentanaPrincipal extends JFrame {
 		// ========================================
 		// PANEL DE CONTENIDO UNIFICADO
 		// ========================================
-		panelContenido = new PanelContenido();
+		panelContenido = new PanelContenido(gestionUsuarios, gestionRecursos, gestionPrestamos);
 
 		// ========================================
 		// AÑADIR LAS DOS TARJETAS

@@ -1,4 +1,4 @@
-package controlador;
+package funcionalidades;
 
 import java.util.ArrayList;
 
@@ -80,34 +80,5 @@ public class GestionUsuarios {
         usuarios.remove(usuario);
 
         return true;
-    }
-
-    // Usuarios que nunca han realizado un préstamo
-    public ArrayList<Usuario> usuarioSinPrestamos() {
-
-        ArrayList<Usuario> resultados = new ArrayList<>();
-
-        for (Usuario usuario : usuarios) {
-
-            boolean tienePrestamo = false;
-
-            for (Prestamo prestamo : prestamos) {
-
-                // Buscamos al usuario
-                if (prestamo.getUsuario().getId().equals(usuario.getId())) {
-
-                    // Si tiene al menos un préstamo dejamos de buscar
-                    tienePrestamo = true;
-                    break;
-                }
-            }
-
-            // Si no tiene préstamos añadimos a los resultados
-            if (!tienePrestamo) {
-                resultados.add(usuario);
-            }
-        }
-
-        return resultados;
     }
 }

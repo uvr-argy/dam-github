@@ -362,19 +362,18 @@ public class FormularioContenido extends JDialog {
     // =========================================================
     // CARGAR DATOS DE RECURSO
     // =========================================================
-    public void cargarDatos(String id, String titulo, String tipo, String ano, String estado, String especifico1, String especifico2) {
+    public void cargarDatos(String id, String titulo, String ano, String estado, String dato1, String dato2) {
         configurarModo(PanelContenido.MODO_RECURSOS);
         setTitle("Editar recurso");
         
         campoId.setText(id);
         campoTitulo.setText(titulo);
         campoAno.setText(ano);
-        comboTipo.setSelectedItem(tipo);
         
         actualizarCamposEspecificos();
         
-        campoEspecifico1.setText(especifico1);
-        campoEspecifico2.setText(especifico2);
+        campoEspecifico1.setText(dato1);
+        campoEspecifico2.setText(dato2);
         
         /*
          * El estado todavía se conserva como dato visual
