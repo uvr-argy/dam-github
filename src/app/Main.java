@@ -25,13 +25,11 @@ public class Main {
         ArrayList<Recurso> recursos = new ArrayList<>();
         ArrayList<Prestamo> prestamos = new ArrayList<>();
 
-
         // ==========================================
         // 2. CARGAR DATOS DE PRUEBA
         // ==========================================
 
         DatosPrueba.cargarDatos(usuarios, recursos);
-
 
         // ==========================================
         // 3. CREAR LAS GESTIONES
@@ -42,7 +40,27 @@ public class Main {
 		GestionRecursos gestionRecursos = new GestionRecursos(recursos, prestamos);
 
 		GestionPrestamos gestionPrestamos = new GestionPrestamos(usuarios, recursos, prestamos);
+		
+		// ==================== PRÉSTAMOS ====================
 
+		gestionPrestamos.prestarRecurso("U01", "L01"); // Santiago - El Quijote
+		gestionPrestamos.prestarRecurso("U02", "L02"); // Eneko - 1984
+		gestionPrestamos.prestarRecurso("U03", "L03"); // Ander - Harry Potter
+		gestionPrestamos.prestarRecurso("U04", "L04"); // Iker - El Hobbit
+		gestionPrestamos.prestarRecurso("U05", "L05"); // Unai - Drácula
+
+		gestionPrestamos.prestarRecurso("U06", "P01"); // Aitor - Interestelar
+		gestionPrestamos.prestarRecurso("U07", "P02"); // Jon - El Padrino
+		gestionPrestamos.prestarRecurso("U08", "P03"); // Mikel - Matrix
+		gestionPrestamos.prestarRecurso("U09", "P04"); // Asier - Titanic
+		gestionPrestamos.prestarRecurso("U10", "P05"); // Julen - Gladiator
+
+		gestionPrestamos.prestarRecurso("U01", "V01"); // Santiago - Minecraft
+		gestionPrestamos.prestarRecurso("U03", "V02"); // Ander - Zelda
+		gestionPrestamos.prestarRecurso("U05", "V03"); // Unai - GTA V
+		gestionPrestamos.prestarRecurso("U07", "V04"); // Jon - FIFA 25
+		gestionPrestamos.prestarRecurso("U09", "V05"); // Asier - Pokémon Escarlata
+		
         /*
         // ==========================================
         // 4. MOSTRAR USUARIOS
