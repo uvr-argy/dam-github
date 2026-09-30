@@ -31,7 +31,7 @@ public class Pelicula extends Recurso {
 
 	@Override
 	public String toString() {
-		return "Pelicula [director=" + director + ", duracion=" + duracion + "]";
+		return "Pelicula [" + super.toString() + ", director=" + director + ", duracion=" + duracion + "]";
 	}
 
 	

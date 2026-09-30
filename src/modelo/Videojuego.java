@@ -31,7 +31,7 @@ public class Videojuego extends Recurso {
 
 	@Override
 	public String toString() {
-		return "Videojuego [plataforma=" + plataforma + ", PEGI=" + PEGI + "]";
+		return "Videojuego [" + super.toString() + ", plataforma=" + plataforma + ", PEGI=" + PEGI + "]";
 	}
 	
 	

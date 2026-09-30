@@ -20,6 +20,7 @@ public class FormularioEliminar extends JDialog {
 
 	private String tipo;
 	private String descripcion;
+	private JButton botonAccion;
 
 	public FormularioEliminar(String tipo, String descripcion) {
 		
@@ -115,7 +116,7 @@ public class FormularioEliminar extends JDialog {
 			textoBoton = "Eliminar";
 		}
 
-		JButton botonAccion = new JButton(textoBoton);
+		botonAccion = new JButton(textoBoton);
 		botonAccion.setBackground(colorRojo);
 		botonAccion.setPreferredSize(new Dimension(100, 35));
 
@@ -148,5 +149,8 @@ public class FormularioEliminar extends JDialog {
 		});
 
 		add(panelPrincipal);
+	}
+	public JButton getBotonAccion() {
+	    return botonAccion;
 	}
 }

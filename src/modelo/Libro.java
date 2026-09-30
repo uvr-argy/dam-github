@@ -31,6 +31,6 @@ public class Libro extends Recurso {
 
 	@Override
 	public String toString() {
-		return "Libro [autor=" + autor + ", paginas=" + paginas + "]";
+		return "Libro [" + super.toString() + ", autor=" + autor + ", paginas=" + paginas + "]";
 	}
 }

@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -249,16 +250,26 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirFormulario() {
 
-		/*
-		 * Un único formulario para los tres modos.
-		 *
-		 * La clase FormularioContenido será la encargada de adaptar sus campos según el
-		 * modo recibido.
-		 */
+	    FormularioContenido formulario = new FormularioContenido(modoActual);
 
-		FormularioContenido formulario = new FormularioContenido(modoActual);
+	    if (modoActual == MODO_USUARIOS) {
 
-		formulario.setVisible(true);
+	        formulario.getBotonGuardar().addActionListener(e -> {
+
+	            String id = formulario.getCampoId().getText();
+	            String nombre = formulario.getCampoNombre().getText();
+	            String email = formulario.getCampoEmail().getText();
+
+	            Usuario usuario = new Usuario(id, nombre, email);
+
+	            if (gestionUsuarios.crearUsuario(usuario)) {
+	                formulario.dispose();
+	                mostrarUsuarios();
+	            }
+	        });
+	    }
+
+	    formulario.setVisible(true);
 	}
 	
 	// =========================================================
@@ -552,17 +563,44 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirFormularioEdicion(String id, String nombre, String email) {
 
-		FormularioContenido formulario = new FormularioContenido(MODO_USUARIOS);
-		formulario.cargarDatos(id, nombre, email);
-		formulario.setVisible(true);
+	    FormularioContenido formulario = new FormularioContenido(MODO_USUARIOS);
+
+	    formulario.cargarDatos(id, nombre, email);
+
+	    formulario.getBotonGuardar().addActionListener(e -> {
+
+	        String nuevoNombre = formulario.getCampoNombre().getText();
+	        String nuevoEmail = formulario.getCampoEmail().getText();
+
+	        if (gestionUsuarios.modificarUsuario(id, nuevoNombre, nuevoEmail)) {
+
+	            formulario.dispose();
+	            mostrarUsuarios();
+	        }
+	    });
+
+	    formulario.setVisible(true);
 	}
 
 	private void abrirFormularioEdicion(String id, String titulo, String ano, String estado,
-			String dato1, String dato2) {
+	        String dato1, String dato2) {
 
-		FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
-		formulario.cargarDatos(id, titulo, ano, estado, dato1, dato2);
-		formulario.setVisible(true);
+	    FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
+	    formulario.cargarDatos(id, titulo, ano, estado, dato1, dato2);
+
+	    formulario.getBotonGuardar().addActionListener(e -> {
+
+	        String nuevoTitulo = formulario.getCampoTitulo().getText();
+	        LocalDate nuevoAno = LocalDate.parse(formulario.getCampoAno().getText());
+
+	        if (gestionRecursos.modificarRecurso(id, nuevoTitulo, nuevoAno)) {
+
+	            formulario.dispose();
+	            mostrarRecursos();
+	        }
+	    });
+
+	    formulario.setVisible(true);
 	}
 
 	private void abrirFormularioEdicionPrestamo(String nombreUsuario, String idRecurso,
@@ -578,8 +616,25 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirConfirmacionEliminacion(String tipo, String descripcion) {
 
-		FormularioEliminar formulario = new FormularioEliminar(tipo, descripcion);
-		formulario.setVisible(true);
+	    FormularioEliminar formulario = new FormularioEliminar(tipo, descripcion);
+
+	    formulario.getBotonAccion().addActionListener(e -> {
+
+	        if (tipo.equals("Usuario")) {
+
+	            String id = descripcion.substring(
+	                    descripcion.indexOf("ID: ") + 4,
+	                    descripcion.length() - 1
+	            );
+
+	            if (gestionUsuarios.eliminarUsuario(id)) {
+	                formulario.dispose();
+	                mostrarUsuarios();
+	            }
+	        }
+	    });
+
+	    formulario.setVisible(true);
 	}
 
 	// =========================================================

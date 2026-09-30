@@ -9,9 +9,11 @@ import modelo.Recurso;
 public class GestionRecursos {
 
     private ArrayList<Recurso> recursos;
+    private ArrayList<Prestamo> prestamos;
 
     public GestionRecursos(ArrayList<Recurso> recursos, ArrayList<Prestamo> prestamos) {
         this.recursos = recursos;
+        this.prestamos = prestamos;
     }
 
     // ==================== RECURSOS ====================

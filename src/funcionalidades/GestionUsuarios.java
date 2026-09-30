@@ -17,14 +17,17 @@ public class GestionUsuarios {
 
     // ==================== USUARIOS ====================
 
-    // Crear usuario
     public boolean crearUsuario(Usuario usuario) {
 
-        // Para evitar ids duplicados
-        if (buscarUsuario(usuario.getId()) != null) {
-            return false;
+        int siguienteId = usuarios.size() + 1;
+        String id = String.format("U%02d", siguienteId);
+
+        while (buscarUsuario(id) != null) {
+            siguienteId++;
+            id = String.format("U%02d", siguienteId);
         }
 
+        usuario.setId(id);
         usuarios.add(usuario);
 
         return true;
@@ -67,7 +70,6 @@ public class GestionUsuarios {
         return true;
     }
 
-    // Eliminar usuario
     public boolean eliminarUsuario(String id) {
 
         Usuario usuario = buscarUsuario(id);
@@ -75,6 +77,16 @@ public class GestionUsuarios {
         if (usuario == null) {
 
             return false;
+        }
+
+        // Comprobar si el usuario tiene algún préstamo activo
+        for (Prestamo prestamo : prestamos) {
+
+            if (prestamo.getUsuario().getId().equals(id)
+                    && prestamo.isEstadoPrestamo()) {
+
+                return false;
+            }
         }
 
         usuarios.remove(usuario);
