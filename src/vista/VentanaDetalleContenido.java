@@ -2,19 +2,15 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.awt.Window;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,60 +18,83 @@ import javax.swing.JTabbedPane;
 
 import funcionalidades.GestionPrestamos;
 import modelo.Prestamo;
+import modelo.Recurso;
+import modelo.Usuario;
 
-public class VentanaDetalleContenido extends JFrame {
+/**
+ * Ventana de detalle de un usuario, un recurso o un préstamo.
+ * 
+ * Antes recibía un String[] con los datos y cada posición significaba una cosa
+ * distinta según el modo (y no coincidían con lo que enviaba PanelContenido).
+ * Ahora recibe directamente el objeto (Usuario, Recurso o Prestamo) mediante
+ * tres constructores, uno por cada tipo.
+ */
+public class VentanaDetalleContenido extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Color colorFondo = new Color(249, 247, 242);
-	private final Color colorSubnavbar = new Color(227, 235, 222);
-	private final Color colorVerde = new Color(123, 220, 99);
-	private final Color colorAmarillo = new Color(236, 206, 145);
-	private final Color colorRojo = new Color(243, 153, 131);
+	private static final Color COLOR_SUBNAVBAR = new Color(227, 235, 222);
 
 	private JPanel panelDatos;
 	private JPanel panelSecundario;
-	private JPanel panelSeccion;
-	private JLabel etiquetaTitulo;
-	private JLabel etiquetaSeccionSecundaria;
 
-	private Consumer<String[]> accionEditarPrestamo;
-	private Consumer<String[]> accionDevolverPrestamo;
+	private Consumer<Prestamo> accionDevolverPrestamo;
 
-	private GestionPrestamos gestionPrestamos;
+	private final GestionPrestamos gestionPrestamos;
 
-	public VentanaDetalleContenido(int modo, String[] datos, GestionPrestamos gestionPrestamos) {
+	// Vuelve a pintar el contenido (se usa tras devolver un préstamo desde aquí)
+	private Runnable recarga;
+
+	// =========================================================
+	// CONSTRUCTORES: UNO POR TIPO DE ELEMENTO
+	// =========================================================
+	public VentanaDetalleContenido(Window propietario, Usuario usuario, GestionPrestamos gestionPrestamos) {
+
+		this(propietario, "Detalle del usuario", "Préstamos", gestionPrestamos);
+
+		recarga = () -> mostrarUsuario(usuario);
+		recarga.run();
+	}
+
+	public VentanaDetalleContenido(Window propietario, Recurso recurso, GestionPrestamos gestionPrestamos) {
+
+		this(propietario, "Detalle del recurso", "Historial de préstamos", gestionPrestamos);
+
+		recarga = () -> mostrarRecurso(recurso);
+		recarga.run();
+	}
+
+	public VentanaDetalleContenido(Window propietario, Prestamo prestamo, GestionPrestamos gestionPrestamos) {
+
+		// Sin sección secundaria: un préstamo no tiene lista debajo
+		this(propietario, "Detalle del préstamo", null, gestionPrestamos);
+
+		recarga = () -> mostrarPrestamo(prestamo);
+		recarga.run();
+	}
+
+	private VentanaDetalleContenido(Window propietario, String titulo, String tituloSeccion,
+			GestionPrestamos gestionPrestamos) {
+
+		super(propietario);
 
 		this.gestionPrestamos = gestionPrestamos;
 
-		configurarVentana();
-
-		switch (modo) {
-		case PanelContenido.MODO_USUARIOS:
-			mostrarUsuario(datos);
-			break;
-		case PanelContenido.MODO_RECURSOS:
-			mostrarRecurso(datos);
-			break;
-		case PanelContenido.MODO_PRESTAMOS:
-			mostrarPrestamo(datos);
-			break;
-		default:
-			mostrarContenidoGenerico();
-			break;
-		}
+		configurarVentana(titulo, tituloSeccion);
 	}
 
 	// =========================================================
 	// CONFIGURACIÓN GENERAL
 	// =========================================================
-	private void configurarVentana() {
-		setSize(800, 600);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	private void configurarVentana(String titulo, String tituloSeccion) {
+
+		setTitle(titulo);
+		setSize(800, tituloSeccion != null ? 600 : 380);
+		setLocationRelativeTo(getOwner());
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		JPanel panelPrincipal = new JPanel(new BorderLayout());
-		panelPrincipal.setBackground(colorFondo);
+		panelPrincipal.setBackground(UtilVista.COLOR_FONDO);
 		setContentPane(panelPrincipal);
 
 		// -----------------------------------------------------
@@ -83,19 +102,19 @@ public class VentanaDetalleContenido extends JFrame {
 		// -----------------------------------------------------
 		JPanel panelSubnavbar = new JPanel(new BorderLayout());
 		panelSubnavbar.setPreferredSize(new Dimension(0, 60));
-		panelSubnavbar.setBackground(colorSubnavbar);
+		panelSubnavbar.setBackground(COLOR_SUBNAVBAR);
 		panelSubnavbar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 		panelPrincipal.add(panelSubnavbar, BorderLayout.NORTH);
 
-		etiquetaTitulo = new JLabel();
-		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
+		JLabel etiquetaTitulo = new JLabel(titulo);
+		etiquetaTitulo.setFont(UtilVista.FUENTE_TITULO);
 		panelSubnavbar.add(etiquetaTitulo, BorderLayout.WEST);
 
 		// -----------------------------------------------------
 		// PANEL CENTRAL
 		// -----------------------------------------------------
 		JPanel panelCentral = new JPanel(new BorderLayout());
-		panelCentral.setBackground(colorFondo);
+		panelCentral.setBackground(UtilVista.COLOR_FONDO);
 		panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		panelPrincipal.add(panelCentral, BorderLayout.CENTER);
 
@@ -104,9 +123,8 @@ public class VentanaDetalleContenido extends JFrame {
 		// -----------------------------------------------------
 		JPanel panelInformacion = new JPanel(new BorderLayout());
 		panelInformacion.setBackground(Color.WHITE);
-		panelInformacion
-				.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)),
-						BorderFactory.createEmptyBorder(15, 20, 15, 20)));
+		panelInformacion.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(UtilVista.COLOR_BORDE), BorderFactory.createEmptyBorder(15, 20, 15, 20)));
 		panelCentral.add(panelInformacion, BorderLayout.NORTH);
 
 		panelDatos = new JPanel();
@@ -116,316 +134,202 @@ public class VentanaDetalleContenido extends JFrame {
 		panelInformacion.add(panelDatos, BorderLayout.CENTER);
 
 		// -----------------------------------------------------
-		// SECCIÓN SECUNDARIA
+		// SECCIÓN SECUNDARIA (lista de préstamos)
 		// -----------------------------------------------------
-		panelSeccion = new JPanel(new BorderLayout());
-		panelSeccion.setBackground(colorFondo);
-		panelSeccion.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+		if (tituloSeccion != null) {
 
-		etiquetaSeccionSecundaria = new JLabel();
-		etiquetaSeccionSecundaria.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		panelSeccion.add(etiquetaSeccionSecundaria, BorderLayout.NORTH);
+			JPanel panelSeccion = new JPanel(new BorderLayout());
+			panelSeccion.setBackground(UtilVista.COLOR_FONDO);
+			panelSeccion.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
 
-		panelSecundario = new JPanel();
-		panelSecundario.setLayout(new BoxLayout(panelSecundario, BoxLayout.Y_AXIS));
-		panelSecundario.setBackground(colorFondo);
+			JLabel etiquetaSeccion = new JLabel(tituloSeccion);
+			etiquetaSeccion.setFont(UtilVista.FUENTE_SUBTITULO);
+			panelSeccion.add(etiquetaSeccion, BorderLayout.NORTH);
 
-		JScrollPane scroll = new JScrollPane(panelSecundario);
-		scroll.setBorder(null);
-		scroll.setBackground(colorFondo);
+			panelSecundario = new JPanel(new BorderLayout());
+			panelSecundario.setBackground(UtilVista.COLOR_FONDO);
+			panelSeccion.add(panelSecundario, BorderLayout.CENTER);
 
-		panelSeccion.add(scroll, BorderLayout.CENTER);
-
-		panelCentral.add(panelSeccion, BorderLayout.CENTER);
+			panelCentral.add(panelSeccion, BorderLayout.CENTER);
+		}
 	}
 
 	// =========================================================
 	// USUARIO
 	// =========================================================
-	private void mostrarUsuario(String[] datos) {
-
-		setTitle("Detalle del usuario");
-		etiquetaTitulo.setText("Detalle del usuario");
-		etiquetaSeccionSecundaria.setText("Préstamos");
+	private void mostrarUsuario(Usuario usuario) {
 
 		limpiarPaneles();
 
-		String id = obtenerDato(datos, 0);
-		String nombre = obtenerDato(datos, 1);
-		String email = obtenerDato(datos, 2);
+		añadirDato("ID: " + usuario.getId());
+		añadirDato("Nombre: " + usuario.getNombre());
+		añadirDato("Email: " + usuario.getEmail());
 
-		añadirDato("ID: " + id);
-		añadirDato("Nombre: " + nombre);
-		añadirDato("Email: " + email);
-
-		JTabbedPane pestanasPrestamos = new JTabbedPane();
-
-		JPanel panelActivos = crearPanelListaPrestamos();
-
-		JPanel panelDevueltos = crearPanelListaPrestamos();
-
-		ArrayList<Prestamo> prestamosUsuario = gestionPrestamos.getHistorialUsuario(id);
-
-		for (Prestamo prestamo : prestamosUsuario) {
-
-			if (prestamo.isEstadoPrestamo()) {
-
-				añadirPrestamo(panelActivos, prestamo, true);
-
-			} else {
-
-				añadirPrestamo(panelDevueltos, prestamo, false);
-			}
-		}
-
-		pestanasPrestamos.addTab("Activos", crearScroll(panelActivos));
-
-		pestanasPrestamos.addTab("Devueltos", crearScroll(panelDevueltos));
-
-		panelSecundario.setLayout(new BorderLayout());
-
-		panelSecundario.add(pestanasPrestamos, BorderLayout.CENTER);
-
-		panelSecundario.revalidate();
-		panelSecundario.repaint();
+		// En el detalle de un usuario se pueden devolver sus préstamos activos
+		mostrarPestanasPrestamos(gestionPrestamos.getHistorialUsuario(usuario.getId()), true);
 	}
 
 	// =========================================================
 	// RECURSO
 	// =========================================================
-	private void mostrarRecurso(String[] datos) {
-
-		setTitle("Detalle del recurso");
-		etiquetaTitulo.setText("Detalle del recurso");
-		etiquetaSeccionSecundaria.setText("Historial de préstamos");
+	private void mostrarRecurso(Recurso recurso) {
 
 		limpiarPaneles();
 
-		String id = obtenerDato(datos, 0);
-		String titulo = obtenerDato(datos, 1);
-		String tipo = obtenerDato(datos, 2);
-		String ano = obtenerDato(datos, 3);
-		String estado = obtenerDato(datos, 4);
-		String informacion1 = obtenerDato(datos, 5);
-		String informacion2 = obtenerDato(datos, 6);
+		String tipo = UtilVista.tipoDe(recurso);
 
-		añadirDato("ID: " + id);
-		añadirDato("Título: " + titulo);
+		añadirDato("ID: " + recurso.getId());
+		añadirDato("Título: " + recurso.getTitulo());
 		añadirDato("Tipo: " + tipo);
-		añadirDato("Año: " + ano);
-		añadirDato("Estado: " + estado);
-		añadirDato(informacion1 + " · " + informacion2);
+		añadirDato("Año: " + recurso.getAno());
+		añadirDato("Estado: " + UtilVista.estadoDe(recurso));
+		añadirDato(UtilVista.etiquetaDato1(tipo) + ": " + UtilVista.dato1(recurso));
+		añadirDato(UtilVista.etiquetaDato2(tipo) + ": " + UtilVista.dato2(recurso));
 
-		JTabbedPane pestanasPrestamos = new JTabbedPane();
-		JPanel panelActivos = crearPanelListaPrestamos();
-		JPanel panelDevueltos = crearPanelListaPrestamos();
-
-		ArrayList<Prestamo> historialRecurso = gestionPrestamos.getHistorialRecurso(id);
-
-		for (Prestamo prestamo : historialRecurso) {
-
-			if (prestamo.isEstadoPrestamo()) {
-
-				añadirPrestamo(panelActivos, prestamo, false);
-
-			} else {
-
-				añadirPrestamo(panelDevueltos, prestamo, false);
-			}
-		}
-
-		pestanasPrestamos.addTab("Activos", crearScroll(panelActivos));
-		pestanasPrestamos.addTab("Devueltos", crearScroll(panelDevueltos));
-
-		panelSecundario.setLayout(new BorderLayout());
-		panelSecundario.add(pestanasPrestamos, BorderLayout.CENTER);
-
-		panelSecundario.revalidate();
-		panelSecundario.repaint();
+		mostrarPestanasPrestamos(gestionPrestamos.getHistorialRecurso(recurso.getId()), false);
 	}
 
 	// =========================================================
 	// PRÉSTAMO
 	// =========================================================
-	private void mostrarPrestamo(String[] datos) {
-		setTitle("Detalle del préstamo");
-		etiquetaTitulo.setText("Detalle del préstamo");
+	private void mostrarPrestamo(Prestamo prestamo) {
 
 		limpiarPaneles();
 
-		String nombreUsuario = obtenerDato(datos, 0);
-		String idRecurso = obtenerDato(datos, 1);
-		String tituloRecurso = obtenerDato(datos, 2);
-		String fechaPrestamo = obtenerDato(datos, 3);
-		String estado = obtenerDato(datos, 4);
-		String fechaDevolucion = obtenerDato(datos, 5);
-
-		añadirDato("Usuario: " + nombreUsuario);
-		añadirDato("ID recurso: " + idRecurso);
-		añadirDato("Recurso: " + tituloRecurso);
-		añadirDato("Fecha préstamo: " + fechaPrestamo);
-		añadirDato("Estado: " + estado);
-		añadirDato("Fecha devolución: " + fechaDevolucion);
-
-		panelSeccion.setVisible(false);
-	}
-
-	// =========================================================
-	// CONTENIDO GENÉRICO
-	// =========================================================
-	private void mostrarContenidoGenerico() {
-		setTitle("Detalle");
-		etiquetaTitulo.setText("Detalle");
-		etiquetaSeccionSecundaria.setText("Información");
-
-		limpiarPaneles();
-
-		añadirDato("No hay información disponible.");
+		añadirDato("Usuario: " + prestamo.getUsuario().getNombre());
+		añadirDato("ID recurso: " + prestamo.getRecurso().getId());
+		añadirDato("Recurso: " + prestamo.getRecurso().getTitulo());
+		añadirDato("Fecha préstamo: " + prestamo.getFechaPrestamo());
+		añadirDato("Estado: " + UtilVista.estadoDe(prestamo));
+		añadirDato("Fecha devolución: " + UtilVista.fechaDevolucion(prestamo));
 	}
 
 	// =========================================================
 	// DATOS PRINCIPALES
 	// =========================================================
 	private void añadirDato(String texto) {
+
 		JLabel etiqueta = new JLabel(texto);
-		etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		etiqueta.setFont(UtilVista.FUENTE_DATO);
 		etiqueta.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
 		panelDatos.add(etiqueta);
 	}
 
+	private void limpiarPaneles() {
+
+		panelDatos.removeAll();
+
+		if (panelSecundario != null) {
+			panelSecundario.removeAll();
+		}
+	}
+
+	private void refrescar() {
+
+		getContentPane().revalidate();
+		getContentPane().repaint();
+	}
+
 	// =========================================================
-	// PRÉSTAMOS TEMPORALES
+	// LISTAS DE PRÉSTAMOS (pestañas Activos / Devueltos)
 	// =========================================================
+	private void mostrarPestanasPrestamos(List<Prestamo> prestamos, boolean conBotonDevolver) {
+
+		JPanel panelActivos = crearPanelListaPrestamos();
+		JPanel panelDevueltos = crearPanelListaPrestamos();
+
+		for (Prestamo prestamo : prestamos) {
+
+			if (prestamo.isEstadoPrestamo()) {
+				añadirPrestamo(panelActivos, prestamo, conBotonDevolver);
+			} else {
+				añadirPrestamo(panelDevueltos, prestamo, false);
+			}
+		}
+
+		JTabbedPane pestanas = new JTabbedPane();
+		pestanas.addTab("Activos", crearScroll(panelActivos));
+		pestanas.addTab("Devueltos", crearScroll(panelDevueltos));
+
+		panelSecundario.add(pestanas, BorderLayout.CENTER);
+
+		refrescar();
+	}
+
 	private JPanel crearPanelListaPrestamos() {
+
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.setBackground(colorFondo);
+		panel.setBackground(UtilVista.COLOR_FONDO);
+
 		return panel;
 	}
 
 	private JScrollPane crearScroll(JPanel panel) {
+
 		JScrollPane scroll = new JScrollPane(panel);
 		scroll.setBorder(null);
-		scroll.setBackground(colorFondo);
+		scroll.setBackground(UtilVista.COLOR_FONDO);
+		// Por defecto la rueda del ratón avanza 1 píxel por paso
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+
 		return scroll;
 	}
 
-	private void añadirPrestamo(JPanel panelDestino, Prestamo prestamo, boolean mostrarBotonDevolver) {
+	private void añadirPrestamo(JPanel panelDestino, Prestamo prestamo, boolean conBotonDevolver) {
 
-		String nombreUsuario = prestamo.getUsuario().getNombre();
-		String idRecurso = prestamo.getRecurso().getId();
-		String titulo = prestamo.getRecurso().getTitulo();
-		String fechaPrestamo = prestamo.getFechaPrestamo().toString();
-		String estado = prestamo.isEstadoPrestamo() ? "Activo" : "Finalizado";
-		String fechaDevolucion = prestamo.getFechaDevolucion() != null ? prestamo.getFechaDevolucion().toString() : "-";
-		String[] datosPrestamo = { nombreUsuario, idRecurso, titulo, fechaPrestamo, estado, fechaDevolucion };
-
-		JPanel panelPrestamo = new JPanel(new BorderLayout());
-		panelPrestamo.setBackground(Color.WHITE);
-		panelPrestamo
-				.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)),
-						BorderFactory.createEmptyBorder(12, 15, 12, 10)));
-		panelPrestamo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-
-		JPanel panelDatosPrestamo = new JPanel();
-		panelDatosPrestamo.setLayout(new BoxLayout(panelDatosPrestamo, BoxLayout.Y_AXIS));
-		panelDatosPrestamo.setOpaque(false);
-
-		JLabel etiquetaTitulo = new JLabel(titulo);
-		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-
-		JLabel etiquetaUsuario = new JLabel("Usuario: " + nombreUsuario);
-		JLabel etiquetaId = new JLabel("ID recurso: " + idRecurso);
-		JLabel etiquetaFecha = new JLabel("Fecha préstamo: " + fechaPrestamo);
-		JLabel etiquetaEstado = new JLabel("Estado: " + estado);
-		JLabel etiquetaDevolucion = new JLabel("Fecha devolución: " + fechaDevolucion);
-
-		Font fuenteSecundaria = new Font("Segoe UI", Font.PLAIN, 13);
-
-		etiquetaUsuario.setFont(fuenteSecundaria);
-		etiquetaId.setFont(fuenteSecundaria);
-		etiquetaFecha.setFont(fuenteSecundaria);
-		etiquetaEstado.setFont(fuenteSecundaria);
-		etiquetaDevolucion.setFont(fuenteSecundaria);
-
-		panelDatosPrestamo.add(etiquetaTitulo);
-		panelDatosPrestamo.add(etiquetaUsuario);
-		panelDatosPrestamo.add(etiquetaId);
-		panelDatosPrestamo.add(etiquetaFecha);
-		panelDatosPrestamo.add(etiquetaEstado);
+		JPanel datos = UtilVista.crearPanelDatos();
+		datos.add(UtilVista.crearEtiquetaPrincipal(prestamo.getRecurso().getTitulo()));
+		datos.add(UtilVista.crearEtiquetaSecundaria("Usuario: " + prestamo.getUsuario().getNombre()));
+		datos.add(UtilVista.crearEtiquetaSecundaria("ID recurso: " + prestamo.getRecurso().getId()));
+		datos.add(UtilVista.crearEtiquetaSecundaria("Fecha préstamo: " + prestamo.getFechaPrestamo()));
+		datos.add(UtilVista.crearEtiquetaSecundaria("Estado: " + UtilVista.estadoDe(prestamo)));
 
 		if (!prestamo.isEstadoPrestamo() && prestamo.getFechaDevolucion() != null) {
-
-			panelDatosPrestamo.add(etiquetaDevolucion);
+			datos.add(UtilVista.crearEtiquetaSecundaria("Fecha devolución: " + prestamo.getFechaDevolucion()));
 		}
 
-		panelPrestamo.add(panelDatosPrestamo, BorderLayout.CENTER);
+		JPanel fila = UtilVista.crearFila();
+		fila.add(datos, BorderLayout.CENTER);
 
-		if (mostrarBotonDevolver && prestamo.isEstadoPrestamo()) {
+		if (conBotonDevolver && prestamo.isEstadoPrestamo()) {
 
-			JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-			panelBotones.setOpaque(false);
+			JButton botonDevolver = UtilVista.crearBotonDevolver();
+			botonDevolver.addActionListener(e -> devolver(prestamo));
 
-			JButton botonDevolver = new JButton("Devolver");
-			botonDevolver.setBackground(colorRojo);
-			botonDevolver.addActionListener(e -> {
-
-				if (accionDevolverPrestamo != null) {
-
-					accionDevolverPrestamo.accept(datosPrestamo);
-				}
-			});
-
+			JPanel panelBotones = UtilVista.crearPanelBotones();
 			panelBotones.add(botonDevolver);
-
-			panelPrestamo.add(panelBotones, BorderLayout.EAST);
+			fila.add(panelBotones, BorderLayout.EAST);
 		}
 
-		añadirEventoDetallePrestamo(panelPrestamo, datosPrestamo);
-		añadirEventoDetallePrestamo(panelDatosPrestamo, datosPrestamo);
+		// Un solo listener sobre toda la fila (antes se añadía a dos paneles)
+		UtilVista.hacerClicable(fila, () -> new VentanaDetalleContenido(this, prestamo, gestionPrestamos).setVisible(true));
 
-		panelDestino.add(panelPrestamo);
+		// Sin altura mínima: la fila mide lo que necesita su contenido (antes estaba
+		// fija a 100 px y las filas con más líneas se recortaban)
+		UtilVista.ajustarAlturaFila(fila, 0);
+
+		panelDestino.add(fila);
 	}
 
-	private void añadirEventoDetallePrestamo(JPanel panel, String[] datosPrestamo) {
-		panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 1) {
+	private void devolver(Prestamo prestamo) {
 
-					VentanaDetalleContenido ventana = new VentanaDetalleContenido(PanelContenido.MODO_PRESTAMOS,
-							datosPrestamo, gestionPrestamos);
-					ventana.setAccionEditarPrestamo(accionEditarPrestamo);
-					ventana.setAccionDevolverPrestamo(accionDevolverPrestamo);
-					ventana.setVisible(true);
-				}
-			}
-		});
+		if (accionDevolverPrestamo != null) {
+
+			// El cuadro de confirmación es modal: esta línea espera a que se cierre
+			accionDevolverPrestamo.accept(prestamo);
+
+			// La ventana sigue abierta, así que se actualiza (antes se quedaba
+			// mostrando el préstamo como activo)
+			recarga.run();
+		}
 	}
 
 	// =========================================================
-	// LIMPIEZA
+	// ACCIONES QUE DEFINE QUIEN ABRE LA VENTANA
 	// =========================================================
-	private void limpiarPaneles() {
-		panelDatos.removeAll();
-		panelSecundario.removeAll();
-		panelSecundario.setLayout(new BoxLayout(panelSecundario, BoxLayout.Y_AXIS));
-		panelSecundario.setVisible(true);
-	}
+	public void setAccionDevolverPrestamo(Consumer<Prestamo> accionDevolverPrestamo) {
 
-	private String obtenerDato(String[] datos, int posicion) {
-		if (datos == null || posicion < 0 || posicion >= datos.length || datos[posicion] == null) {
-			return "";
-		}
-		return datos[posicion];
-	}
-
-	public void setAccionEditarPrestamo(Consumer<String[]> accionEditarPrestamo) {
-		this.accionEditarPrestamo = accionEditarPrestamo;
-	}
-
-	public void setAccionDevolverPrestamo(Consumer<String[]> accionDevolverPrestamo) {
 		this.accionDevolverPrestamo = accionDevolverPrestamo;
 	}
 }

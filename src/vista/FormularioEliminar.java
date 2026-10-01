@@ -2,74 +2,76 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.Window;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Ventana de confirmación. Sirve tanto para eliminar (usuarios, recursos) como
+ * para devolver un préstamo.
+ * 
+ * Uso:
+ * 
+ * <pre>
+ * FormularioEliminar dialogo = FormularioEliminar.paraEliminar(ventana, "usuario", "Ana (ID: U01)");
+ * dialogo.setVisible(true); // se queda esperando hasta que se cierra
+ * if (dialogo.isConfirmado()) {
+ * 	// hacer la acción
+ * }
+ * </pre>
+ */
 public class FormularioEliminar extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Color colorRojo = new Color(230, 100, 100);
+	private boolean confirmado = false;
 
-	private String tipo;
-	private String descripcion;
-	private JButton botonAccion;
+	// =========================================================
+	// CONSTRUCCIÓN: DOS VARIANTES
+	// =========================================================
+	public static FormularioEliminar paraEliminar(Window propietario, String tipo, String descripcion) {
 
-	public FormularioEliminar(String tipo, String descripcion) {
-		
-		this.tipo = tipo;
-		this.descripcion = descripcion;
-
-		configurarVentana();
-		crearContenido(false);
+		return new FormularioEliminar(propietario, "Confirmar eliminación",
+				"¿Seguro que quieres eliminar este " + tipo.toLowerCase() + "?", descripcion, "Eliminar");
 	}
 
-	public FormularioEliminar(String tipo, String descripcion, boolean esDevolucion) {
-		
-		this.tipo = tipo;
-		this.descripcion = descripcion;
-		
-		configurarVentana();
-		crearContenido(esDevolucion);
+	public static FormularioEliminar paraDevolucion(Window propietario, String descripcion) {
+
+		return new FormularioEliminar(propietario, "Confirmar devolución", "¿Seguro que quieres devolver este préstamo?",
+				descripcion, "Devolver");
 	}
 
-	private void configurarVentana() {
+	private FormularioEliminar(Window propietario, String titulo, String pregunta, String descripcion,
+			String textoAccion) {
 
-		setTitle("Confirmar eliminación");
+		// Con propietario, la ventana se centra sobre la aplicación y no se
+		// puede quedar escondida detrás de ella
+		super(propietario, titulo, Dialog.ModalityType.APPLICATION_MODAL);
+
 		setSize(420, 220);
-		setLocationRelativeTo(null);
-		setModal(true);
+		setLocationRelativeTo(propietario);
 		setResizable(false);
-		setLayout(new BorderLayout());
-		getContentPane().setBackground(Color.WHITE);
-	}
-
-	private void crearContenido(boolean esDevolucion) {
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		JPanel panelPrincipal = new JPanel(new BorderLayout());
 		panelPrincipal.setBackground(Color.WHITE);
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(25, 25, 20, 25));
+		setContentPane(panelPrincipal);
 
 		// ========================================
 		// TÍTULO
 		// ========================================
-		String textoTitulo;
-
-		if (esDevolucion) {
-			textoTitulo = "Confirmar devolución";
-		} else {
-			textoTitulo = "Confirmar eliminación";
-		}
-
-		JLabel etiquetaTitulo = new JLabel(textoTitulo);
-		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		JLabel etiquetaTitulo = new JLabel(titulo);
+		etiquetaTitulo.setFont(UtilVista.FUENTE_SUBTITULO);
 		panelPrincipal.add(etiquetaTitulo, BorderLayout.NORTH);
 
 		// ========================================
@@ -77,26 +79,18 @@ public class FormularioEliminar extends JDialog {
 		// ========================================
 		JPanel panelMensaje = new JPanel();
 		panelMensaje.setBackground(Color.WHITE);
-		panelMensaje.setLayout(new javax.swing.BoxLayout(panelMensaje, javax.swing.BoxLayout.Y_AXIS));
+		panelMensaje.setLayout(new BoxLayout(panelMensaje, BoxLayout.Y_AXIS));
 
-		String textoPregunta;
-
-		if (esDevolucion) {
-			textoPregunta = "¿Seguro que quieres devolver este préstamo?";
-		} else {
-			textoPregunta = "¿Seguro que quieres eliminar este " + tipo.toLowerCase() + "?";
-		}
-
-		JLabel etiquetaPregunta = new JLabel(textoPregunta);
-		etiquetaPregunta.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		JLabel etiquetaPregunta = new JLabel(pregunta);
+		etiquetaPregunta.setFont(UtilVista.FUENTE_TEXTO);
 
 		JLabel etiquetaElemento = new JLabel(descripcion);
-		etiquetaElemento.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		etiquetaElemento.setFont(UtilVista.FUENTE_TEXTO_NEGRITA);
 
 		panelMensaje.add(etiquetaPregunta);
-		panelMensaje.add(javax.swing.Box.createVerticalStrut(8));
+		panelMensaje.add(Box.createVerticalStrut(8));
 		panelMensaje.add(etiquetaElemento);
-		
+
 		panelPrincipal.add(panelMensaje, BorderLayout.CENTER);
 
 		// ========================================
@@ -108,49 +102,31 @@ public class FormularioEliminar extends JDialog {
 		JButton botonCancelar = new JButton("Cancelar");
 		botonCancelar.setPreferredSize(new Dimension(100, 35));
 
-		String textoBoton;
-
-		if (esDevolucion) {
-			textoBoton = "Devolver";
-		} else {
-			textoBoton = "Eliminar";
-		}
-
-		botonAccion = new JButton(textoBoton);
-		botonAccion.setBackground(colorRojo);
+		JButton botonAccion = UtilVista.crearBoton(textoAccion, UtilVista.COLOR_ROJO);
 		botonAccion.setPreferredSize(new Dimension(100, 35));
 
 		panelBotones.add(botonCancelar);
 		panelBotones.add(botonAccion);
-		
+
 		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
 		// ========================================
 		// EVENTOS
 		// ========================================
 		botonCancelar.addActionListener(e -> dispose());
-		
+
 		botonAccion.addActionListener(e -> {
-
-			if (esDevolucion) {
-
-				// Aquí conectaremos posteriormente
-				// con el controlador para devolver
-				// el préstamo.
-
-			} else {
-
-				// Aquí conectaremos posteriormente
-				// con el controlador para eliminar.
-
-			}
-
+			confirmado = true;
 			dispose();
 		});
-
-		add(panelPrincipal);
 	}
-	public JButton getBotonAccion() {
-	    return botonAccion;
+
+	// =========================================================
+	// RESULTADO
+	// =========================================================
+	/** true si la persona ha pulsado el botón de la acción (no Cancelar ni cerrar). */
+	public boolean isConfirmado() {
+
+		return confirmado;
 	}
 }

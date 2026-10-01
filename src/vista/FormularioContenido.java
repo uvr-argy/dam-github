@@ -2,34 +2,55 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
+import java.awt.Window;
+import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import modelo.Prestamo;
 import modelo.Recurso;
 import modelo.Usuario;
 
+/**
+ * Formulario para añadir y editar usuarios, recursos y préstamos.
+ * 
+ * El modo (usuarios, recursos o préstamos) se decide al crearlo y ya no cambia,
+ * así que los campos se crean una sola vez según el modo. Para editar se crea
+ * igual y después se llama a cargarDatos(...) o cargarOpcionesPrestamo(...).
+ */
 public class FormularioContenido extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
+	private final int modo;
+
+	// Siguiente fila libre del GridBagLayout
+	private int filaActual = 0;
+
 	// =========================================================
-	// CAMPOS COMUNES
+	// COMPONENTES GENERALES
 	// =========================================================
+	private JPanel panelFormulario;
+	private JButton botonGuardar;
+
+	// El ID lo asigna el controlador: solo se muestra al editar
+	private JLabel etiquetaId;
 	private JTextField campoId;
-	private JTextField campoTitulo;
-	private JTextField campoAno;
 
 	// =========================================================
 	// CAMPOS DE USUARIO
@@ -40,6 +61,8 @@ public class FormularioContenido extends JDialog {
 	// =========================================================
 	// CAMPOS DE RECURSO
 	// =========================================================
+	private JTextField campoTitulo;
+	private JTextField campoAno;
 	private JComboBox<String> comboTipo;
 	private JTextField campoEspecifico1;
 	private JTextField campoEspecifico2;
@@ -49,159 +72,138 @@ public class FormularioContenido extends JDialog {
 	// =========================================================
 	// CAMPOS DE PRÉSTAMO
 	// =========================================================
-	private JComboBox<String> comboUsuario;
-	private JComboBox<String> comboRecurso;
-	private JTextField campoFechaPrestamo;
-	private JComboBox<String> comboEstado;
-	private JTextField campoFechaDevolucion;
+	// Guardan los objetos (no textos): así no hay que "trocear" cadenas después
+	private JComboBox<Usuario> comboUsuario;
+	private JComboBox<Recurso> comboRecurso;
 
-	// =========================================================
-	// COMPONENTES GENERALES
-	// =========================================================
-	private JPanel panelFormulario;
-	private JButton botonGuardar;
-	private JButton botonCancelar;
-	private int modoActual;
+	public FormularioContenido(Window propietario, int modo) {
 
-	public FormularioContenido(int modo) {
-		modoActual = modo;
+		// Con propietario, el formulario se centra sobre la aplicación y no se
+		// puede quedar escondido detrás de ella
+		super(propietario, Dialog.ModalityType.APPLICATION_MODAL);
+
+		this.modo = modo;
+
 		configurarVentana();
-		crearFormulario();
-		configurarBotones();
-		configurarModo(modo);
+		crearPanelFormulario();
+		crearBotones();
+		crearCamposSegunModo();
 	}
 
 	// =========================================================
 	// CONFIGURACIÓN DE LA VENTANA
 	// =========================================================
 	private void configurarVentana() {
+
 		setSize(550, 500);
-		setLocationRelativeTo(null);
-		setModal(true);
+		setLocationRelativeTo(getOwner());
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		JPanel panelPrincipal = new JPanel(new BorderLayout());
-		panelPrincipal.setBackground(new Color(249, 247, 242));
+		panelPrincipal.setBackground(UtilVista.COLOR_FONDO);
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 		setContentPane(panelPrincipal);
 	}
 
-	// =========================================================
-	// FORMULARIO
-	// =========================================================
-	private void crearFormulario() {
+	private void crearPanelFormulario() {
+
 		panelFormulario = new JPanel(new GridBagLayout());
 		panelFormulario.setBackground(Color.WHITE);
-		panelFormulario
-				.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)),
-						BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+		panelFormulario.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(UtilVista.COLOR_BORDE), BorderFactory.createEmptyBorder(20, 20, 20, 20)));
 
-		// -----------------------------------------------------
-		// CAMPOS
-		// -----------------------------------------------------
-		campoId = new JTextField();
-		campoTitulo = new JTextField();
-		campoAno = new JTextField();
-		campoNombre = new JTextField();
-		campoEmail = new JTextField();
-		comboTipo = new JComboBox<>(new String[] { "Libro", "Película", "Videojuego" });
-
-		campoEspecifico1 = new JTextField();
-		campoEspecifico2 = new JTextField();
-		etiquetaEspecifico1 = new JLabel();
-		etiquetaEspecifico2 = new JLabel();
-
-		comboUsuario = new JComboBox<>();
-		comboRecurso = new JComboBox<>();
-
-		campoFechaPrestamo = new JTextField();
-		comboEstado = new JComboBox<>(new String[] { "Activo", "Finalizado" });
-		campoFechaDevolucion = new JTextField();
-
-		// -----------------------------------------------------
-		// CAMBIO DE CAMPOS DEL RECURSO
-		// -----------------------------------------------------
-		comboTipo.addActionListener(e -> actualizarCamposEspecificos());
-
-		// -----------------------------------------------------
-		// PANEL PRINCIPAL
-		// -----------------------------------------------------
-		JPanel panelPrincipal = (JPanel) getContentPane();
-		panelPrincipal.add(panelFormulario, BorderLayout.CENTER);
+		getContentPane().add(panelFormulario, BorderLayout.CENTER);
 	}
 
-	// =========================================================
-	// CONFIGURACIÓN DEL BOTÓN
-	// =========================================================
-	private void configurarBotones() {
-		JPanel panelPrincipal = (JPanel) getContentPane();
+	private void crearBotones() {
+
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		panelBotones.setOpaque(false);
 
-		botonCancelar = new JButton("Cancelar");
+		JButton botonCancelar = new JButton("Cancelar");
 		botonCancelar.setPreferredSize(new Dimension(100, 35));
+		botonCancelar.addActionListener(e -> dispose());
 
-		botonGuardar = new JButton("Guardar");
-		botonGuardar.setBackground(new Color(123, 220, 99));
+		botonGuardar = UtilVista.crearBoton("Guardar", UtilVista.COLOR_VERDE);
 		botonGuardar.setPreferredSize(new Dimension(100, 35));
 
 		panelBotones.add(botonCancelar);
 		panelBotones.add(botonGuardar);
 
-		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
+		getContentPane().add(panelBotones, BorderLayout.SOUTH);
 
-		botonCancelar.addActionListener(e -> dispose());
+		// Pulsar Enter equivale a pulsar Guardar
+		getRootPane().setDefaultButton(botonGuardar);
 	}
 
 	// =========================================================
-	// CONFIGURAR MODO
+	// CAMPOS SEGÚN EL MODO
 	// =========================================================
-	private void configurarModo(int modo) {
-		modoActual = modo;
-		limpiarFormulario();
+	private void crearCamposSegunModo() {
 
 		switch (modo) {
 		case PanelContenido.MODO_USUARIOS:
-			configurarModoUsuario();
+			crearCamposUsuario();
 			break;
 		case PanelContenido.MODO_RECURSOS:
-			configurarModoRecurso();
+			crearCamposRecurso();
 			break;
 		case PanelContenido.MODO_PRESTAMOS:
-			configurarModoPrestamo();
+			crearCamposPrestamo();
 			break;
 		}
 	}
 
-	// =========================================================
-	// MODO USUARIO
-	// =========================================================
-	private void configurarModoUsuario() {
+	private void crearCamposUsuario() {
+
 		setTitle("Añadir usuario");
-		añadirCampo("ID:", campoId);
+
+		campoNombre = new JTextField();
+		campoEmail = new JTextField();
+
+		añadirCampoId();
 		añadirCampo("Nombre:", campoNombre);
 		añadirCampo("Email:", campoEmail);
 	}
 
-	// =========================================================
-	// MODO RECURSO
-	// =========================================================
-	private void configurarModoRecurso() {
+	private void crearCamposRecurso() {
+
 		setTitle("Añadir recurso");
-		añadirCampo("ID:", campoId);
+
+		campoTitulo = new JTextField();
+		campoAno = new JTextField();
+		comboTipo = new JComboBox<>(
+				new String[] { UtilVista.TIPO_LIBRO, UtilVista.TIPO_PELICULA, UtilVista.TIPO_VIDEOJUEGO });
+		campoEspecifico1 = new JTextField();
+		campoEspecifico2 = new JTextField();
+		etiquetaEspecifico1 = new JLabel();
+		etiquetaEspecifico2 = new JLabel();
+
+		// Al cambiar el tipo cambian los nombres de los dos últimos campos
+		comboTipo.addActionListener(e -> actualizarCamposEspecificos());
+
+		añadirCampoId();
 		añadirCampo("Título:", campoTitulo);
 		añadirCampo("Año:", campoAno);
 		añadirCampo("Tipo:", comboTipo);
 		añadirCampo(etiquetaEspecifico1, campoEspecifico1);
 		añadirCampo(etiquetaEspecifico2, campoEspecifico2);
+
 		actualizarCamposEspecificos();
 	}
 
-	// =========================================================
-	// MODO PRÉSTAMO
-	// =========================================================
-	private void configurarModoPrestamo() {
+	private void crearCamposPrestamo() {
+
 		setTitle("Añadir préstamo");
+
+		comboUsuario = new JComboBox<>();
+		comboRecurso = new JComboBox<>();
+
+		// Los combos guardan objetos; el renderizador decide qué texto se ve
+		RenderizadorOpciones renderizador = new RenderizadorOpciones();
+		comboUsuario.setRenderer(renderizador);
+		comboRecurso.setRenderer(renderizador);
+
 		añadirCampo("Usuario:", comboUsuario);
 		añadirCampo("Recurso:", comboRecurso);
 	}
@@ -210,100 +212,67 @@ public class FormularioContenido extends JDialog {
 	// CAMPOS ESPECÍFICOS DEL RECURSO
 	// =========================================================
 	private void actualizarCamposEspecificos() {
-		if (modoActual != PanelContenido.MODO_RECURSOS) {
-			return;
-		}
 
 		String tipo = (String) comboTipo.getSelectedItem();
 
-		if ("Libro".equals(tipo)) {
-			etiquetaEspecifico1.setText("Autor:");
-			etiquetaEspecifico2.setText("Páginas:");
-		} else if ("Película".equals(tipo)) {
-			etiquetaEspecifico1.setText("Director:");
-			etiquetaEspecifico2.setText("Duración:");
-		} else if ("Videojuego".equals(tipo)) {
-			etiquetaEspecifico1.setText("Plataforma:");
-			etiquetaEspecifico2.setText("PEGI:");
-		}
-
-		panelFormulario.revalidate();
-		panelFormulario.repaint();
+		etiquetaEspecifico1.setText(UtilVista.etiquetaDato1(tipo) + ":");
+		etiquetaEspecifico2.setText(UtilVista.etiquetaDato2(tipo) + ":");
 	}
 
 	// =========================================================
-	// AÑADIR CAMPO
+	// AÑADIR FILAS AL FORMULARIO
 	// =========================================================
-	private void añadirCampo(String texto, java.awt.Component componente) {
+	private void añadirCampoId() {
+
+		etiquetaId = new JLabel("ID:");
+		campoId = new JTextField();
+		campoId.setEnabled(false);
+
+		añadirCampo(etiquetaId, campoId);
+
+		// Al crear, el ID todavía no existe: se oculta hasta que se edite
+		etiquetaId.setVisible(false);
+		campoId.setVisible(false);
+	}
+
+	private void mostrarId(String id) {
+
+		campoId.setText(id);
+		etiquetaId.setVisible(true);
+		campoId.setVisible(true);
+	}
+
+	private void añadirCampo(String texto, Component componente) {
+
 		añadirCampo(new JLabel(texto), componente);
 	}
 
-	private void añadirCampo(JLabel etiqueta, java.awt.Component componente) {
+	private void añadirCampo(JLabel etiqueta, Component componente) {
+
 		GridBagConstraints restriccionesEtiqueta = new GridBagConstraints();
 		restriccionesEtiqueta.gridx = 0;
-		restriccionesEtiqueta.gridy = panelFormulario.getComponentCount() / 2;
+		restriccionesEtiqueta.gridy = filaActual;
 		restriccionesEtiqueta.anchor = GridBagConstraints.WEST;
 		restriccionesEtiqueta.insets = new Insets(5, 5, 5, 10);
 
 		GridBagConstraints restriccionesCampo = new GridBagConstraints();
 		restriccionesCampo.gridx = 1;
-		restriccionesCampo.gridy = panelFormulario.getComponentCount() / 2;
+		restriccionesCampo.gridy = filaActual;
 		restriccionesCampo.weightx = 1.0;
 		restriccionesCampo.fill = GridBagConstraints.HORIZONTAL;
 		restriccionesCampo.insets = new Insets(5, 5, 5, 5);
 
 		panelFormulario.add(etiqueta, restriccionesEtiqueta);
 		panelFormulario.add(componente, restriccionesCampo);
+
+		filaActual++;
 	}
 
 	// =========================================================
-	// LIMPIAR
+	// GETTERS (los usa PanelContenido para leer lo escrito)
 	// =========================================================
-	private void limpiarFormulario() {
-		panelFormulario.removeAll();
-
-		campoId.setText("");
-		campoTitulo.setText("");
-		campoAno.setText("");
-		campoNombre.setText("");
-		campoEmail.setText("");
-		campoEspecifico1.setText("");
-		campoEspecifico2.setText("");
-
-		if (comboUsuario.getItemCount() > 0) {
-			comboUsuario.setSelectedIndex(0);
-		}
-
-		if (comboRecurso.getItemCount() > 0) {
-			comboRecurso.setSelectedIndex(0);
-		}
-
-		campoFechaPrestamo.setText("");
-		campoFechaDevolucion.setText("");
-		comboTipo.setSelectedIndex(0);
-		comboEstado.setSelectedIndex(0);
-
-		campoId.setEnabled(false);
-		botonGuardar.setText("Guardar");
-	}
-
-	// =========================================================
-	// GETTERS GENERALES
-	// =========================================================
-	public int getModoActual() {
-		return modoActual;
-	}
-
-	public JTextField getCampoId() {
-		return campoId;
-	}
-
-	public JTextField getCampoTitulo() {
-		return campoTitulo;
-	}
-
-	public JTextField getCampoAno() {
-		return campoAno;
+	public JButton getBotonGuardar() {
+		return botonGuardar;
 	}
 
 	public JTextField getCampoNombre() {
@@ -312,6 +281,14 @@ public class FormularioContenido extends JDialog {
 
 	public JTextField getCampoEmail() {
 		return campoEmail;
+	}
+
+	public JTextField getCampoTitulo() {
+		return campoTitulo;
+	}
+
+	public JTextField getCampoAno() {
+		return campoAno;
 	}
 
 	public JComboBox<String> getComboTipo() {
@@ -326,167 +303,125 @@ public class FormularioContenido extends JDialog {
 		return campoEspecifico2;
 	}
 
-	public JComboBox<String> getComboUsuario() {
-		return comboUsuario;
+	public Usuario getUsuarioSeleccionado() {
+		return (Usuario) comboUsuario.getSelectedItem();
 	}
 
-	public JComboBox<String> getComboRecurso() {
-		return comboRecurso;
-	}
-
-	public JTextField getCampoFechaPrestamo() {
-		return campoFechaPrestamo;
-	}
-
-	public JComboBox<String> getComboEstado() {
-		return comboEstado;
-	}
-
-	public JTextField getCampoFechaDevolucion() {
-		return campoFechaDevolucion;
-	}
-
-	public JButton getBotonGuardar() {
-		return botonGuardar;
-	}
-
-	public JButton getBotonCancelar() {
-		return botonCancelar;
+	public Recurso getRecursoSeleccionado() {
+		return (Recurso) comboRecurso.getSelectedItem();
 	}
 
 	// =========================================================
-	// CARGAR DATOS DE USUARIO
+	// CARGAR DATOS PARA EDITAR
 	// =========================================================
-	public void cargarDatos(String id, String nombre, String email) {
-		configurarModo(PanelContenido.MODO_USUARIOS);
+	public void cargarDatos(Usuario usuario) {
+
 		setTitle("Editar usuario");
-		campoId.setText(id);
-		campoNombre.setText(nombre);
-		campoEmail.setText(email);
-		campoId.setEnabled(false);
+		mostrarId(usuario.getId());
+
+		campoNombre.setText(usuario.getNombre());
+		campoEmail.setText(usuario.getEmail());
+
 		botonGuardar.setText("Guardar cambios");
 	}
 
-	// =========================================================
-	// CARGAR DATOS DE RECURSO
-	// =========================================================
-	public void cargarDatos(String id, String titulo, String ano, String estado, String dato1, String dato2) {
-		configurarModo(PanelContenido.MODO_RECURSOS);
+	public void cargarDatos(Recurso recurso) {
+
 		setTitle("Editar recurso");
+		mostrarId(recurso.getId());
 
-		campoId.setText(id);
-		campoTitulo.setText(titulo);
-		campoAno.setText(ano);
+		campoTitulo.setText(recurso.getTitulo());
+		campoAno.setText(String.valueOf(recurso.getAno()));
 
+		// Se selecciona el tipo REAL del recurso. El tipo no se puede cambiar al
+		// editar (un Libro no puede convertirse en Película), por eso se bloquea.
+		comboTipo.setSelectedItem(UtilVista.tipoDe(recurso));
+		comboTipo.setEnabled(false);
 		actualizarCamposEspecificos();
 
-		campoEspecifico1.setText(dato1);
-		campoEspecifico2.setText(dato2);
+		campoEspecifico1.setText(UtilVista.dato1(recurso));
+		campoEspecifico2.setText(UtilVista.dato2(recurso));
 
-		/*
-		 * El estado todavía se conserva como dato visual en PanelContenido. Cuando
-		 * conectemos el modelo, se añadirá aquí el campo de disponibilidad.
-		 */
-
-		campoId.setEnabled(false);
 		botonGuardar.setText("Guardar cambios");
 	}
 
-	// =========================================================
-	// CARGAR DATOS DE PRÉSTAMO
-	// =========================================================
-	public void cargarDatosPrestamo(String nombreUsuario, String idRecurso, String tituloRecurso, String fechaPrestamo,
-			String estado, String fechaDevolucion) {
-		limpiarFormulario();
-		panelFormulario.removeAll();
-		modoActual = PanelContenido.MODO_PRESTAMOS;
-
-		setTitle("Editar préstamo");
-
-		añadirCampo("Usuario:", comboUsuario);
-		añadirCampo("Recurso:", comboRecurso);
-		añadirCampo("Fecha préstamo:", campoFechaPrestamo);
-		añadirCampo("Estado:", comboEstado);
-		añadirCampo("Fecha devolución:", campoFechaDevolucion);
-
-		seleccionarComboPorTexto(comboUsuario, nombreUsuario);
-		seleccionarComboPorTexto(comboRecurso, idRecurso + " · " + tituloRecurso);
-
-		campoFechaPrestamo.setText(fechaPrestamo);
-		comboEstado.setSelectedItem(estado);
-		campoFechaDevolucion.setText(fechaDevolucion);
-
-		botonGuardar.setText("Guardar cambios");
-
-		panelFormulario.revalidate();
-		panelFormulario.repaint();
-	}
-
-	public void cargarUsuariosYRecursos(ArrayList<Usuario> usuarios, ArrayList<Recurso> recursos) {
+	/**
+	 * Rellena los desplegables de usuario y recurso.
+	 * 
+	 * @param prestamoActual null si se está creando un préstamo nuevo; si se está
+	 *                       editando, el préstamo que se edita.
+	 */
+	public void cargarOpcionesPrestamo(List<Usuario> usuarios, List<Recurso> recursos, Prestamo prestamoActual) {
 
 		comboUsuario.removeAllItems();
 		comboRecurso.removeAllItems();
 
 		for (Usuario usuario : usuarios) {
-
-			comboUsuario.addItem(usuario.getId() + " · " + usuario.getNombre());
+			comboUsuario.addItem(usuario);
 		}
 
+		// Solo se pueden prestar los recursos disponibles
 		for (Recurso recurso : recursos) {
-
 			if (recurso.isEstado()) {
-
-				comboRecurso.addItem(recurso.getId() + " · " + recurso.getTitulo());
+				comboRecurso.addItem(recurso);
 			}
 		}
+
+		if (prestamoActual == null) {
+			return;
+		}
+
+		setTitle("Editar préstamo");
+		botonGuardar.setText("Guardar cambios");
+
+		// El usuario o el recurso del préstamo pueden no estar en las listas (el
+		// recurso está prestado, el usuario se eliminó). Se añaden para que al
+		// guardar no se cambien por otro sin querer.
+		asegurarOpcion(comboUsuario, prestamoActual.getUsuario());
+		asegurarOpcion(comboRecurso, prestamoActual.getRecurso());
+
+		comboUsuario.setSelectedItem(prestamoActual.getUsuario());
+		comboRecurso.setSelectedItem(prestamoActual.getRecurso());
+
+		// En un préstamo ya devuelto no se cambia el recurso: ese recurso puede
+		// estar ahora prestado a otra persona
+		comboRecurso.setEnabled(prestamoActual.isEstadoPrestamo());
 	}
 
-	private void seleccionarComboPorTexto(JComboBox<String> combo, String texto) {
+	private <T> void asegurarOpcion(JComboBox<T> combo, T opcion) {
+
 		for (int i = 0; i < combo.getItemCount(); i++) {
-			if (combo.getItemAt(i).contains(texto)) {
-				combo.setSelectedIndex(i);
+			if (combo.getItemAt(i) == opcion) {
 				return;
 			}
 		}
+
+		combo.addItem(opcion);
 	}
 
-	public void seleccionarUsuario(String idUsuario) {
+	// =========================================================
+	// TEXTO DE LAS OPCIONES DE LOS DESPLEGABLES
+	// =========================================================
+	private static class RenderizadorOpciones extends DefaultListCellRenderer {
 
-		for (int i = 0; i < comboUsuario.getItemCount(); i++) {
+		private static final long serialVersionUID = 1L;
 
-			String item = comboUsuario.getItemAt(i);
+		@Override
+		public Component getListCellRendererComponent(JList<?> lista, Object valor, int indice, boolean seleccionado,
+				boolean conFoco) {
 
-			if (item.startsWith(idUsuario + " · ")) {
-				comboUsuario.setSelectedIndex(i);
-				return;
+			super.getListCellRendererComponent(lista, valor, indice, seleccionado, conFoco);
+
+			if (valor instanceof Usuario) {
+				Usuario usuario = (Usuario) valor;
+				setText(usuario.getId() + " · " + usuario.getNombre());
+
+			} else if (valor instanceof Recurso) {
+				Recurso recurso = (Recurso) valor;
+				setText(recurso.getId() + " · " + recurso.getTitulo());
 			}
+
+			return this;
 		}
-	}
-
-	public void seleccionarRecurso(String idRecurso) {
-
-		for (int i = 0; i < comboRecurso.getItemCount(); i++) {
-
-			String item = comboRecurso.getItemAt(i);
-
-			if (item.startsWith(idRecurso + " · ")) {
-				comboRecurso.setSelectedIndex(i);
-				return;
-			}
-		}
-	}
-
-	public boolean contieneRecurso(String idRecurso) {
-
-		for (int i = 0; i < comboRecurso.getItemCount(); i++) {
-
-			String item = comboRecurso.getItemAt(i);
-
-			if (item.startsWith(idRecurso + " · ")) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

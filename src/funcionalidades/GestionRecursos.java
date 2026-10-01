@@ -224,70 +224,35 @@ public class GestionRecursos {
 	}
 
 	public ArrayList<Recurso> filtrarRecursos(String texto, String tipo, String disponibilidad) {
+		
+	    ArrayList<Recurso> resultados = new ArrayList<>();
+	    
+	    boolean hayTexto = texto != null && !texto.trim().isEmpty();
+	    String busqueda = hayTexto ? texto.toLowerCase().trim() : "";
+	    
+	    boolean hayTipo = tipo != null && !tipo.equals("Todos") && !tipo.trim().isEmpty();
+	    boolean hayDisp = disponibilidad != null && !disponibilidad.equals("Todos") && !disponibilidad.trim().isEmpty();
 
-		ArrayList<Recurso> resultados = new ArrayList<>();
+	    for (Recurso recurso : recursos) {
+	    	
+	        if (hayTexto && !(recurso.getId().toLowerCase().contains(busqueda) || 
+	                          recurso.getTitulo().toLowerCase().contains(busqueda) || 
+	                          recurso.getClass().getSimpleName().toLowerCase().contains(busqueda))) {
+	            continue;
+	        }
 
-		for (Recurso recurso : recursos) {
+	        if (hayTipo && !recurso.getClass().getSimpleName().equalsIgnoreCase(tipo)) {
+	            continue;
+	        }
 
-			// =========================
-			// FILTRO DE TEXTO
-			// =========================
-
-			boolean coincideTexto = true;
-
-			if (texto != null && !texto.trim().isEmpty()) {
-
-				String busqueda = texto.toLowerCase().trim();
-
-				coincideTexto = recurso.getId().toLowerCase().contains(busqueda)
-						|| recurso.getTitulo().toLowerCase().contains(busqueda)
-						|| recurso.getClass().getSimpleName().toLowerCase().contains(busqueda);
-			}
-
-			if (!coincideTexto) {
-				continue;
-			}
-
-			// =========================
-			// FILTRO DE TIPO
-			// =========================
-
-			boolean coincideTipo = true;
-
-			if (tipo != null && !tipo.equals("Todos") && !tipo.trim().isEmpty()) {
-
-				coincideTipo = recurso.getClass().getSimpleName().equalsIgnoreCase(tipo);
-			}
-
-			if (!coincideTipo) {
-				continue;
-			}
-
-			// =========================
-			// FILTRO DE DISPONIBILIDAD
-			// =========================
-
-			boolean coincideDisponibilidad = true;
-
-			if (disponibilidad != null && !disponibilidad.equals("Todos") && !disponibilidad.trim().isEmpty()) {
-
-				if (disponibilidad.equals("Disponible")) {
-
-					coincideDisponibilidad = recurso.isEstado();
-
-				} else if (disponibilidad.equals("Prestado")) {
-
-					coincideDisponibilidad = !recurso.isEstado();
-				}
-			}
-
-			if (!coincideDisponibilidad) {
-				continue;
-			}
-
-			resultados.add(recurso);
-		}
-
-		return resultados;
+	        if (hayDisp) {
+	            boolean esDisponible = disponibilidad.equals("Disponible");
+	            if (recurso.isEstado() != esDisponible) {
+	                continue;
+	            }
+	        }
+	        resultados.add(recurso);
+	    }
+	    return resultados;
 	}
 }
