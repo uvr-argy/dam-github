@@ -74,6 +74,48 @@ public class GestionPrestamos {
 
         return true;
     }
+    
+    public boolean modificarPrestamo(
+            Prestamo prestamo,
+            String idUsuario,
+            String idRecurso) {
+
+        Usuario nuevoUsuario = buscarUsuario(idUsuario);
+        Recurso nuevoRecurso = buscarRecurso(idRecurso);
+
+        if (prestamo == null || nuevoUsuario == null || nuevoRecurso == null) {
+            return false;
+        }
+
+        Recurso recursoAnterior = prestamo.getRecurso();
+
+        // Si no se ha cambiado el recurso
+        if (recursoAnterior.getId().equals(idRecurso)) {
+
+            prestamo.setUsuario(nuevoUsuario);
+
+            return true;
+        }
+
+        // El nuevo recurso tiene que estar disponible
+        if (!nuevoRecurso.isEstado()) {
+            return false;
+        }
+
+        // Liberar el recurso anterior
+        recursoAnterior.setEstado(true);
+
+        // Asignar el nuevo recurso
+        prestamo.setUsuario(nuevoUsuario);
+        prestamo.setRecurso(nuevoRecurso);
+
+        // Si el préstamo sigue activo, el nuevo recurso queda prestado
+        if (prestamo.isEstadoPrestamo()) {
+            nuevoRecurso.setEstado(false);
+        }
+
+        return true;
+    }
 
     // Devolver recurso
     public boolean devolverRecurso(String idRecurso) {
