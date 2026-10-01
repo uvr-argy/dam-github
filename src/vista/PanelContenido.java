@@ -8,11 +8,12 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -52,6 +53,10 @@ public class PanelContenido extends JPanel {
 
 	private JLabel etiquetaTitulo;
 	private JTextField campoBuscar;
+	private JComboBox<String> comboTipo;
+	private JComboBox<String> comboDisponibilidad;
+	private JButton botonLimpiarFiltros;
+
 	private JButton botonBuscar;
 	private JButton botonAnadir;
 
@@ -63,21 +68,21 @@ public class PanelContenido extends JPanel {
 	private final Color colorVerde = new Color(123, 220, 99);
 	private final Color colorAmarillo = new Color(236, 206, 92);
 	private final Color colorRojo = new Color(230, 100, 100);
-	
+
 	// =========================================================
-	//CONTROLADORES
+	// CONTROLADORES
 	// =========================================================
 	private GestionUsuarios gestionUsuarios;
 	private GestionRecursos gestionRecursos;
 	private GestionPrestamos gestionPrestamos;
-	
+
 	public PanelContenido(GestionUsuarios gestionUsuarios, GestionRecursos gestionRecursos,
 			GestionPrestamos gestionPrestamos) {
 
 		this.gestionUsuarios = gestionUsuarios;
 		this.gestionRecursos = gestionRecursos;
 		this.gestionPrestamos = gestionPrestamos;
-		
+
 		setLayout(new BorderLayout());
 		setBackground(Color.WHITE);
 
@@ -102,22 +107,69 @@ public class PanelContenido extends JPanel {
 		etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
 		panelSubnavbar.add(etiquetaTitulo, BorderLayout.WEST);
 
-		// -------------------------
-		// BUSCADOR
-		// -------------------------
 		JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+
 		panelBusqueda.setOpaque(false);
 
+		// =========================
+		// BUSCADOR
+		// =========================
+
 		campoBuscar = new JTextField();
-		campoBuscar.setPreferredSize(new Dimension(250, 35));
-		
+		campoBuscar.setPreferredSize(new Dimension(180, 35));
+
+		campoBuscar.setToolTipText("Buscar por ID, título o tipo");
+
 		botonBuscar = new JButton("Buscar");
 		botonBuscar.setForeground(new Color(249, 247, 242));
 		botonBuscar.setBackground(colorAzul);
 		botonBuscar.setPreferredSize(new Dimension(90, 35));
 
+		botonBuscar.addActionListener(e -> ejecutarBusqueda());
+
+		campoBuscar.addActionListener(e -> ejecutarBusqueda());
+
+		// =========================
+		// FILTRO TIPO
+		// =========================
+
+		comboTipo = new JComboBox<>();
+		comboTipo.addItem("Todos");
+		comboTipo.addItem("Libro");
+		comboTipo.addItem("Pelicula");
+		comboTipo.addItem("Videojuego");
+
+		comboTipo.setPreferredSize(new Dimension(120, 35));
+
+		// =========================
+		// FILTRO DISPONIBILIDAD
+		// =========================
+
+		comboDisponibilidad = new JComboBox<>();
+
+		comboDisponibilidad.addItem("Todos");
+		comboDisponibilidad.addItem("Disponible");
+		comboDisponibilidad.addItem("Prestado");
+
+		comboDisponibilidad.setPreferredSize(new Dimension(120, 35));
+
+		comboTipo.addActionListener(e -> ejecutarBusqueda());
+		comboDisponibilidad.addActionListener(e -> ejecutarBusqueda());
+
+		// =========================
+		// LIMPIAR
+		// =========================
+
+		botonLimpiarFiltros = new JButton("Limpiar");
+		botonLimpiarFiltros.addActionListener(e -> limpiarFiltros());
+
+		botonLimpiarFiltros.setPreferredSize(new Dimension(90, 35));
+
 		panelBusqueda.add(campoBuscar);
+		panelBusqueda.add(comboTipo);
+		panelBusqueda.add(comboDisponibilidad);
 		panelBusqueda.add(botonBuscar);
+		panelBusqueda.add(botonLimpiarFiltros);
 
 		panelSubnavbar.add(panelBusqueda, BorderLayout.EAST);
 
@@ -166,6 +218,7 @@ public class PanelContenido extends JPanel {
 	public void mostrarRecursos() {
 
 		modoActual = MODO_RECURSOS;
+
 		actualizarVista();
 	}
 
@@ -190,6 +243,10 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void configurarSubnavbar() {
 
+		comboTipo.setVisible(false);
+		comboDisponibilidad.setVisible(false);
+		botonLimpiarFiltros.setVisible(false);
+
 		switch (modoActual) {
 
 		case MODO_USUARIOS:
@@ -202,8 +259,15 @@ public class PanelContenido extends JPanel {
 		case MODO_RECURSOS:
 
 			panelSubnavbar.setBackground(new Color(220, 230, 244));
+
 			etiquetaTitulo.setText("Recursos");
+
 			campoBuscar.setToolTipText("Buscar recurso por ID, título o tipo");
+
+			comboTipo.setVisible(true);
+			comboDisponibilidad.setVisible(true);
+			botonLimpiarFiltros.setVisible(true);
+
 			break;
 
 		case MODO_PRESTAMOS:
@@ -289,9 +353,9 @@ public class PanelContenido extends JPanel {
 					String tipo = (String) formulario.getComboTipo().getSelectedItem();
 					String dato1 = formulario.getCampoEspecifico1().getText().trim();
 					String dato2 = formulario.getCampoEspecifico2().getText().trim();
-					LocalDate ano = LocalDate.parse(textoAno);
+					int ano = Integer.parseInt(textoAno);
 					Recurso recurso = null;
-					
+
 					// -------------------------------------------------
 					// LIBRO
 					// -------------------------------------------------
@@ -314,7 +378,7 @@ public class PanelContenido extends JPanel {
 					// VIDEOJUEGO
 					// -------------------------------------------------
 					else if ("Videojuego".equals(tipo)) {
-						
+
 						int pegi = Integer.parseInt(dato2);
 						recurso = new Videojuego(id, titulo, ano, true, dato1, pegi);
 					}
@@ -334,58 +398,41 @@ public class PanelContenido extends JPanel {
 				}
 			});
 		}
-		
+
 		// =====================================================
 		// CREAR PRÉSTAMO
 		// =====================================================
-		
+
 		else if (modoActual == MODO_PRESTAMOS) {
 
-		    formulario.cargarUsuariosYRecursos(
-		            gestionPrestamos.listarUsuarios(),
-		            gestionPrestamos.listarRecursos()
-		    );
+			formulario.cargarUsuariosYRecursos(gestionPrestamos.listarUsuarios(), gestionPrestamos.listarRecursos());
 
-		    formulario.getBotonGuardar().addActionListener(e -> {
+			formulario.getBotonGuardar().addActionListener(e -> {
 
-		        String usuarioTexto =
-		                (String) formulario.getComboUsuario().getSelectedItem();
+				String usuarioTexto = (String) formulario.getComboUsuario().getSelectedItem();
 
-		        String recursoTexto =
-		                (String) formulario.getComboRecurso().getSelectedItem();
+				String recursoTexto = (String) formulario.getComboRecurso().getSelectedItem();
 
-		        if (usuarioTexto == null || recursoTexto == null) {
-		            return;
-		        }
+				if (usuarioTexto == null || recursoTexto == null) {
+					return;
+				}
 
-		        String idUsuario =
-		                usuarioTexto.substring(
-		                        0,
-		                        usuarioTexto.indexOf(" · ")
-		                );
+				String idUsuario = usuarioTexto.substring(0, usuarioTexto.indexOf(" · "));
 
-		        String idRecurso =
-		                recursoTexto.substring(
-		                        0,
-		                        recursoTexto.indexOf(" · ")
-		                );
+				String idRecurso = recursoTexto.substring(0, recursoTexto.indexOf(" · "));
 
-		        boolean creado =
-		                gestionPrestamos.prestarRecurso(
-		                        idUsuario,
-		                        idRecurso
-		                );
+				boolean creado = gestionPrestamos.prestarRecurso(idUsuario, idRecurso);
 
-		        if (creado) {
-		            formulario.dispose();
-		            mostrarPrestamos();
-		        }
-		    });
+				if (creado) {
+					formulario.dispose();
+					mostrarPrestamos();
+				}
+			});
 		}
 
 		formulario.setVisible(true);
 	}
-	
+
 	// =========================================================
 	// DATOS TEMPORALES
 	// =========================================================
@@ -412,6 +459,19 @@ public class PanelContenido extends JPanel {
 		panelLista.repaint();
 	}
 
+	private void mostrarUsuarios(ArrayList<Usuario> usuarios) {
+
+		panelLista.removeAll();
+
+		for (Usuario usuario : usuarios) {
+
+			añadirUsuario(usuario.getId(), usuario.getNombre(), usuario.getEmail());
+		}
+
+		panelLista.revalidate();
+		panelLista.repaint();
+	}
+
 	private void cargarUsuarios() {
 
 		for (Usuario usuario : gestionUsuarios.listarUsuarios()) {
@@ -419,58 +479,92 @@ public class PanelContenido extends JPanel {
 		}
 	}
 
-	private void cargarRecursos() {
+	private void mostrarRecursos(ArrayList<Recurso> recursos) {
 
-		for (Recurso recurso : gestionRecursos.listarRecursos()) {
-			
+		panelLista.removeAll();
+
+		for (Recurso recurso : recursos) {
+
 			String id = recurso.getId();
 			String titulo = recurso.getTitulo();
-			String ano = recurso.getAno().toString();
-			
+			int ano = recurso.getAno();
+
 			String dato1 = "";
-		    String dato2 = "";
-			
-			if(recurso instanceof Libro) {
-				
+			String dato2 = "";
+
+			if (recurso instanceof Libro) {
+
 				Libro libro = (Libro) recurso;
-				
+
 				dato1 = libro.getAutor();
 				dato2 = String.valueOf(libro.getPaginas());
-				
-			}else if(recurso instanceof Pelicula) {
-				
+
+			} else if (recurso instanceof Pelicula) {
+
 				Pelicula pelicula = (Pelicula) recurso;
-				
+
 				dato1 = pelicula.getDirector();
 				dato2 = String.valueOf(pelicula.getDuracion());
-				
-			}else if(recurso instanceof Videojuego) {
-				
+
+			} else if (recurso instanceof Videojuego) {
+
 				Videojuego videojuego = (Videojuego) recurso;
-				
+
 				dato1 = videojuego.getPlataforma();
 				dato2 = String.valueOf(videojuego.getPEGI());
 			}
-			
-			String estado = (recurso.isEstado() ? "Disponible" : "Prestado"); 
-			
-			añadirRecurso(recurso.getId(), recurso.getTitulo(), recurso.getAno().toString(), estado, dato1, dato2);
+
+			String estado = recurso.isEstado() ? "Disponible" : "Prestado";
+
+			añadirRecurso(id, titulo, ano, estado, dato1, dato2);
 		}
+
+		panelLista.revalidate();
+		panelLista.repaint();
+	}
+
+	private void cargarRecursos() {
+
+		mostrarRecursos(gestionRecursos.listarRecursos());
+	}
+
+	private void mostrarPrestamos(ArrayList<Prestamo> prestamos) {
+
+		panelLista.removeAll();
+
+		for (Prestamo prestamo : prestamos) {
+
+			String nombreUsuario = prestamo.getUsuario().getNombre();
+			String idRecurso = prestamo.getRecurso().getId();
+			String tituloRecurso = prestamo.getRecurso().getTitulo();
+			String fechaPrestamo = prestamo.getFechaPrestamo().toString();
+
+			String estado = prestamo.isEstadoPrestamo() ? "Activo" : "Finalizado";
+
+			String fechaDevolucion = prestamo.getFechaDevolucion() != null ? prestamo.getFechaDevolucion().toString()
+					: "---";
+
+			añadirPrestamo(prestamo, nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado, fechaDevolucion);
+		}
+
+		panelLista.revalidate();
+		panelLista.repaint();
 	}
 
 	private void cargarPrestamos() {
 
-		for(Prestamo prestamo : gestionPrestamos.listarPrestamos()) {
-			
+		for (Prestamo prestamo : gestionPrestamos.listarPrestamos()) {
+
 			System.out.println(prestamo.toString());
-			
+
 			String nombreUsuario = prestamo.getUsuario().getNombre();
 			String idRecurso = prestamo.getRecurso().getId();
 			String tituloRecurso = prestamo.getRecurso().getTitulo();
-			String fechaPrestamo =  prestamo.getFechaPrestamo().toString();
-			String estado = prestamo.isEstadoPrestamo()? "Activo" : "Finalizado";
-			String fechaDevolucion = prestamo.getFechaDevolucion() != null ? prestamo.getFechaDevolucion().toString() : "---";
-			
+			String fechaPrestamo = prestamo.getFechaPrestamo().toString();
+			String estado = prestamo.isEstadoPrestamo() ? "Activo" : "Finalizado";
+			String fechaDevolucion = prestamo.getFechaDevolucion() != null ? prestamo.getFechaDevolucion().toString()
+					: "---";
+
 			añadirPrestamo(prestamo, nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado, fechaDevolucion);
 		}
 	}
@@ -485,7 +579,7 @@ public class PanelContenido extends JPanel {
 		fila.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)),
 				BorderFactory.createEmptyBorder(12, 15, 12, 10)));
 		fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, altura));
-		
+
 		return fila;
 	}
 
@@ -565,8 +659,7 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	// FILA DE RECURSO
 	// =========================================================
-	private void añadirRecurso(String id, String titulo, String ano, String estado,
-			String dato1, String dato2) {
+	private void añadirRecurso(String id, String titulo, int ano, String estado, String dato1, String dato2) {
 
 		// La fila solo necesita espacio para:
 		// - Nombre del recurso
@@ -598,8 +691,7 @@ public class PanelContenido extends JPanel {
 		// ========================================
 		// EDITAR
 		// ========================================
-		botonEditar.addActionListener(
-				e -> abrirFormularioEdicion(id, titulo, ano, estado, dato1, dato2));
+		botonEditar.addActionListener(e -> abrirFormularioEdicion(id, titulo, ano, estado, dato1, dato2));
 
 		// ========================================
 		// ELIMINAR
@@ -639,32 +731,24 @@ public class PanelContenido extends JPanel {
 
 		JButton botonEditar = crearBotonEditar();
 		panelBotones.add(botonEditar);
-		
+
 		if (prestamo.isEstadoPrestamo()) {
 
-		    JButton botonDevolver = new JButton("Devolver");
-		    botonDevolver.setBackground(colorRojo);
+			JButton botonDevolver = new JButton("Devolver");
+			botonDevolver.setBackground(colorRojo);
 
-		    panelBotones.add(botonDevolver);
+			panelBotones.add(botonDevolver);
 
-		    botonDevolver.addActionListener(
-		        e -> abrirConfirmacionDevolucion(
-		            nombreUsuario,
-		            idRecurso,
-		            tituloRecurso
-		        )
-		    );
+			botonDevolver.addActionListener(e -> abrirConfirmacionDevolucion(nombreUsuario, idRecurso, tituloRecurso));
 		}
 
 		fila.add(panelBotones, BorderLayout.EAST);
 
-		botonEditar.addActionListener(
-		        e -> abrirFormularioEdicionPrestamo(prestamo)
-		);
+		botonEditar.addActionListener(e -> abrirFormularioEdicionPrestamo(prestamo));
 
 		// ABRIR DETALLE DEL PRÉSTAMO
-		añadirEventoDetalle(fila, crearDatosPrestamo(nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo,
-				estado, fechaDevolucion));
+		añadirEventoDetalle(fila,
+				crearDatosPrestamo(nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado, fechaDevolucion));
 
 		panelLista.add(fila);
 	}
@@ -693,92 +777,79 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirFormularioEdicion(String id, String nombre, String email) {
 
-	    FormularioContenido formulario = new FormularioContenido(MODO_USUARIOS);
+		FormularioContenido formulario = new FormularioContenido(MODO_USUARIOS);
 
-	    formulario.cargarDatos(id, nombre, email);
+		formulario.cargarDatos(id, nombre, email);
 
-	    formulario.getBotonGuardar().addActionListener(e -> {
+		formulario.getBotonGuardar().addActionListener(e -> {
 
-	        String nuevoNombre = formulario.getCampoNombre().getText();
-	        String nuevoEmail = formulario.getCampoEmail().getText();
+			String nuevoNombre = formulario.getCampoNombre().getText();
+			String nuevoEmail = formulario.getCampoEmail().getText();
 
-	        if (gestionUsuarios.modificarUsuario(id, nuevoNombre, nuevoEmail)) {
+			if (gestionUsuarios.modificarUsuario(id, nuevoNombre, nuevoEmail)) {
 
-	            formulario.dispose();
-	            mostrarUsuarios();
-	        }
-	    });
+				formulario.dispose();
+				mostrarUsuarios();
+			}
+		});
 
-	    formulario.setVisible(true);
+		formulario.setVisible(true);
 	}
 
-	private void abrirFormularioEdicion(String id, String titulo, String ano, String estado,
-	        String dato1, String dato2) {
+	private void abrirFormularioEdicion(String id, String titulo, int ano, String estado, String dato1,
+			String dato2) {
 
-	    Recurso recurso = gestionRecursos.buscarRecurso(id);
+		Recurso recurso = gestionRecursos.buscarRecurso(id);
 
-	    if (recurso == null) {
-	        return;
-	    }
+		if (recurso == null) {
+			return;
+		}
 
-	    String tipo;
+		String tipo;
 
-	    if (recurso instanceof Libro) {
-	        tipo = "Libro";
+		if (recurso instanceof Libro) {
+			tipo = "Libro";
 
-	    } else if (recurso instanceof Pelicula) {
-	        tipo = "Película";
+		} else if (recurso instanceof Pelicula) {
+			tipo = "Película";
 
-	    } else if (recurso instanceof Videojuego) {
-	        tipo = "Videojuego";
+		} else if (recurso instanceof Videojuego) {
+			tipo = "Videojuego";
 
-	    } else {
-	        return;
-	    }
+		} else {
+			return;
+		}
 
-	    FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
+		FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
 
-	    formulario.cargarDatos(
-	        id,
-	        titulo,
-	        ano,
-	        estado,
-	        dato1,
-	        dato2
-	    );
+		formulario.cargarDatos(id, titulo, String.valueOf(ano), estado, dato1, dato2);
 
-	    formulario.getBotonGuardar().addActionListener(e -> {
+		formulario.getBotonGuardar().addActionListener(e -> {
 
-	        String nuevoTitulo = formulario.getCampoTitulo().getText();
-	        String nuevoAnoTexto = formulario.getCampoAno().getText();
+			String nuevoTitulo = formulario.getCampoTitulo().getText();
+			String nuevoAnoTexto = formulario.getCampoAno().getText();
 
-	        String nuevoTipo = (String) formulario.getComboTipo().getSelectedItem();
+			String nuevoTipo = (String) formulario.getComboTipo().getSelectedItem();
 
-	        String nuevoDato1 = formulario.getCampoEspecifico1().getText();
-	        String nuevoDato2 = formulario.getCampoEspecifico2().getText();
+			String nuevoDato1 = formulario.getCampoEspecifico1().getText();
+			String nuevoDato2 = formulario.getCampoEspecifico2().getText();
 
-	        try {
+			try {
 
-	            LocalDate nuevoAno = LocalDate.parse(nuevoAnoTexto);
+				int nuevoAno = Integer.parseInt(nuevoAnoTexto);
 
-	            if (gestionRecursos.modificarRecurso(
-	                    id,
-	                    nuevoTitulo,
-	                    nuevoAno,
-	                    nuevoTipo,
-	                    nuevoDato1,
-	                    nuevoDato2)) {
+				if (gestionRecursos.modificarRecurso(id, nuevoTitulo, nuevoAno, nuevoTipo, nuevoDato1, nuevoDato2)) {
 
-	                formulario.dispose();
-	                mostrarRecursos();
-	            }
+					formulario.dispose();
+					mostrarRecursos();
+				}
 
-	        } catch (Exception ex) {
-	            ex.printStackTrace();
-	        }
-	    });
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
 
-	    formulario.setVisible(true);
+		formulario.setVisible(true);
 	}
 
 	private void abrirFormularioEdicionPrestamo(Prestamo prestamo) {
@@ -829,20 +900,18 @@ public class PanelContenido extends JPanel {
 
 		formulario.setVisible(true);
 	}
-	
-	private void abrirFormularioEdicionPrestamo(
-	        String nombreUsuario,
-	        String idRecurso) {
 
-	    for (Prestamo prestamo : gestionPrestamos.listarPrestamos()) {
+	private void abrirFormularioEdicionPrestamo(String nombreUsuario, String idRecurso) {
 
-	        if (prestamo.getUsuario().getNombre().equals(nombreUsuario)
-	                && prestamo.getRecurso().getId().equals(idRecurso)) {
+		for (Prestamo prestamo : gestionPrestamos.listarPrestamos()) {
 
-	            abrirFormularioEdicionPrestamo(prestamo);
-	            return;
-	        }
-	    }
+			if (prestamo.getUsuario().getNombre().equals(nombreUsuario)
+					&& prestamo.getRecurso().getId().equals(idRecurso)) {
+
+				abrirFormularioEdicionPrestamo(prestamo);
+				return;
+			}
+		}
 	}
 
 	// =========================================================
@@ -850,59 +919,46 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirConfirmacionEliminacion(String tipo, String descripcion) {
 
-	    FormularioEliminar formulario = new FormularioEliminar(tipo, descripcion);
+		FormularioEliminar formulario = new FormularioEliminar(tipo, descripcion);
 
-	    formulario.getBotonAccion().addActionListener(e -> {
+		formulario.getBotonAccion().addActionListener(e -> {
 
-	        if (tipo.equals("Usuario")) {
+			if (tipo.equals("Usuario")) {
 
-	            String id = descripcion.substring(
-	                    descripcion.indexOf("ID: ") + 4,
-	                    descripcion.length() - 1
-	            );
-	            
-	            if (gestionUsuarios.eliminarUsuario(id)) {
-	            	
-	                formulario.dispose();
-	                mostrarUsuarios();
-	                
-	            } else {
+				String id = descripcion.substring(descripcion.indexOf("ID: ") + 4, descripcion.length() - 1);
 
-	                JOptionPane.showMessageDialog(
-	                    this,
-	                    "No se puede eliminar el usuario porque tiene un préstamo activo.",
-	                    "No se puede eliminar",
-	                    JOptionPane.WARNING_MESSAGE
-	                );
-	            }
-	            
-	        }else if (tipo.equals("Recurso")) {
+				if (gestionUsuarios.eliminarUsuario(id)) {
 
-	            String id =
-	                descripcion.substring(
-	                    descripcion.indexOf("ID: ") + 4,
-	                    descripcion.length() - 1
-	                );
+					formulario.dispose();
+					mostrarUsuarios();
 
-	            if (gestionRecursos.eliminarRecurso(id)) {
+				} else {
 
-	                formulario.dispose();
+					JOptionPane.showMessageDialog(this,
+							"No se puede eliminar el usuario porque tiene un préstamo activo.", "No se puede eliminar",
+							JOptionPane.WARNING_MESSAGE);
+				}
 
-	                mostrarRecursos();
-	                
-	            }else {
+			} else if (tipo.equals("Recurso")) {
 
-	                JOptionPane.showMessageDialog(
-	                    this,
-	                    "No se puede eliminar el recurso porque tiene un préstamo activo.",
-	                    "No se puede eliminar",
-	                    JOptionPane.WARNING_MESSAGE
-	                );
-	            }
-	        }
-	    });
+				String id = descripcion.substring(descripcion.indexOf("ID: ") + 4, descripcion.length() - 1);
 
-	    formulario.setVisible(true);
+				if (gestionRecursos.eliminarRecurso(id)) {
+
+					formulario.dispose();
+
+					mostrarRecursos();
+
+				} else {
+
+					JOptionPane.showMessageDialog(this,
+							"No se puede eliminar el recurso porque tiene un préstamo activo.", "No se puede eliminar",
+							JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		});
+
+		formulario.setVisible(true);
 	}
 
 	// =========================================================
@@ -910,7 +966,8 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirConfirmacionDevolucion(String nombreUsuario, String idRecurso, String tituloRecurso) {
 
-		FormularioEliminar formulario = new FormularioEliminar("devolución", tituloRecurso + " · " + nombreUsuario, true);
+		FormularioEliminar formulario = new FormularioEliminar("devolución", tituloRecurso + " · " + nombreUsuario,
+				true);
 
 		formulario.getBotonAccion().addActionListener(e -> {
 
@@ -941,8 +998,7 @@ public class PanelContenido extends JPanel {
 					VentanaDetalleContenido ventana = new VentanaDetalleContenido(modoActual, datos, gestionPrestamos);
 
 					ventana.setAccionEditarPrestamo(
-							datosPrestamo -> abrirFormularioEdicionPrestamo(datosPrestamo[0], datosPrestamo[1])
-				);
+							datosPrestamo -> abrirFormularioEdicionPrestamo(datosPrestamo[0], datosPrestamo[1]));
 
 					ventana.setAccionDevolverPrestamo(datosPrestamo -> abrirConfirmacionDevolucion(datosPrestamo[0],
 							datosPrestamo[1], datosPrestamo[2]));
@@ -961,18 +1017,17 @@ public class PanelContenido extends JPanel {
 		return new String[] { id, nombre, email };
 	}
 
-	private String[] crearDatosRecurso(String id, String titulo, String ano, String estado,
-			String dato1, String dato2) {
-
-		return new String[] { id, titulo, ano, estado, dato1, dato2 };
+	private String[] crearDatosRecurso(String id, String titulo, int ano, String estado, String dato1,
+			String dato2) {
+		
+		return new String[] { id, titulo, String.valueOf(ano), estado, dato1, dato2 };
 	}
 
 	// =========================================================
 	private String[] crearDatosPrestamo(String nombreUsuario, String idRecurso, String tituloRecurso,
 			String fechaPrestamo, String estado, String fechaDevolucion) {
 
-		return new String[] {nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado,
-				fechaDevolucion };
+		return new String[] { nombreUsuario, idRecurso, tituloRecurso, fechaPrestamo, estado, fechaDevolucion };
 	}
 
 	// ACCESO AL MODO ACTUAL
@@ -981,5 +1036,56 @@ public class PanelContenido extends JPanel {
 	public int getModoActual() {
 
 		return modoActual;
+	}
+
+	private void ejecutarBusqueda() {
+
+		String texto = campoBuscar.getText().trim();
+
+		if (modoActual == MODO_USUARIOS) {
+
+			ArrayList<Usuario> resultados = gestionUsuarios.filtrarUsuarios(texto);
+
+			mostrarUsuarios(resultados);
+		}
+
+		if (modoActual == MODO_RECURSOS) {
+
+			String tipo = (String) comboTipo.getSelectedItem();
+
+			String disponibilidad = (String) comboDisponibilidad.getSelectedItem();
+
+			ArrayList<Recurso> resultados = gestionRecursos.filtrarRecursos(texto, tipo, disponibilidad);
+
+			mostrarRecursos(resultados);
+		}
+
+		else if (modoActual == MODO_PRESTAMOS) {
+
+			ArrayList<Prestamo> resultados = gestionPrestamos.filtrarPrestamos(texto);
+
+			mostrarPrestamos(resultados);
+		}
+	}
+
+	private void limpiarFiltros() {
+
+		campoBuscar.setText("");
+
+		comboTipo.setSelectedItem("Todos");
+		comboDisponibilidad.setSelectedItem("Todos");
+
+		if (modoActual == MODO_USUARIOS) {
+
+			mostrarUsuarios(gestionUsuarios.listarUsuarios());
+
+		} else if (modoActual == MODO_RECURSOS) {
+
+			mostrarRecursos(gestionRecursos.listarRecursos());
+
+		} else if (modoActual == MODO_PRESTAMOS) {
+
+			mostrarPrestamos(gestionPrestamos.listarPrestamos());
+		}
 	}
 }

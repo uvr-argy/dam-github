@@ -41,7 +41,7 @@ public class VentanaDetalleContenido extends JFrame {
 
 	private Consumer<String[]> accionEditarPrestamo;
 	private Consumer<String[]> accionDevolverPrestamo;
-	
+
 	private GestionPrestamos gestionPrestamos;
 
 	public VentanaDetalleContenido(int modo, String[] datos, GestionPrestamos gestionPrestamos) {
@@ -49,7 +49,7 @@ public class VentanaDetalleContenido extends JFrame {
 		this.gestionPrestamos = gestionPrestamos;
 
 		configurarVentana();
-		
+
 		switch (modo) {
 		case PanelContenido.MODO_USUARIOS:
 			mostrarUsuario(datos);
@@ -144,73 +144,50 @@ public class VentanaDetalleContenido extends JFrame {
 	// =========================================================
 	private void mostrarUsuario(String[] datos) {
 
-	    setTitle("Detalle del usuario");
-	    etiquetaTitulo.setText("Detalle del usuario");
-	    etiquetaSeccionSecundaria.setText("Préstamos");
+		setTitle("Detalle del usuario");
+		etiquetaTitulo.setText("Detalle del usuario");
+		etiquetaSeccionSecundaria.setText("Préstamos");
 
-	    limpiarPaneles();
+		limpiarPaneles();
 
-	    String id = obtenerDato(datos, 0);
-	    String nombre = obtenerDato(datos, 1);
-	    String email = obtenerDato(datos, 2);
+		String id = obtenerDato(datos, 0);
+		String nombre = obtenerDato(datos, 1);
+		String email = obtenerDato(datos, 2);
 
-	    añadirDato("ID: " + id);
-	    añadirDato("Nombre: " + nombre);
-	    añadirDato("Email: " + email);
+		añadirDato("ID: " + id);
+		añadirDato("Nombre: " + nombre);
+		añadirDato("Email: " + email);
 
-	    JTabbedPane pestanasPrestamos =
-	            new JTabbedPane();
+		JTabbedPane pestanasPrestamos = new JTabbedPane();
 
-	    JPanel panelActivos =
-	            crearPanelListaPrestamos();
+		JPanel panelActivos = crearPanelListaPrestamos();
 
-	    JPanel panelDevueltos =
-	            crearPanelListaPrestamos();
+		JPanel panelDevueltos = crearPanelListaPrestamos();
 
-	    ArrayList<Prestamo> prestamosUsuario =
-	            gestionPrestamos.getHistorialUsuario(id);
+		ArrayList<Prestamo> prestamosUsuario = gestionPrestamos.getHistorialUsuario(id);
 
-	    for (Prestamo prestamo : prestamosUsuario) {
+		for (Prestamo prestamo : prestamosUsuario) {
 
-	        if (prestamo.isEstadoPrestamo()) {
+			if (prestamo.isEstadoPrestamo()) {
 
-	            añadirPrestamo(
-	                    panelActivos,
-	                    prestamo,
-	                    true
-	            );
+				añadirPrestamo(panelActivos, prestamo, true);
 
-	        } else {
+			} else {
 
-	            añadirPrestamo(
-	                    panelDevueltos,
-	                    prestamo,
-	                    false
-	            );
-	        }
-	    }
+				añadirPrestamo(panelDevueltos, prestamo, false);
+			}
+		}
 
-	    pestanasPrestamos.addTab(
-	            "Activos",
-	            crearScroll(panelActivos)
-	    );
+		pestanasPrestamos.addTab("Activos", crearScroll(panelActivos));
 
-	    pestanasPrestamos.addTab(
-	            "Devueltos",
-	            crearScroll(panelDevueltos)
-	    );
+		pestanasPrestamos.addTab("Devueltos", crearScroll(panelDevueltos));
 
-	    panelSecundario.setLayout(
-	            new BorderLayout()
-	    );
+		panelSecundario.setLayout(new BorderLayout());
 
-	    panelSecundario.add(
-	            pestanasPrestamos,
-	            BorderLayout.CENTER
-	    );
+		panelSecundario.add(pestanasPrestamos, BorderLayout.CENTER);
 
-	    panelSecundario.revalidate();
-	    panelSecundario.repaint();
+		panelSecundario.revalidate();
+		panelSecundario.repaint();
 	}
 
 	// =========================================================
@@ -242,7 +219,7 @@ public class VentanaDetalleContenido extends JFrame {
 		JTabbedPane pestanasPrestamos = new JTabbedPane();
 		JPanel panelActivos = crearPanelListaPrestamos();
 		JPanel panelDevueltos = crearPanelListaPrestamos();
-		
+
 		ArrayList<Prestamo> historialRecurso = gestionPrestamos.getHistorialRecurso(id);
 
 		for (Prestamo prestamo : historialRecurso) {
@@ -418,7 +395,7 @@ public class VentanaDetalleContenido extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 1) {
-					
+
 					VentanaDetalleContenido ventana = new VentanaDetalleContenido(PanelContenido.MODO_PRESTAMOS,
 							datosPrestamo, gestionPrestamos);
 					ventana.setAccionEditarPrestamo(accionEditarPrestamo);

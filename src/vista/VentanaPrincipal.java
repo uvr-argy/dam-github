@@ -65,7 +65,7 @@ public class VentanaPrincipal extends JFrame {
 	// ========================================
 	public VentanaPrincipal(GestionUsuarios gestionUsuarios, GestionRecursos gestionRecursos,
 			GestionPrestamos gestionPrestamos) {
-		
+
 		this.gestionUsuarios = gestionUsuarios;
 		this.gestionRecursos = gestionRecursos;
 		this.gestionPrestamos = gestionPrestamos;

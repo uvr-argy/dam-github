@@ -9,7 +9,7 @@ public class Prestamo {
 	private LocalDate fechaPrestamo;
 	private boolean estadoPrestamo;
 	private LocalDate fechaDevolucion;
-	
+
 	public Prestamo(Usuario usuario, Recurso recurso, LocalDate fechaPrestamo, boolean estadoPrestamo,
 			LocalDate fechaDevolucion) {
 		this.usuario = usuario;

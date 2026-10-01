@@ -7,7 +7,7 @@ public class Libro extends Recurso {
 	private String autor;
 	private int paginas;
 	
-	public Libro(String id, String titulo, LocalDate ano, boolean estado, String autor, int paginas) {
+	public Libro(String id, String titulo, int ano, boolean estado, String autor, int paginas) {
 		super(id, titulo, ano, estado);
 		this.autor = autor;
 		this.paginas = paginas;

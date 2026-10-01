@@ -1,6 +1,5 @@
 package funcionalidades;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import modelo.Libro;
@@ -11,202 +10,284 @@ import modelo.Videojuego;
 
 public class GestionRecursos {
 
-    private ArrayList<Recurso> recursos;
-    private ArrayList<Prestamo> prestamos;
+	private ArrayList<Recurso> recursos;
+	private ArrayList<Prestamo> prestamos;
 
-    public GestionRecursos(ArrayList<Recurso> recursos, ArrayList<Prestamo> prestamos) {
-        this.recursos = recursos;
-        this.prestamos = prestamos;
-    }
+	public GestionRecursos(ArrayList<Recurso> recursos, ArrayList<Prestamo> prestamos) {
+		this.recursos = recursos;
+		this.prestamos = prestamos;
+	}
 
-    // ==================== RECURSOS ====================
+	// ==================== RECURSOS ====================
 
-    // Crear recurso
-    public boolean crearRecurso(Recurso recurso) {
+	// Crear recurso
+	public boolean crearRecurso(Recurso recurso) {
 
-        // Para evitar ids duplicados
-        if (buscarRecurso(recurso.getId()) != null) {
-            return false;
-        }
+		 String prefijo;
 
-        recursos.add(recurso);
+		    if (recurso instanceof Libro) {
+		        prefijo = "L";
+		    } else if (recurso instanceof Pelicula) {
+		        prefijo = "P";
+		    } else if (recurso instanceof Videojuego) {
+		        prefijo = "V";
+		    } else {
+		        return false;
+		    }
 
-        return true;
-    }
+		    int siguienteId = 1;
+		    String id = String.format("%s%02d", prefijo, siguienteId);
 
-    // Listar recursos
-    public ArrayList<Recurso> listarRecursos() {
+		    while (buscarRecurso(id) != null) {
+		        siguienteId++;
+		        id = String.format("%s%02d", prefijo, siguienteId);
+		    }
 
-        return recursos;
+		    recurso.setId(id);
+		    recursos.add(recurso);
 
-    }
+		    return true;
+	}
 
-    // Buscar recurso
-    public Recurso buscarRecurso(String id) {
+	// Listar recursos
+	public ArrayList<Recurso> listarRecursos() {
 
-        // Busca recurso por id
-        for (Recurso recurso : recursos) {
-            if (recurso.getId().equals(id)) {
-                return recurso;
-            }
-        }
+		return recursos;
 
-        // Si no encuentra devuelve null
-        return null;
-    }
+	}
 
-    // Modificar recurso
-    public boolean modificarRecurso(String id, String titulo, LocalDate ano,
-            String tipo, String dato1, String dato2) {
+	// Buscar recurso
+	public Recurso buscarRecurso(String id) {
 
-        Recurso recurso = buscarRecurso(id);
+		// Busca recurso por id
+		for (Recurso recurso : recursos) {
+			if (recurso.getId().equals(id)) {
+				return recurso;
+			}
+		}
 
-        if (recurso == null) {
-            return false;
-        }
+		// Si no encuentra devuelve null
+		return null;
+	}
 
-        recurso.setTitulo(titulo);
-        recurso.setAno(ano);
+	// Modificar recurso
+	public boolean modificarRecurso(String id, String titulo, int ano, String tipo, String dato1, String dato2) {
 
-        try {
+		Recurso recurso = buscarRecurso(id);
 
-            if ("Libro".equals(tipo) && recurso instanceof Libro) {
+		if (recurso == null) {
+			return false;
+		}
 
-                Libro libro = (Libro) recurso;
-                libro.setAutor(dato1);
-                libro.setPaginas(Integer.parseInt(dato2));
+		recurso.setTitulo(titulo);
+		recurso.setAno(ano);
 
-            } else if ("Película".equals(tipo) && recurso instanceof Pelicula) {
+		try {
 
-                Pelicula pelicula = (Pelicula) recurso;
-                pelicula.setDirector(dato1);
-                pelicula.setDuracion(Integer.parseInt(dato2));
+			if ("Libro".equals(tipo) && recurso instanceof Libro) {
 
-            } else if ("Videojuego".equals(tipo) && recurso instanceof Videojuego) {
+				Libro libro = (Libro) recurso;
+				libro.setAutor(dato1);
+				libro.setPaginas(Integer.parseInt(dato2));
 
-                Videojuego videojuego = (Videojuego) recurso;
-                videojuego.setPlataforma(dato1);
-                videojuego.setPEGI(Integer.parseInt(dato2));
+			} else if ("Película".equals(tipo) && recurso instanceof Pelicula) {
 
-            } else {
-            	
-                return false;
-            }
+				Pelicula pelicula = (Pelicula) recurso;
+				pelicula.setDirector(dato1);
+				pelicula.setDuracion(Integer.parseInt(dato2));
 
-        } catch (NumberFormatException e) {
-            return false;
-        }
+			} else if ("Videojuego".equals(tipo) && recurso instanceof Videojuego) {
 
-        return true;
-    }
+				Videojuego videojuego = (Videojuego) recurso;
+				videojuego.setPlataforma(dato1);
+				videojuego.setPEGI(Integer.parseInt(dato2));
 
-    // Eliminar recurso
-    public boolean eliminarRecurso(String id) {
+			} else {
 
-        Recurso recurso = buscarRecurso(id);
+				return false;
+			}
 
-        if (recurso == null) {
+		} catch (NumberFormatException e) {
+			return false;
+		}
 
-            return false;
-        }
-        
-     // Comprobar si el recurso esta prestado
-        for (Prestamo prestamo : prestamos) {
+		return true;
+	}
 
-            if (prestamo.getRecurso().getId().equals(id)
-                    && prestamo.isEstadoPrestamo()) {
+	// Eliminar recurso
+	public boolean eliminarRecurso(String id) {
 
-                return false;
-            }
-        }
+		Recurso recurso = buscarRecurso(id);
 
-        recursos.remove(recurso);
+		if (recurso == null) {
 
-        return true;
-    }
+			return false;
+		}
 
-    // Consultar disponibilidad
-    public boolean disponibilidad(String id) {
+		// Comprobar si el recurso esta prestado
+		for (Prestamo prestamo : prestamos) {
 
-        Recurso recurso = buscarRecurso(id);
+			if (prestamo.getRecurso().getId().equals(id) && prestamo.isEstadoPrestamo()) {
 
-        if (recurso == null) {
+				return false;
+			}
+		}
 
-            return false;
-        }
+		recursos.remove(recurso);
 
-        // Atributo estado de la clase recurso
-        return recurso.isEstado();
-    }
+		return true;
+	}
 
-    // ==================== CONSULTAS ====================
+	// Consultar disponibilidad
+	public boolean disponibilidad(String id) {
 
-    // Recursos disponibles
-    public ArrayList<Recurso> recursosDisponibles() {
+		Recurso recurso = buscarRecurso(id);
 
-        ArrayList<Recurso> disponibles = new ArrayList<>();
+		if (recurso == null) {
 
-        for (Recurso recurso : recursos) {
+			return false;
+		}
 
-            if (recurso.isEstado()) {
+		// Atributo estado de la clase recurso
+		return recurso.isEstado();
+	}
 
-                disponibles.add(recurso);
+	// ==================== CONSULTAS ====================
 
-            }
-        }
+	// Recursos disponibles
+	public ArrayList<Recurso> recursosDisponibles() {
 
-        return disponibles;
-    }
+		ArrayList<Recurso> disponibles = new ArrayList<>();
 
-    // Recursos prestados
-    public ArrayList<Recurso> recursosPrestados() {
+		for (Recurso recurso : recursos) {
 
-        ArrayList<Recurso> prestados = new ArrayList<>();
+			if (recurso.isEstado()) {
 
-        for (Recurso recurso : recursos) {
+				disponibles.add(recurso);
 
-            if (!recurso.isEstado()) {
+			}
+		}
 
-                prestados.add(recurso);
+		return disponibles;
+	}
 
-            }
-        }
+	// Recursos prestados
+	public ArrayList<Recurso> recursosPrestados() {
 
-        return prestados;
-    }
+		ArrayList<Recurso> prestados = new ArrayList<>();
 
-    // Búsqueda por título
-    public ArrayList<Recurso> buscarPorTitulo(String titulo) {
+		for (Recurso recurso : recursos) {
 
-        ArrayList<Recurso> resultados = new ArrayList<>();
+			if (!recurso.isEstado()) {
 
-        for (Recurso recurso : recursos) {
+				prestados.add(recurso);
 
-            // Busca los recursos que contengan las letras que hemos puesto
-            if (recurso.getTitulo().toLowerCase().contains(titulo.toLowerCase())) {
+			}
+		}
 
-                resultados.add(recurso);
-            }
-        }
+		return prestados;
+	}
 
-        return resultados;
-    }
+	// Búsqueda por título
+	public ArrayList<Recurso> buscarPorTitulo(String titulo) {
 
-    // Recursos filtrados
-    public ArrayList<Recurso> recursosPorTipo(String tipo) {
+		ArrayList<Recurso> resultados = new ArrayList<>();
 
-        ArrayList<Recurso> resultados = new ArrayList<>();
+		for (Recurso recurso : recursos) {
 
-        for (Recurso recurso : recursos) {
+			// Busca los recursos que contengan las letras que hemos puesto
+			if (recurso.getTitulo().toLowerCase().contains(titulo.toLowerCase())) {
 
-            // El getSimpleName nos devuelve el nombre del recurso
-            // Además ignoramos si está en minúsculas o mayúsculas
-            if (recurso.getClass().getSimpleName().equalsIgnoreCase(tipo)) {
+				resultados.add(recurso);
+			}
+		}
 
-                resultados.add(recurso);
-            }
-        }
+		return resultados;
+	}
 
-        return resultados;
-    }
+	// Recursos filtrados
+	public ArrayList<Recurso> recursosPorTipo(String tipo) {
+
+		ArrayList<Recurso> resultados = new ArrayList<>();
+
+		for (Recurso recurso : recursos) {
+
+			// El getSimpleName nos devuelve el nombre del recurso
+			// Además ignoramos si está en minúsculas o mayúsculas
+			if (recurso.getClass().getSimpleName().equalsIgnoreCase(tipo)) {
+
+				resultados.add(recurso);
+			}
+		}
+
+		return resultados;
+	}
+
+	public ArrayList<Recurso> filtrarRecursos(String texto, String tipo, String disponibilidad) {
+
+		ArrayList<Recurso> resultados = new ArrayList<>();
+
+		for (Recurso recurso : recursos) {
+
+			// =========================
+			// FILTRO DE TEXTO
+			// =========================
+
+			boolean coincideTexto = true;
+
+			if (texto != null && !texto.trim().isEmpty()) {
+
+				String busqueda = texto.toLowerCase().trim();
+
+				coincideTexto = recurso.getId().toLowerCase().contains(busqueda)
+						|| recurso.getTitulo().toLowerCase().contains(busqueda)
+						|| recurso.getClass().getSimpleName().toLowerCase().contains(busqueda);
+			}
+
+			if (!coincideTexto) {
+				continue;
+			}
+
+			// =========================
+			// FILTRO DE TIPO
+			// =========================
+
+			boolean coincideTipo = true;
+
+			if (tipo != null && !tipo.equals("Todos") && !tipo.trim().isEmpty()) {
+
+				coincideTipo = recurso.getClass().getSimpleName().equalsIgnoreCase(tipo);
+			}
+
+			if (!coincideTipo) {
+				continue;
+			}
+
+			// =========================
+			// FILTRO DE DISPONIBILIDAD
+			// =========================
+
+			boolean coincideDisponibilidad = true;
+
+			if (disponibilidad != null && !disponibilidad.equals("Todos") && !disponibilidad.trim().isEmpty()) {
+
+				if (disponibilidad.equals("Disponible")) {
+
+					coincideDisponibilidad = recurso.isEstado();
+
+				} else if (disponibilidad.equals("Prestado")) {
+
+					coincideDisponibilidad = !recurso.isEstado();
+				}
+			}
+
+			if (!coincideDisponibilidad) {
+				continue;
+			}
+
+			resultados.add(recurso);
+		}
+
+		return resultados;
+	}
 }
