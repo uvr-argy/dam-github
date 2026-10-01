@@ -1,9 +1,11 @@
 package modelo;
 
-import java.time.LocalDate;
+import java.io.Serializable;
 
-public class Recurso {
+public class Recurso implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	private String id;
 	private String titulo;
 	private int ano;

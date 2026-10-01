@@ -1,4 +1,4 @@
-package funcionalidades;
+package controlador;
 
 import java.util.ArrayList;
 

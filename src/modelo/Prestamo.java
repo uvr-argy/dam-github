@@ -1,9 +1,12 @@
 package modelo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Prestamo {
+public class Prestamo implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	private Usuario usuario;
 	private Recurso recurso;
 	private LocalDate fechaPrestamo;

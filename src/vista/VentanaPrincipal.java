@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import funcionalidades.GestionPrestamos;
-import funcionalidades.GestionRecursos;
-import funcionalidades.GestionUsuarios;
+import controlador.GestionPrestamos;
+import controlador.GestionRecursos;
+import controlador.GestionUsuarios;
 
 public class VentanaPrincipal extends JFrame {
 

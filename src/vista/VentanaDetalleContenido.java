@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import funcionalidades.GestionPrestamos;
+import controlador.GestionPrestamos;
 import modelo.Prestamo;
 import modelo.Recurso;
 import modelo.Usuario;

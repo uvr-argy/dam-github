@@ -16,9 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import funcionalidades.GestionPrestamos;
-import funcionalidades.GestionRecursos;
-import funcionalidades.GestionUsuarios;
+import controlador.GestionPrestamos;
+import controlador.GestionRecursos;
+import controlador.GestionUsuarios;
 import modelo.Libro;
 import modelo.Pelicula;
 import modelo.Prestamo;

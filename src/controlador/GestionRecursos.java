@@ -1,4 +1,4 @@
-package funcionalidades;
+package controlador;
 
 import java.util.ArrayList;
 
@@ -7,6 +7,7 @@ import modelo.Pelicula;
 import modelo.Prestamo;
 import modelo.Recurso;
 import modelo.Videojuego;
+import persistencia.Guardado;
 
 public class GestionRecursos {
 

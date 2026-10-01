@@ -1,4 +1,4 @@
-package funcionalidades;
+package controlador;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import modelo.Prestamo;
 import modelo.Recurso;
 import modelo.Usuario;
+import persistencia.Guardado;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +70,7 @@ public class GestionPrestamos {
 
 		recurso.setEstado(false); // Al prestar un recurso debe quedar como no disponible
 
+		Guardado.guardar(recursos, usuarios, prestamos);
 		return true;
 	}
 
@@ -132,7 +135,8 @@ public class GestionPrestamos {
 
 		// Cambiar usuario
 		prestamo.setUsuario(nuevoUsuario);
-
+		
+		Guardado.guardar(recursos, usuarios, prestamos);
 		return true;
 	}
 
@@ -156,6 +160,7 @@ public class GestionPrestamos {
 				prestamo.setFechaDevolucion(LocalDate.now());
 				recurso.setEstado(true);
 
+				Guardado.guardar(recursos, usuarios, prestamos);
 				return true;
 			}
 		}
