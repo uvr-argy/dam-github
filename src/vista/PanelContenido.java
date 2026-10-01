@@ -333,7 +333,6 @@ public class PanelContenido extends JPanel {
 		fila.add(botones, BorderLayout.EAST);
 
 		UtilVista.hacerClicable(fila, abrirDetalle);
-		UtilVista.ajustarAlturaFila(fila, ALTURA_MINIMA_FILA);
 
 		panelLista.add(fila);
 	}
@@ -620,7 +619,7 @@ public class PanelContenido extends JPanel {
 			return false;
 		}
 
-		if (!UtilVista.esEmailValido(email)) {
+		if (!email.contains("@")) {
 			UtilVista.mostrarAviso(formulario, "Escribe un email válido (por ejemplo, nombre@correo.com).");
 			return false;
 		}

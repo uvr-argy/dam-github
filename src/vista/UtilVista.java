@@ -172,15 +172,8 @@ public final class UtilVista {
 	}
 
 	// =========================================================
-	// VALIDACIONES Y AVISOS
+	//AVISOS
 	// =========================================================
-	private static final Pattern PATRON_EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
-
-	public static boolean esEmailValido(String email) {
-
-		return email != null && PATRON_EMAIL.matcher(email).matches();
-	}
-
 	public static void mostrarAviso(Component padre, String mensaje) {
 
 		JOptionPane.showMessageDialog(padre, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -197,17 +190,6 @@ public final class UtilVista {
 				BorderFactory.createEmptyBorder(12, 15, 12, 10)));
 
 		return fila;
-	}
-
-	/**
-	 * Fija la altura máxima de la fila: la mínima que se pida o, si el contenido
-	 * necesita más espacio, la que haga falta. Así no se recortan las etiquetas.
-	 * Debe llamarse cuando la fila ya tiene todo su contenido.
-	 */
-	public static void ajustarAlturaFila(JPanel fila, int alturaMinima) {
-
-		int altura = Math.max(alturaMinima, fila.getPreferredSize().height);
-		fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, altura));
 	}
 
 	public static JPanel crearPanelDatos() {

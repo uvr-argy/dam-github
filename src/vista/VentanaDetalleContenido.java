@@ -305,10 +305,6 @@ public class VentanaDetalleContenido extends JDialog {
 		// Un solo listener sobre toda la fila (antes se añadía a dos paneles)
 		UtilVista.hacerClicable(fila, () -> new VentanaDetalleContenido(this, prestamo, gestionPrestamos).setVisible(true));
 
-		// Sin altura mínima: la fila mide lo que necesita su contenido (antes estaba
-		// fija a 100 px y las filas con más líneas se recortaban)
-		UtilVista.ajustarAlturaFila(fila, 0);
-
 		panelDestino.add(fila);
 	}
 
