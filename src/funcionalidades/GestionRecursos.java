@@ -3,8 +3,11 @@ package funcionalidades;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import modelo.Libro;
+import modelo.Pelicula;
 import modelo.Prestamo;
 import modelo.Recurso;
+import modelo.Videojuego;
 
 public class GestionRecursos {
 
@@ -53,19 +56,46 @@ public class GestionRecursos {
     }
 
     // Modificar recurso
-    public boolean modificarRecurso(String id, String titulo, LocalDate ano) {
+    public boolean modificarRecurso(String id, String titulo, LocalDate ano,
+            String tipo, String dato1, String dato2) {
 
         Recurso recurso = buscarRecurso(id);
 
         if (recurso == null) {
-
             return false;
         }
 
-        // No modifico el id porque lo usamos para identificar al recurso
         recurso.setTitulo(titulo);
-
         recurso.setAno(ano);
+
+        try {
+
+            if ("Libro".equals(tipo) && recurso instanceof Libro) {
+
+                Libro libro = (Libro) recurso;
+                libro.setAutor(dato1);
+                libro.setPaginas(Integer.parseInt(dato2));
+
+            } else if ("Película".equals(tipo) && recurso instanceof Pelicula) {
+
+                Pelicula pelicula = (Pelicula) recurso;
+                pelicula.setDirector(dato1);
+                pelicula.setDuracion(Integer.parseInt(dato2));
+
+            } else if ("Videojuego".equals(tipo) && recurso instanceof Videojuego) {
+
+                Videojuego videojuego = (Videojuego) recurso;
+                videojuego.setPlataforma(dato1);
+                videojuego.setPEGI(Integer.parseInt(dato2));
+
+            } else {
+            	
+                return false;
+            }
+
+        } catch (NumberFormatException e) {
+            return false;
+        }
 
         return true;
     }

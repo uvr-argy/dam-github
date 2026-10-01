@@ -178,7 +178,7 @@ public class PanelContenido extends JPanel {
 
 		configurarSubnavbar();
 		configurarBotonAnadir();
-		cargarDatosTemporales();
+		cargarDatos();
 
 		revalidate();
 		repaint();
@@ -250,32 +250,97 @@ public class PanelContenido extends JPanel {
 	// =========================================================
 	private void abrirFormulario() {
 
-	    FormularioContenido formulario = new FormularioContenido(modoActual);
+		FormularioContenido formulario = new FormularioContenido(modoActual);
 
-	    if (modoActual == MODO_USUARIOS) {
+		// =====================================================
+		// CREAR USUARIO
+		// =====================================================
 
-	        formulario.getBotonGuardar().addActionListener(e -> {
+		if (modoActual == MODO_USUARIOS) {
 
-	            String id = formulario.getCampoId().getText();
-	            String nombre = formulario.getCampoNombre().getText();
-	            String email = formulario.getCampoEmail().getText();
+			formulario.getBotonGuardar().addActionListener(e -> {
 
-	            Usuario usuario = new Usuario(id, nombre, email);
+				String id = formulario.getCampoId().getText().trim();
+				String nombre = formulario.getCampoNombre().getText().trim();
+				String email = formulario.getCampoEmail().getText().trim();
+				Usuario usuario = new Usuario(id, nombre, email);
 
-	            if (gestionUsuarios.crearUsuario(usuario)) {
-	                formulario.dispose();
-	                mostrarUsuarios();
-	            }
-	        });
-	    }
+				if (gestionUsuarios.crearUsuario(usuario)) {
 
-	    formulario.setVisible(true);
+					formulario.dispose();
+					mostrarUsuarios();
+				}
+			});
+		}
+
+		// =====================================================
+		// CREAR RECURSO
+		// =====================================================
+
+		else if (modoActual == MODO_RECURSOS) {
+
+			formulario.getBotonGuardar().addActionListener(e -> {
+
+				try {
+					String id = formulario.getCampoId().getText().trim();
+					String titulo = formulario.getCampoTitulo().getText().trim();
+					String textoAno = formulario.getCampoAno().getText().trim();
+					String tipo = (String) formulario.getComboTipo().getSelectedItem();
+					String dato1 = formulario.getCampoEspecifico1().getText().trim();
+					String dato2 = formulario.getCampoEspecifico2().getText().trim();
+					LocalDate ano = LocalDate.parse(textoAno);
+					Recurso recurso = null;
+					
+					// -------------------------------------------------
+					// LIBRO
+					// -------------------------------------------------
+					if ("Libro".equals(tipo)) {
+
+						int paginas = Integer.parseInt(dato2);
+						recurso = new Libro(id, titulo, ano, true, dato1, paginas);
+					}
+
+					// -------------------------------------------------
+					// PELÍCULA
+					// -------------------------------------------------
+					else if ("Película".equals(tipo)) {
+
+						int duracion = Integer.parseInt(dato2);
+						recurso = new Pelicula(id, titulo, ano, true, dato1, duracion);
+					}
+
+					// -------------------------------------------------
+					// VIDEOJUEGO
+					// -------------------------------------------------
+					else if ("Videojuego".equals(tipo)) {
+						
+						int pegi = Integer.parseInt(dato2);
+						recurso = new Videojuego(id, titulo, ano, true, dato1, pegi);
+					}
+
+					// -------------------------------------------------
+					// GUARDAR
+					// -------------------------------------------------
+					if (recurso != null && gestionRecursos.crearRecurso(recurso)) {
+
+						formulario.dispose();
+						mostrarRecursos();
+					}
+
+				} catch (Exception ex) {
+
+					ex.printStackTrace();
+				}
+			});
+		}
+
+		formulario.setVisible(true);
 	}
 	
 	// =========================================================
 	// DATOS TEMPORALES
 	// =========================================================
-	private void cargarDatosTemporales() {
+	private void cargarDatos() {
 
 		panelLista.removeAll();
 
@@ -585,18 +650,66 @@ public class PanelContenido extends JPanel {
 	private void abrirFormularioEdicion(String id, String titulo, String ano, String estado,
 	        String dato1, String dato2) {
 
+	    Recurso recurso = gestionRecursos.buscarRecurso(id);
+
+	    if (recurso == null) {
+	        return;
+	    }
+
+	    String tipo;
+
+	    if (recurso instanceof Libro) {
+	        tipo = "Libro";
+
+	    } else if (recurso instanceof Pelicula) {
+	        tipo = "Película";
+
+	    } else if (recurso instanceof Videojuego) {
+	        tipo = "Videojuego";
+
+	    } else {
+	        return;
+	    }
+
 	    FormularioContenido formulario = new FormularioContenido(MODO_RECURSOS);
-	    formulario.cargarDatos(id, titulo, ano, estado, dato1, dato2);
+
+	    formulario.cargarDatos(
+	        id,
+	        titulo,
+	        ano,
+	        estado,
+	        dato1,
+	        dato2
+	    );
 
 	    formulario.getBotonGuardar().addActionListener(e -> {
 
 	        String nuevoTitulo = formulario.getCampoTitulo().getText();
-	        LocalDate nuevoAno = LocalDate.parse(formulario.getCampoAno().getText());
+	        String nuevoAnoTexto = formulario.getCampoAno().getText();
 
-	        if (gestionRecursos.modificarRecurso(id, nuevoTitulo, nuevoAno)) {
+	        String nuevoTipo = (String) formulario.getComboTipo().getSelectedItem();
 
-	            formulario.dispose();
-	            mostrarRecursos();
+	        String nuevoDato1 = formulario.getCampoEspecifico1().getText();
+	        String nuevoDato2 = formulario.getCampoEspecifico2().getText();
+
+	        try {
+
+	            LocalDate nuevoAno = LocalDate.parse(nuevoAnoTexto);
+
+	            if (gestionRecursos.modificarRecurso(
+	                    id,
+	                    nuevoTitulo,
+	                    nuevoAno,
+	                    nuevoTipo,
+	                    nuevoDato1,
+	                    nuevoDato2)) {
+
+	                formulario.dispose();
+	                mostrarRecursos();
+	            }
+
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
 	        }
 	    });
 
@@ -630,6 +743,21 @@ public class PanelContenido extends JPanel {
 	            if (gestionUsuarios.eliminarUsuario(id)) {
 	                formulario.dispose();
 	                mostrarUsuarios();
+	            }
+	            
+	        }else if (tipo.equals("Recurso")) {
+
+	            String id =
+	                descripcion.substring(
+	                    descripcion.indexOf("ID: ") + 4,
+	                    descripcion.length() - 1
+	                );
+
+	            if (gestionRecursos.eliminarRecurso(id)) {
+
+	                formulario.dispose();
+
+	                mostrarRecursos();
 	            }
 	        }
 	    });
