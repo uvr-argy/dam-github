@@ -109,6 +109,16 @@ public class GestionRecursos {
 
             return false;
         }
+        
+     // Comprobar si el recurso esta prestado
+        for (Prestamo prestamo : prestamos) {
+
+            if (prestamo.getRecurso().getId().equals(id)
+                    && prestamo.isEstadoPrestamo()) {
+
+                return false;
+            }
+        }
 
         recursos.remove(recurso);
 
@@ -199,6 +209,4 @@ public class GestionRecursos {
 
         return resultados;
     }
-
-    
 }

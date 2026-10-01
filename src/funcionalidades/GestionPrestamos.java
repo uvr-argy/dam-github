@@ -236,4 +236,12 @@ public class GestionPrestamos {
     public ArrayList<Prestamo> getHistorialUsuario(String idUsuario) {
         return historialUsuarios.getOrDefault(idUsuario, new ArrayList<>());
     }
+    
+    public ArrayList<Usuario> listarUsuarios() {
+        return usuarios;
+    }
+
+    public ArrayList<Recurso> listarRecursos() {
+        return recursos;
+    }
 }

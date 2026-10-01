@@ -54,6 +54,4 @@ public class Recurso {
 		return "Recurso [id=" + id + ", titulo=" + titulo + ", ano=" + ano + ", estado=" + estado + "]";
 	}
 	
-	
-	
 }

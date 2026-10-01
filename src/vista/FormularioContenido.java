@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +16,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import modelo.Recurso;
+import modelo.Usuario;
 
 public class FormularioContenido extends JDialog {
 
@@ -110,8 +114,8 @@ public class FormularioContenido extends JDialog {
         etiquetaEspecifico1 = new JLabel();
         etiquetaEspecifico2 = new JLabel();
         
-        comboUsuario = new JComboBox<>(new String[] { "001 · Juan Pérez", "002 · Ana García", "003 · Carlos López" });
-        comboRecurso = new JComboBox<>(new String[] { "R001 · El Hobbit", "R003 · Minecraft" });
+        comboUsuario = new JComboBox<>();
+        comboRecurso = new JComboBox<>();
 
         campoFechaPrestamo = new JTextField();
         comboEstado = new JComboBox<>(new String[] { "Activo", "Finalizado" });
@@ -268,8 +272,15 @@ public class FormularioContenido extends JDialog {
         campoEmail.setText("");
         campoEspecifico1.setText("");
         campoEspecifico2.setText("");
-        comboUsuario.setSelectedIndex(0);
-        comboRecurso.setSelectedIndex(0);
+        
+        if (comboUsuario.getItemCount() > 0) {
+            comboUsuario.setSelectedIndex(0);
+        }
+
+        if (comboRecurso.getItemCount() > 0) {
+            comboRecurso.setSelectedIndex(0);
+        }
+        
         campoFechaPrestamo.setText("");
         campoFechaDevolucion.setText("");
         comboTipo.setSelectedIndex(0);
@@ -413,6 +424,31 @@ public class FormularioContenido extends JDialog {
         panelFormulario.revalidate();
         panelFormulario.repaint();
     }
+    
+    public void cargarUsuariosYRecursos(
+            ArrayList<Usuario> usuarios,
+            ArrayList<Recurso> recursos) {
+
+        comboUsuario.removeAllItems();
+        comboRecurso.removeAllItems();
+
+        for (Usuario usuario : usuarios) {
+
+            comboUsuario.addItem(
+                    usuario.getId() + " · " + usuario.getNombre()
+            );
+        }
+
+        for (Recurso recurso : recursos) {
+
+            if (recurso.isEstado()) {
+
+                comboRecurso.addItem(
+                        recurso.getId() + " · " + recurso.getTitulo()
+                );
+            }
+        }
+    }
 
     private void seleccionarComboPorTexto(JComboBox<String> combo, String texto) {
         for (int i = 0; i < combo.getItemCount(); i++) {
@@ -421,5 +457,45 @@ public class FormularioContenido extends JDialog {
                 return;
             }
         }
+    }
+    
+    public void seleccionarUsuario(String idUsuario) {
+
+        for (int i = 0; i < comboUsuario.getItemCount(); i++) {
+
+            String item = comboUsuario.getItemAt(i);
+
+            if (item.startsWith(idUsuario + " · ")) {
+                comboUsuario.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+    
+    public void seleccionarRecurso(String idRecurso) {
+
+        for (int i = 0; i < comboRecurso.getItemCount(); i++) {
+
+            String item = comboRecurso.getItemAt(i);
+
+            if (item.startsWith(idRecurso + " · ")) {
+                comboRecurso.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+    
+    public boolean contieneRecurso(String idRecurso) {
+
+        for (int i = 0; i < comboRecurso.getItemCount(); i++) {
+
+            String item = comboRecurso.getItemAt(i);
+
+            if (item.startsWith(idRecurso + " · ")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
