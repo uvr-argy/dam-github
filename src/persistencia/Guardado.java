@@ -13,10 +13,12 @@ import modelo.Recurso;
 import modelo.Usuario;
 
 public class Guardado {
+	
 	private static final String ARCHIVO = "datos/biblioteca.txt";
-	private static Recurso[] recursos = null;
-	private static Usuario[] usuarios = null;
-	private static Prestamo[] prestamos = null;
+	
+	private static ArrayList<Recurso> recursos = new ArrayList<>();
+	private static ArrayList<Usuario> usuarios = new ArrayList<>();
+	private static ArrayList<Prestamo> prestamos = new ArrayList<>();
 	
 	//TODO funciones para revisar si el archivo existe y para crear el archivo
 	public static boolean guardar(ArrayList<Recurso> r, ArrayList<Usuario> u, ArrayList<Prestamo> p) {
@@ -57,25 +59,27 @@ public class Guardado {
     	DatosBiblioteca datos;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ARCHIVO))) {
             datos = (DatosBiblioteca) ois.readObject();
+            
+            recursos.addAll(Arrays.asList(datos.getRecursos()));
+            usuarios.addAll(Arrays.asList(datos.getUsuarios()));
+            prestamos.addAll(Arrays.asList(datos.getPrestamos()));
+            
         } catch (IOException e) {
         	return;
         } catch (ClassNotFoundException e) {
         	return;
         }
-        recursos = datos.getRecursos();
-        usuarios = datos.getUsuarios();
-        prestamos = datos.getPrestamos();
     }
     
     public static ArrayList<Recurso> getRecursos() {
-    	return new ArrayList<Recurso>(Arrays.asList(recursos));
+    	return recursos;
     }
     
     public static ArrayList<Usuario> getUsuarios() {
-    	return new ArrayList<Usuario>(Arrays.asList(usuarios));
+    	return usuarios;
     }
     
     public static ArrayList<Prestamo> getPrestamos() {
-    	return new ArrayList<Prestamo>(Arrays.asList(prestamos));
+    	return prestamos;
     }
 }
