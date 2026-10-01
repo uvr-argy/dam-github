@@ -6,10 +6,11 @@ public class Recurso {
 
 	private String id;
 	private String titulo;
-	private LocalDate ano;
+	private int ano;
 	private boolean estado;
 	
-	public Recurso(String id, String titulo, LocalDate ano, boolean estado) {
+	
+	public Recurso(String id, String titulo, int ano, boolean estado) {
 		this.id = id;
 		this.titulo = titulo;
 		this.ano = ano;
@@ -32,11 +33,11 @@ public class Recurso {
 		this.titulo = titulo;
 	}
 
-	public LocalDate getAno() {
+	public int getAno() {
 		return ano;
 	}
 
-	public void setAno(LocalDate ano) {
+	public void setAno(int ano) {
 		this.ano = ano;
 	}
 
@@ -52,7 +53,5 @@ public class Recurso {
 	public String toString() {
 		return "Recurso [id=" + id + ", titulo=" + titulo + ", ano=" + ano + ", estado=" + estado + "]";
 	}
-	
-	
 	
 }
