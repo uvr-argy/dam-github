@@ -1,4 +1,4 @@
-📚 La Biblioteca de Imanol
+📚 Multigoya 
 Aplicación Java para la gestión de una biblioteca multimedia, desarrollada con Java Swing y pensada para un entorno educativo o un pequeño ámbito empresarial.
 Permite administrar usuarios, recursos, préstamos y devoluciones, trabajando con libros, películas y videojuegos. La información se guarda de forma persistente en el fichero biblioteca.txt.
 
