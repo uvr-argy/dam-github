@@ -938,7 +938,7 @@ public class PanelContenido extends JPanel {
 
 				if (e.getClickCount() == 1) {
 
-					VentanaDetalleContenido ventana = new VentanaDetalleContenido(modoActual, datos);
+					VentanaDetalleContenido ventana = new VentanaDetalleContenido(modoActual, datos, gestionPrestamos);
 
 					ventana.setAccionEditarPrestamo(
 							datosPrestamo -> abrirFormularioEdicionPrestamo(datosPrestamo[0], datosPrestamo[1])

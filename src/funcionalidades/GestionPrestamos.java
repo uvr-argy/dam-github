@@ -75,47 +75,70 @@ public class GestionPrestamos {
         return true;
     }
     
-    public boolean modificarPrestamo(
-            Prestamo prestamo,
-            String idUsuario,
-            String idRecurso) {
+	public boolean modificarPrestamo(Prestamo prestamo, String idUsuario, String idRecurso) {
 
-        Usuario nuevoUsuario = buscarUsuario(idUsuario);
-        Recurso nuevoRecurso = buscarRecurso(idRecurso);
+		Usuario nuevoUsuario = buscarUsuario(idUsuario);
+		Recurso nuevoRecurso = buscarRecurso(idRecurso);
 
-        if (prestamo == null || nuevoUsuario == null || nuevoRecurso == null) {
-            return false;
-        }
+		if (prestamo == null || nuevoUsuario == null || nuevoRecurso == null) {
+			return false;
+		}
 
-        Recurso recursoAnterior = prestamo.getRecurso();
+		Usuario usuarioAnterior = prestamo.getUsuario();
+		Recurso recursoAnterior = prestamo.getRecurso();
 
-        // Si no se ha cambiado el recurso
-        if (recursoAnterior.getId().equals(idRecurso)) {
+		// Si se cambia el recurso, el nuevo debe estar disponible
+		if (!recursoAnterior.getId().equals(idRecurso) && !nuevoRecurso.isEstado()) {
 
-            prestamo.setUsuario(nuevoUsuario);
+			return false;
+		}
 
-            return true;
-        }
+		// =========================
+		// CAMBIAR USUARIO
+		// =========================
 
-        // El nuevo recurso tiene que estar disponible
-        if (!nuevoRecurso.isEstado()) {
-            return false;
-        }
+		if (!usuarioAnterior.getId().equals(idUsuario)) {
 
-        // Liberar el recurso anterior
-        recursoAnterior.setEstado(true);
+			ArrayList<Prestamo> historialAnterior = historialUsuarios.get(usuarioAnterior.getId());
 
-        // Asignar el nuevo recurso
-        prestamo.setUsuario(nuevoUsuario);
-        prestamo.setRecurso(nuevoRecurso);
+			if (historialAnterior != null) {
+				historialAnterior.remove(prestamo);
+			}
 
-        // Si el préstamo sigue activo, el nuevo recurso queda prestado
-        if (prestamo.isEstadoPrestamo()) {
-            nuevoRecurso.setEstado(false);
-        }
+			historialUsuarios.computeIfAbsent(idUsuario, k -> new ArrayList<>()).add(prestamo);
+		}
 
-        return true;
-    }
+		// =========================
+		// CAMBIAR RECURSO
+		// =========================
+
+		if (!recursoAnterior.getId().equals(idRecurso)) {
+
+			ArrayList<Prestamo> historialAnterior = historial.get(recursoAnterior.getId());
+
+			if (historialAnterior != null) {
+				historialAnterior.remove(prestamo);
+			}
+
+			historial.computeIfAbsent(idRecurso, k -> new ArrayList<>()).add(prestamo);
+
+			// Liberar recurso anterior
+			recursoAnterior.setEstado(true);
+
+			// Asignar nuevo recurso
+			prestamo.setRecurso(nuevoRecurso);
+
+			// Si el préstamo sigue activo, ocupar nuevo recurso
+			if (prestamo.isEstadoPrestamo()) {
+				nuevoRecurso.setEstado(false);
+			}
+		}
+
+		// Cambiar usuario
+		prestamo.setUsuario(nuevoUsuario);
+
+		return true;
+	}
 
     // Devolver recurso
     public boolean devolverRecurso(String idRecurso) {
