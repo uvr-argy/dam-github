@@ -225,7 +225,7 @@ public final class UtilVista {
 		return etiqueta;
 	}
 
-	/** Hace que un clic simple sobre el componente ejecute la acción. */
+	// Hace que un clic simple sobre el componente ejecute la acción. 
 	public static void hacerClicable(JComponent componente, Runnable accion) {
 
 		componente.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
