@@ -61,7 +61,7 @@ public class Main {
 		gestionPrestamos.prestarRecurso("U07", "V04"); // Jon - FIFA 25
 		gestionPrestamos.prestarRecurso("U09", "V05"); // Asier - Pokémon Escarlata
 		
-        /*
+        /* PRUEBAS DE CONTROLADORES
         // ==========================================
         // 4. MOSTRAR USUARIOS
         // ==========================================

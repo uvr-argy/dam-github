@@ -253,15 +253,13 @@ public class VentanaDetalleContenido extends JFrame {
 
 		limpiarPaneles();
 
-		String idPrestamo = obtenerDato(datos, 0);
-		String nombreUsuario = obtenerDato(datos, 1);
-		String idRecurso = obtenerDato(datos, 2);
-		String tituloRecurso = obtenerDato(datos, 3);
-		String fechaPrestamo = obtenerDato(datos, 4);
-		String estado = obtenerDato(datos, 5);
-		String fechaDevolucion = obtenerDato(datos, 6);
+		String nombreUsuario = obtenerDato(datos, 0);
+		String idRecurso = obtenerDato(datos, 1);
+		String tituloRecurso = obtenerDato(datos, 2);
+		String fechaPrestamo = obtenerDato(datos, 3);
+		String estado = obtenerDato(datos, 4);
+		String fechaDevolucion = obtenerDato(datos, 5);
 
-		añadirDato("ID préstamo: " + idPrestamo);
 		añadirDato("Usuario: " + nombreUsuario);
 		añadirDato("ID recurso: " + idRecurso);
 		añadirDato("Recurso: " + tituloRecurso);
