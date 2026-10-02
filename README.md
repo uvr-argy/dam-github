@@ -1,8 +1,8 @@
-# 📚 Multigoya 
+#  Multigoya 
 Aplicación Java para la gestión de una biblioteca multimedia, desarrollada con Java Swing y pensada para un entorno educativo o un pequeño ámbito empresarial.
 Permite administrar usuarios, recursos, préstamos y devoluciones, trabajando con libros, películas y videojuegos. La información se guarda de forma persistente en el fichero biblioteca.txt.
 
-# 👥 Integrantes
+#  Integrantes
 | Integrante | Responsabilidad principal |
 |-|:-:|
 | Unax Vizcaíno	| Ficheros, persistencia, lectura y escritura de datos |
@@ -12,9 +12,9 @@ Permite administrar usuarios, recursos, préstamos y devoluciones, trabajando co
 
 Aunque existió un reparto inicial, las distintas partes del proyecto tuvieron que integrarse, adaptarse y revisarse conjuntamente durante el desarrollo.
 
-# ✨ Funcionalidades
+# Funcionalidades
 
-## 👤 Gestión de usuarios
+## Gestión de usuarios
 La aplicación permite:
 - Crear usuarios.
 - Listar usuarios.
@@ -24,7 +24,7 @@ La aplicación permite:
 - Evitar identificadores duplicados.
 - Consultar usuarios que nunca han realizado un préstamo.
 
-## 📦 Gestión de recursos
+## Gestión de recursos
 La biblioteca trabaja con tres tipos de recursos:
 - Libros
 - Películas
@@ -56,7 +56,7 @@ La aplicación permite:
 - Filtrar recursos por tipo.
 - Consultar recursos que han sido prestados un determinado número de veces.
 
-## 🔄 Gestión de préstamos y devoluciones
+## Gestión de préstamos y devoluciones
 Antes de realizar un préstamo se comprueba que:
 - El usuario existe.
 - El recurso existe.
@@ -79,7 +79,7 @@ También es posible consultar:
 - Los préstamos realizados por un usuario.
 - Los préstamos actualmente activos.
 
-## 💾 Persistencia de datos
+## Persistencia de datos
 La aplicación utiliza un único fichero de texto para almacenar la información de forma permanente:
 ```
 biblioteca.txt
@@ -87,7 +87,7 @@ biblioteca.txt
 Gracias a este fichero, los datos pueden recuperarse al volver a iniciar la aplicación.
 La gestión de datos está separada de la lógica principal del programa para facilitar el mantenimiento y la organización del código.
 
-## 🖥️ Interfaz gráfica
+## Interfaz gráfica
 La aplicación utiliza Java Swing para proporcionar una interfaz gráfica.
 Las principales clases de la vista son:
 - FormularioContenido.java
@@ -98,7 +98,7 @@ Las principales clases de la vista son:
 
 La interfaz permite realizar las operaciones de la biblioteca mediante ventanas, formularios y paneles, sin necesidad de utilizar comandos por consola.
 
-## 🗂️ Estructura del proyecto
+## Estructura del proyecto
 El proyecto está organizado en distintos paquetes, cada uno con una responsabilidad concreta.
 ```
 src/
@@ -152,7 +152,7 @@ Principales clases:
 - VentanaDetalleContenido.java
 - VentanaPrincipal.java
 
-## 📁 Otros elementos del proyecto
+## Otros elementos del proyecto
 El repositorio también contiene archivos y carpetas utilizados por Eclipse y Git:
 ```
 bin/
@@ -164,7 +164,7 @@ La carpeta bin/ contiene los archivos compilados generados por Java y Eclipse.
 
 El archivo .gitignore indica qué archivos o carpetas no deben incluirse en el repositorio.
 
-## 🛠️ Tecnologías utilizadas
+## Tecnologías utilizadas
 - Java
 - Java Swing
 - Eclipse IDE
@@ -180,7 +180,7 @@ openjdk version "25.0.4.1" 2026-08-18 LTS
 OpenJDK Runtime Environment Temurin-25.0.4.1+1
 OpenJDK 64-Bit Server VM Temurin-25.0.4.1+1-LTS
 
-## ▶️ Ejecución del proyecto
+## Ejecución del proyecto
 Para ejecutar la aplicación:
 1. Clonar o descargar el repositorio.
 2. Importar el proyecto en Eclipse.
@@ -193,7 +193,7 @@ Al iniciarse la aplicación se abrirá la ventana principal desarrollada con Jav
 
 La aplicación utilizará biblioteca.txt para cargar y guardar los datos.
 
-## 👨‍💻 Reparto inicial del trabajo
+## Reparto inicial del trabajo
 
 ### Unax Vizcaíno
 Responsable principalmente de:
@@ -221,7 +221,7 @@ Responsables principalmente de:
 - Consultas.
 - Lógica general de la aplicación.
 
-## 🌿 Uso de Git y GitHub
+## Uso de Git y GitHub
 Git y GitHub se han utilizado durante todo el desarrollo para permitir que los integrantes trabajasen de forma paralela.
 
 ### Ramas principales
@@ -247,7 +247,7 @@ Durante el desarrollo también se han utilizado:
 - Revisión del código.
 - Integración del trabajo realizado por distintos integrantes.
 
-## ⚠️ Problemas encontrados durante el desarrollo
+## Problemas encontrados durante el desarrollo
 ### Aprendizaje de Git y GitHub
 
 Al comienzo del proyecto fue necesario familiarizarse con:
@@ -295,7 +295,7 @@ Una de las partes más importantes del proyecto fue la integración final de:
 
 Al haberse desarrollado distintas partes en paralelo, fue necesario adaptar clases, paquetes, nombres y llamadas entre componentes para conseguir que todo funcionase correctamente de forma conjunta.
 
-## 🧩 Organización general
+## Organización general
 La aplicación sigue una separación de responsabilidades entre sus diferentes paquetes.
 ```
 Vista
