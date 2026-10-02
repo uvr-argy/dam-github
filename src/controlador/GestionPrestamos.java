@@ -26,6 +26,23 @@ public class GestionPrestamos {
 		this.prestamos = prestamos;
 		this.historial = new HashMap<>();
 		this.historialUsuarios = new HashMap<>();
+		
+		for (Prestamo prestamo : prestamos) {
+
+		    String idRecurso = prestamo.getRecurso().getId();
+		    String idUsuario = prestamo.getUsuario().getId();
+
+		    if (!historial.containsKey(idRecurso)) {
+		        historial.put(idRecurso, new ArrayList<>());
+		    }
+
+		    if (!historialUsuarios.containsKey(idUsuario)) {
+		        historialUsuarios.put(idUsuario, new ArrayList<>());
+		    }
+
+		    historial.get(idRecurso).add(prestamo);
+		    historialUsuarios.get(idUsuario).add(prestamo);
+		}
 	}
 
 	// ==================== PRESTAMOS ====================
