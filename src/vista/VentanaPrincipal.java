@@ -3,20 +3,24 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controlador.GestionPrestamos;
 import controlador.GestionRecursos;
 import controlador.GestionUsuarios;
+
 
 public class VentanaPrincipal extends JFrame {
 
@@ -88,7 +92,7 @@ public class VentanaPrincipal extends JFrame {
 		etiquetaLogo.setForeground(Color.WHITE);
 		barraSuperior.add(etiquetaLogo, BorderLayout.WEST);
 
-		JLabel etiquetaNombreAplicacion = new JLabel("Biblioteca Multimedia");
+		JLabel etiquetaNombreAplicacion = new JLabel("Multigoya");
 		etiquetaNombreAplicacion.setForeground(Color.WHITE);
 		etiquetaNombreAplicacion.setFont(UtilVista.FUENTE_SUBTITULO);
 		// Margen izquierdo con un borde en lugar de espacios en el texto
@@ -159,15 +163,41 @@ public class VentanaPrincipal extends JFrame {
 	// ========================================
 	private JPanel crearPanelInicio() {
 
-		JPanel panelInicio = new JPanel();
-		panelInicio.setBackground(UtilVista.COLOR_FONDO);
+	    JPanel panelInicio = new JPanel();
+	    panelInicio.setLayout(new BoxLayout(panelInicio, BoxLayout.Y_AXIS));
+	    panelInicio.setBackground(UtilVista.COLOR_FONDO);
+	    panelInicio.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
 
-		JLabel etiquetaInicio = new JLabel("Bienvenido a la Biblioteca Multimedia");
-		etiquetaInicio.setFont(UtilVista.FUENTE_TITULO);
-		panelInicio.add(etiquetaInicio);
+	    JLabel etiquetaInicio = new JLabel("Bienvenido a la Biblioteca Multimedia");
+	    etiquetaInicio.setFont(UtilVista.FUENTE_TITULO);
+	    etiquetaInicio.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar en el panel
 
-		return panelInicio;
+	    Component espacioMedio = Box.createVerticalStrut(30);
+
+	    JTextArea descripcion = new JTextArea(
+	        "Este trabajo consiste en el desarrollo de una aplicación para gestionar una biblioteca multimedia, "
+	        + "permitiendo administrar usuarios, recursos y préstamos.\n\n"
+	        + "Desarrollada por Santiago Barrera, Imanol Hermosilla, Unax Vizcaíno y Juan Puertas."
+	    );
+
+	    descripcion.setFont(UtilVista.FUENTE_TEXTO);
+	    descripcion.setEditable(false);                   
+	    descripcion.setFocusable(false);                  
+	    descripcion.setOpaque(false);                     
+	    descripcion.setBackground(new Color(0, 0, 0, 0)); 
+	    descripcion.setLineWrap(true);                    
+	    descripcion.setWrapStyleWord(true);  
+	    descripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    
+	    descripcion.setMaximumSize(new Dimension(600, 200));
+
+	    panelInicio.add(etiquetaInicio);
+	    panelInicio.add(espacioMedio);
+	    panelInicio.add(descripcion);
+
+	    return panelInicio;
 	}
+
 
 	// ========================================
 	// CAMBIO DE TARJETA

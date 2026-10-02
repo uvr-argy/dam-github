@@ -37,9 +37,6 @@ public class PanelContenido extends JPanel {
 	public static final int MODO_RECURSOS = 2;
 	public static final int MODO_PRESTAMOS = 3;
 
-	// Altura mínima de cada fila de las listas
-	private static final int ALTURA_MINIMA_FILA = 75;
-
 	private int modoActual = MODO_USUARIOS;
 
 	// =========================================================
@@ -163,6 +160,7 @@ public class PanelContenido extends JPanel {
 		botonAnadir = new JButton();
 		botonAnadir.setBackground(UtilVista.COLOR_VERDE);
 		botonAnadir.setPreferredSize(new Dimension(160, 40));
+		
 		// Un único listener: lo que cambia según el modo se decide al pulsarlo
 		botonAnadir.addActionListener(e -> abrirFormularioAlta());
 		panelAcciones.add(botonAnadir);

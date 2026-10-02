@@ -31,8 +31,7 @@ import modelo.Usuario;
  * 
  * El modo (usuarios, recursos o préstamos) se decide al crearlo y ya no cambia,
  * así que los campos se crean una sola vez según el modo. Para editar se crea
- * igual y después se llama a cargarDatos(...) o cargarOpcionesPrestamo(...).
- */
+ * igual. **/
 public class FormularioContenido extends JDialog {
 
 	private static final long serialVersionUID = 1L;
