@@ -20,6 +20,8 @@ import javax.swing.border.EmptyBorder;
 import controlador.GestionPrestamos;
 import controlador.GestionRecursos;
 import controlador.GestionUsuarios;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 
 public class VentanaPrincipal extends JFrame {
@@ -85,11 +87,20 @@ public class VentanaPrincipal extends JFrame {
 		barraSuperior.setPreferredSize(new Dimension(0, 60));
 		barraSuperior.setBackground(UtilVista.COLOR_AZUL);
 
-		JLabel etiquetaLogo = new JLabel("LOGO");
+		// Logo de la aplicación
+		ImageIcon iconoLogo = new ImageIcon(
+		    getClass().getResource("/imagenes/logo.png")
+		);
+
+		Image imagenLogo = iconoLogo.getImage().getScaledInstance(
+		    45, 45, Image.SCALE_SMOOTH
+		);
+
+		JLabel etiquetaLogo = new JLabel(new ImageIcon(imagenLogo));
 		etiquetaLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		etiquetaLogo.setVerticalAlignment(SwingConstants.CENTER);
 		etiquetaLogo.setPreferredSize(new Dimension(70, 60));
-		etiquetaLogo.setForeground(Color.WHITE);
+
 		barraSuperior.add(etiquetaLogo, BorderLayout.WEST);
 
 		JLabel etiquetaNombreAplicacion = new JLabel("Multigoya");
@@ -166,14 +177,16 @@ public class VentanaPrincipal extends JFrame {
 	    JPanel panelInicio = new JPanel();
 	    panelInicio.setLayout(new BoxLayout(panelInicio, BoxLayout.Y_AXIS));
 	    panelInicio.setBackground(UtilVista.COLOR_FONDO);
-	    panelInicio.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
 
+	    // Reducir los márgenes para subir el contenido
+	    panelInicio.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
+
+	    // Título
 	    JLabel etiquetaInicio = new JLabel("Bienvenido a la Biblioteca Multimedia");
 	    etiquetaInicio.setFont(UtilVista.FUENTE_TITULO);
-	    etiquetaInicio.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar en el panel
+	    etiquetaInicio.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-	    Component espacioMedio = Box.createVerticalStrut(30);
-
+	    // Descripción
 	    JTextArea descripcion = new JTextArea(
 	        "Este trabajo consiste en el desarrollo de una aplicación para gestionar una biblioteca multimedia, "
 	        + "permitiendo administrar usuarios, recursos y préstamos.\n\n"
@@ -181,23 +194,39 @@ public class VentanaPrincipal extends JFrame {
 	    );
 
 	    descripcion.setFont(UtilVista.FUENTE_TEXTO);
-	    descripcion.setEditable(false);                   
-	    descripcion.setFocusable(false);                  
-	    descripcion.setOpaque(false);                     
-	    descripcion.setBackground(new Color(0, 0, 0, 0)); 
-	    descripcion.setLineWrap(true);                    
-	    descripcion.setWrapStyleWord(true);  
+	    descripcion.setEditable(false);
+	    descripcion.setFocusable(false);
+	    descripcion.setOpaque(false);
+	    descripcion.setBackground(new Color(0, 0, 0, 0));
+	    descripcion.setLineWrap(true);
+	    descripcion.setWrapStyleWord(true);
 	    descripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    
 	    descripcion.setMaximumSize(new Dimension(600, 200));
+	    descripcion.setPreferredSize(new Dimension(600, 100));
 
+	    // Imagen de la biblioteca
+	    ImageIcon iconoOriginal = new ImageIcon(
+	        getClass().getResource("/imagenes/biblioteca.png")
+	    );
+
+	    Image imagen = iconoOriginal.getImage().getScaledInstance(
+	        350, 220, Image.SCALE_SMOOTH
+	    );
+
+	    JLabel etiquetaImagen = new JLabel(new ImageIcon(imagen));
+	    etiquetaImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    // Añadir componentes con espacios reducidos
 	    panelInicio.add(etiquetaInicio);
-	    panelInicio.add(espacioMedio);
+	    panelInicio.add(Box.createVerticalStrut(12));
+
 	    panelInicio.add(descripcion);
+	    panelInicio.add(Box.createVerticalStrut(12));
+
+	    panelInicio.add(etiquetaImagen);
 
 	    return panelInicio;
 	}
-
 
 	// ========================================
 	// CAMBIO DE TARJETA

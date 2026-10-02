@@ -236,11 +236,10 @@ public class GestionRecursos {
 
 	    for (Recurso recurso : recursos) {
 	    	
-	        if (hayTexto && !(recurso.getId().toLowerCase().contains(busqueda) || 
-	                          recurso.getTitulo().toLowerCase().contains(busqueda) || 
-	                          recurso.getClass().getSimpleName().toLowerCase().contains(busqueda))) {
-	            continue;
-	        }
+	    	if (hayTexto && !(recurso.getId().toLowerCase().contains(busqueda) ||
+	                  recurso.getTitulo().toLowerCase().contains(busqueda))) {
+	    		continue;
+	    	}
 
 	        if (hayTipo && !recurso.getClass().getSimpleName().equalsIgnoreCase(tipo)) {
 	            continue;
